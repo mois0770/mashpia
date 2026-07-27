@@ -14,6 +14,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
 from backend.gerar_resposta import gerar_resposta
+from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
 
@@ -115,19 +116,23 @@ if pergunta:
     with st.chat_message("user"):
         st.markdown(pergunta)
     with st.chat_message("assistant"):
-        with st.spinner("Consultando as Sefirot..."):
-            resultado = gerar_resposta(pergunta)
-        st.markdown(resultado["resposta"])
-        with st.expander("Classificação e fontes"):
-            c = resultado["classificacao"]
-            st.write(f"**Lacuna:** {c['protocolo_lacuna']}")
-            st.write(f"**Sefirot:** {', '.join(c['sefirot']) or '—'}")
-            st.write(f"**Entidades:** {', '.join(c['entidades']) or '—'}")
-            st.write(f"**Temas:** {', '.join(c['temas']) or '—'}")
-            st.write(f"**Justificativa:** {c['justificativa']}")
-            _exibir_relacoes(resultado["relacoes_estruturais"])
-            if resultado["chunks_usados"]:
-                st.write("**Trechos consultados:**")
-                for chunk in resultado["chunks_usados"]:
-                    st.markdown(f"- {chunk['texto'][:150]}…")
+        try:
+            with st.spinner("Consultando as Sefirot..."):
+                resultado = gerar_resposta(pergunta)
+            st.markdown(resultado["resposta"])
+            with st.expander("Classificação e fontes"):
+                c = resultado["classificacao"]
+                st.write(f"**Lacuna:** {c['protocolo_lacuna']}")
+                st.write(f"**Sefirot:** {', '.join(c['sefirot']) or '—'}")
+                st.write(f"**Entidades:** {', '.join(c['entidades']) or '—'}")
+                st.write(f"**Temas:** {', '.join(c['temas']) or '—'}")
+                st.write(f"**Justificativa:** {c['justificativa']}")
+                _exibir_relacoes(resultado["relacoes_estruturais"])
+                if resultado["chunks_usados"]:
+                    st.write("**Trechos consultados:**")
+                    for chunk in resultado["chunks_usados"]:
+                        st.markdown(f"- {chunk['texto'][:150]}…")
+        except ErroOpenRouter as e:
+            st.error(f"Não consegui gerar uma resposta agora: {e}")
+            st.stop()
     st.session_state.historico.append(resultado)

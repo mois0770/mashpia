@@ -5,17 +5,24 @@
 import sys
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.adam_kadmon import classificar
 from backend.gerar_resposta import gerar_resposta
+from backend.openrouter_client import ErroOpenRouter
 from grafo.schema import grafo_singleton
 
 app = FastAPI(title="Mashpia", description="Chatbot Filosofia Chabad — API")
 
 _grafo = grafo_singleton()
+
+
+@app.exception_handler(ErroOpenRouter)
+def erro_openrouter_handler(request: Request, exc: ErroOpenRouter):
+    return JSONResponse(status_code=503, content={"erro": str(exc)})
 
 
 class PerguntaRequest(BaseModel):

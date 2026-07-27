@@ -435,6 +435,47 @@ correção — resposta passou a usar "A Cabalá e a Chassidut descrevem..."/"A
 Chassidut ilustra..."; confirmado programaticamente que "a tradição" (solto)
 não aparece mais no texto.
 
+4.14 Deploy no Streamlit Community Cloud + retry/tratamento de erro (2026-07-27)
+     — novo repo GitHub (github.com/mois0770/mashpia), backend/openrouter_client.py
+Projeto ganhou repositório Git próprio (antes só existia nesta máquina, fora
+de qualquer controle de versão) e foi implantado no Streamlit Community Cloud
+(mashpia.streamlit.app). Caminho absoluto `/home/m/GraphRAG/CHAT_NIVEL_2/
+00_Prompt_Sistema_Fixo.txt` em gerar_resposta.py — que só existe nesta
+máquina — foi corrigido para caminho relativo, lendo uma cópia do prompt
+fixo dentro do próprio MASHPIA/ (mantida em paralelo à original em
+CHAT_NIVEL_2/; edições futuras no prompt fixo precisam ir nas duas, ou só na
+cópia de MASHPIA se CHAT_NIVEL_2 for descontinuada como fonte). Primeiro
+deploy falhou por faltar o Secret `OPENROUTER_API_KEY` no painel do Streamlit
+Cloud — resolvido configurando o Secret (não é bug de código).
+
+Nova camada `backend/openrouter_client.py` (`post_com_retry` + exceção
+`ErroOpenRouter`): toda chamada à OpenRouter do projeto (tradução, etapa B,
+embeddings, geração) passou a usar essa função em vez de `requests.post` cru.
+Retry com backoff (1s, 2s) em timeout/erro de conexão/429/5xx — até 3
+tentativas; erro definitivo (401, 400 etc.) falha na hora, sem retry inútil.
+Ao esgotar tentativas, levanta `ErroOpenRouter` com mensagem amigável.
+`gerar_resposta_stream` trata separadamente uma queda NO MEIO do streaming
+(depois que a resposta já começou a chegar) — não tenta retry (recomeçaria
+do zero e produziria resposta diferente da que o usuário já viu em parte),
+em vez disso o gerador captura a exceção e insere uma nota de interrupção no
+próprio texto. `backend/main.py` ganhou handler FastAPI mapeando
+`ErroOpenRouter` para HTTP 503 com JSON limpo (em vez de 500 genérico).
+`interface/app.py` e `app_1.py` capturam `ErroOpenRouter` ao redor da
+geração e mostram `st.error(...)` em vez da tela de traceback cru do
+Streamlit — não gravam no histórico da sessão nesse caso (`st.stop()` logo
+após o erro).
+TESTADO: (1) erro definitivo (modelo inválido, 400) falha em ~0.5s sem
+retry, confirmado; (2) host inalcançável força as 3 tentativas com backoff,
+falha em ~3.0s, confirmado; (3) handler FastAPI testado via TestClient com
+`ErroOpenRouter` simulado — retornou 503 com JSON `{"erro": "..."}`,
+confirmado; (4) fluxo completo revalidado no navegador (driver Playwright do
+skill run-mashpia) depois de todas as mudanças — resposta, relações
+estruturais e vocabulário corrigido continuam corretos, sem regressão.
+NÃO TESTADO: interrupção real no meio de um streaming genuíno (o teste (2)
+cobre falha ANTES do streaming começar, não durante) — a lógica foi revisada
+por inspeção de código, mas não há evidência empírica desse caminho
+específico ainda.
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================
@@ -516,10 +557,15 @@ documento).
 ================================================================================
 - Considerar tag de Sefirah por chunk (não só por documento) se a imprecisão
   atual se mostrar limitante na prática.
-- Hardening do backend (autenticação, rate limit, tratamento de erro) se for
-  sair de uso local/desenvolvimento.
+- Hardening do backend ainda incompleto: retry + tratamento de erro amigável
+  JÁ FEITO (ver 4.14); autenticação e rate limit por usuário CONTINUAM em
+  aberto — relevantes principalmente se o uso deixar de ser um grupo pequeno
+  e controlado (hoje qualquer um com o link do Streamlit Cloud pode usar sem
+  limite, consumindo a chave OpenRouter do usuário).
 - Renomear os títulos placeholder no Google Form (TESTE_SUGESTAO/TESTE_PERGUNTA/
   TESTE_RESPOSTA) — cosmético, feito direto no editor do Form pelo usuário.
+- Testar empiricamente uma queda de conexão NO MEIO de um streaming real (ver
+  ressalva "NÃO TESTADO" em 4.14) — hoje só verificado por inspeção de código.
 
 [RESOLVIDO 2026-07-27] Testado no navegador via Playwright headless (Streamlit
 não tem driver de teste próprio, então subimos `streamlit run interface/app.py`

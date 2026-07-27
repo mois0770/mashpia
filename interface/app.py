@@ -14,6 +14,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
 from backend.gerar_resposta import gerar_resposta_stream
+from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
 
@@ -183,22 +184,26 @@ if pergunta:
     with st.chat_message("user"):
         st.markdown(pergunta)
     with st.chat_message("assistant"):
-        with st.spinner("Consultando as Sefirot..."):
-            classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta)
-        # A partir daqui o texto vai aparecendo progressivamente (streaming),
-        # em vez de ficar em silêncio pelos ~20s+ que a geração completa leva.
-        resposta_texto = st.write_stream(gerador)
-        with st.expander("Classificação e fontes"):
-            st.write(f"**Lacuna:** {classificacao['protocolo_lacuna']}")
-            st.write(f"**Sefirot:** {', '.join(classificacao['sefirot']) or '—'}")
-            st.write(f"**Entidades:** {', '.join(classificacao['entidades']) or '—'}")
-            st.write(f"**Temas:** {', '.join(classificacao['temas']) or '—'}")
-            st.write(f"**Justificativa:** {classificacao['justificativa']}")
-            _exibir_relacoes(relacoes_estruturais)
-            if chunks_usados:
-                st.write("**Trechos consultados:**")
-                for chunk in chunks_usados:
-                    st.markdown(f"- {chunk['texto'][:150]}…")
+        try:
+            with st.spinner("Consultando as Sefirot..."):
+                classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta)
+            # A partir daqui o texto vai aparecendo progressivamente (streaming),
+            # em vez de ficar em silêncio pelos ~20s+ que a geração completa leva.
+            resposta_texto = st.write_stream(gerador)
+            with st.expander("Classificação e fontes"):
+                st.write(f"**Lacuna:** {classificacao['protocolo_lacuna']}")
+                st.write(f"**Sefirot:** {', '.join(classificacao['sefirot']) or '—'}")
+                st.write(f"**Entidades:** {', '.join(classificacao['entidades']) or '—'}")
+                st.write(f"**Temas:** {', '.join(classificacao['temas']) or '—'}")
+                st.write(f"**Justificativa:** {classificacao['justificativa']}")
+                _exibir_relacoes(relacoes_estruturais)
+                if chunks_usados:
+                    st.write("**Trechos consultados:**")
+                    for chunk in chunks_usados:
+                        st.markdown(f"- {chunk['texto'][:150]}…")
+        except ErroOpenRouter as e:
+            st.error(f"Não consegui gerar uma resposta agora: {e}")
+            st.stop()
     st.session_state.historico.append({
         "pergunta": pergunta,
         "resposta": resposta_texto,

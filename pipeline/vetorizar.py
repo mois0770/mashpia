@@ -13,10 +13,10 @@ import time
 from pathlib import Path
 
 import chromadb
-import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import CHROMA_DIR, EMBEDDING_MODEL, OPENROUTER_BASE_URL, get_openrouter_key
+from config import CHROMA_DIR, EMBEDDING_MODEL
+from backend.openrouter_client import post_com_retry
 
 CORPUS_JSON = Path(__file__).resolve().parent / "corpus_confirmado.json"
 NOME_COLECAO = "mashpia_chunks"
@@ -24,13 +24,11 @@ TAMANHO_LOTE = 50
 
 
 def embed_lote(textos: list[str]) -> list[list[float]]:
-    resp = requests.post(
-        f"{OPENROUTER_BASE_URL}/embeddings",
-        headers={"Authorization": f"Bearer {get_openrouter_key()}"},
-        json={"model": EMBEDDING_MODEL, "input": textos},
+    resp = post_com_retry(
+        "/embeddings",
+        {"model": EMBEDDING_MODEL, "input": textos},
         timeout=60,
     )
-    resp.raise_for_status()
     dados = resp.json()["data"]
     return [item["embedding"] for item in dados]
 

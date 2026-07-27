@@ -19,10 +19,10 @@ import sys
 from pathlib import Path
 
 import chromadb
-import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import CHROMA_DIR, LLM_MODEL, OPENROUTER_BASE_URL, get_openrouter_key
+from config import CHROMA_DIR, LLM_MODEL
+from backend.openrouter_client import post_com_retry
 from pipeline.vetorizar import NOME_COLECAO, embed_lote
 
 N_CANDIDATOS_AMPLO = 30
@@ -67,15 +67,13 @@ def _traduzir_para_ingles(pergunta: str) -> str:
     chunk correto na posição 0; em português, na posição 132 — ver
     calibração de 2026-07-24). Traduzir a pergunta e buscar nos dois
     idiomas corrige isso sem precisar reprocessar o corpus inteiro."""
-    resp = requests.post(
-        f"{OPENROUTER_BASE_URL}/chat/completions",
-        headers={"Authorization": f"Bearer {get_openrouter_key()}"},
-        json={"model": LLM_MODEL, "temperature": 0, "max_tokens": 200,
-              "messages": [{"role": "user", "content":
-                  f"Traduza para o inglês, só a tradução, nada mais:\n\n{pergunta}"}]},
+    resp = post_com_retry(
+        "/chat/completions",
+        {"model": LLM_MODEL, "temperature": 0, "max_tokens": 200,
+         "messages": [{"role": "user", "content":
+             f"Traduza para o inglês, só a tradução, nada mais:\n\n{pergunta}"}]},
         timeout=30,
     )
-    resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"].strip()
 
 
@@ -216,14 +214,12 @@ def etapa_b(pergunta: str, candidatos: dict[str, str]) -> dict:
     definicoes = "\n\n".join(f"[{nome}]\n{texto}" for nome, texto in candidatos.items())
     prompt = PROMPT_ETAPA_B.format(pergunta=pergunta, definicoes=definicoes)
 
-    resp = requests.post(
-        f"{OPENROUTER_BASE_URL}/chat/completions",
-        headers={"Authorization": f"Bearer {get_openrouter_key()}"},
-        json={"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}],
-              "max_tokens": 400, "temperature": 0},
+    resp = post_com_retry(
+        "/chat/completions",
+        {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}],
+         "max_tokens": 400, "temperature": 0},
         timeout=60,
     )
-    resp.raise_for_status()
     conteudo = resp.json()["choices"][0]["message"]["content"].strip()
     conteudo = conteudo.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
     try:

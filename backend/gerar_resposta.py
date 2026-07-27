@@ -12,6 +12,13 @@ Grafo estrutural conectado à geração (2026-07-27): as Sefirot ativadas pela
 classificação são expandidas via grafo.schema.expandir_por_grafo antes de
 filtrar chunks — SINTETIZA/CANALIZA/GOVERNA passam a ser travessia real no
 NetworkX, não só inferência implícita do LLM a partir do texto dos chunks.
+
+Retry + tratamento de erro (2026-07-27): as chamadas à OpenRouter passam por
+openrouter_client.post_com_retry (retry com backoff em timeout/desconexão/
+429/5xx) em vez de requests.post cru — ver backend/openrouter_client.py.
+gerar_resposta_stream também trata desconexão NO MEIO do streaming (depois
+que a resposta já começou a chegar), caso em que retry do zero não é
+apropriado — yield uma nota de interrupção em vez de estourar exceção.
 """
 
 import json
@@ -21,8 +28,9 @@ from pathlib import Path
 import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import LLM_MODEL, OPENROUTER_BASE_URL, get_openrouter_key
+from config import LLM_MODEL
 from backend.adam_kadmon import _dividir, classificar_com_vizinhos
+from backend.openrouter_client import ErroOpenRouter, post_com_retry
 from grafo.schema import expandir_por_grafo
 
 PROMPT_FIXO_PATH = Path(__file__).resolve().parent.parent / "00_Prompt_Sistema_Fixo.txt"
@@ -115,13 +123,11 @@ def _preparar_geracao(pergunta: str) -> tuple[dict, list[dict], dict, list[dict]
 def gerar_resposta(pergunta: str) -> dict:
     classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta)
 
-    resp = requests.post(
-        f"{OPENROUTER_BASE_URL}/chat/completions",
-        headers={"Authorization": f"Bearer {get_openrouter_key()}"},
-        json={"model": LLM_MODEL, "messages": mensagens, "max_tokens": 3000, "temperature": 0.4},
+    resp = post_com_retry(
+        "/chat/completions",
+        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": 3000, "temperature": 0.4},
         timeout=90,
     )
-    resp.raise_for_status()
     resposta_texto = resp.json()["choices"][0]["message"]["content"].strip()
 
     return {
@@ -142,33 +148,43 @@ def gerar_resposta_stream(pergunta: str):
     (feedback do usuário sobre demora, 2026-07-27)."""
     classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta)
 
+    # A conexão inicial (até o primeiro byte) passa pelo retry normal de
+    # post_com_retry. Depois que o streaming já começou, uma queda no meio
+    # não é mais caso de retry (recomeçar do zero reenviaria todo o contexto
+    # e produziria uma resposta diferente da que o usuário já viu em parte)
+    # — em vez de estourar exceção dentro do gerador (que quebraria
+    # st.write_stream sem aviso), avisa com uma nota curta.
+    resp = post_com_retry(
+        "/chat/completions",
+        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": 3000,
+         "temperature": 0.4, "stream": True},
+        timeout=90,
+        stream=True,
+    )
+
     def gerador():
-        with requests.post(
-            f"{OPENROUTER_BASE_URL}/chat/completions",
-            headers={"Authorization": f"Bearer {get_openrouter_key()}"},
-            json={"model": LLM_MODEL, "messages": mensagens, "max_tokens": 3000,
-                  "temperature": 0.4, "stream": True},
-            timeout=90,
-            stream=True,
-        ) as resp:
-            resp.raise_for_status()
-            for linha in resp.iter_lines():
-                if not linha:
-                    continue
-                linha = linha.decode("utf-8")
-                if not linha.startswith("data: "):
-                    continue
-                dado = linha[len("data: "):]
-                if dado.strip() == "[DONE]":
-                    break
-                try:
-                    obj = json.loads(dado)
-                except json.JSONDecodeError:
-                    continue
-                delta = obj.get("choices", [{}])[0].get("delta", {})
-                pedaco = delta.get("content")
-                if pedaco:
-                    yield pedaco
+        try:
+            with resp:
+                for linha in resp.iter_lines():
+                    if not linha:
+                        continue
+                    linha = linha.decode("utf-8")
+                    if not linha.startswith("data: "):
+                        continue
+                    dado = linha[len("data: "):]
+                    if dado.strip() == "[DONE]":
+                        break
+                    try:
+                        obj = json.loads(dado)
+                    except json.JSONDecodeError:
+                        continue
+                    delta = obj.get("choices", [{}])[0].get("delta", {})
+                    pedaco = delta.get("content")
+                    if pedaco:
+                        yield pedaco
+        except (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError):
+            yield ("\n\n_[a conexão com o modelo caiu no meio da resposta — "
+                   "peço desculpas pela interrupção; tente enviar a pergunta de novo]_")
 
     return classificacao, chunks_usados, relacoes, gerador()
 
