@@ -1,0 +1,546 @@
+ESTADO ATUAL DA IMPLEMENTAÇÃO — MASHPIA
+Última atualização: 2026-07-27
+
+Objetivo deste documento: registrar o que já foi construído, testado e calibrado,
+com precisão suficiente para que uma nova etapa de trabalho comece daqui em diante
+SEM precisar reabrir/reverificar o que está descrito aqui. Onde algo não foi
+verificado ou é uma simplificação conhecida, isso está marcado explicitamente —
+tratar como verdadeiro só o que está afirmado como testado.
+
+Documento irmão: GraphRAG/CHAT_NIVEL_2/01_Arquitetura_e_Criterios.txt — cobre o
+DESENHO (schema conceitual, critérios de decisão, prompt fixo). Este documento aqui
+cobre a IMPLEMENTAÇÃO (código, dados gerados, o que roda e o que ainda não existe).
+Os dois se complementam; não duplicam.
+
+================================================================================
+1. VISÃO GERAL DO QUE EXISTE
+================================================================================
+Um pipeline funcional, ponta a ponta, que vai de documentos-fonte (.odt/.txt) até
+uma busca semântica classificada por Sefirah/Entidade/Tema:
+
+  documentos-fonte (CHAT_NIVEL_2/Sefirot_Conceitos*, CHAT_NIVEL_2/Novos/1-10)
+    -> pipeline/ingestao.py           (texto + chunking)
+    -> pipeline/metadados_confirmados.py  (tags por documento, dado manual)
+    -> pipeline/gerar_corpus.py       (junta texto real + tags -> corpus_confirmado.json)
+    -> pipeline/vetorizar.py          (embeddings OpenRouter -> ChromaDB local)
+    -> backend/adam_kadmon.py         (classificação de 3 eixos: Sefirah/Entidade/Tema)
+
+Desde 2026-07-24: geração de resposta (backend/gerar_resposta.py) e API HTTP
+(backend/main.py, FastAPI) também implementadas, testadas ponta a ponta E
+calibradas com o mesmo rigor da classificação (checklist + verificação de
+fidelidade de citação) — ver seção 4.8.
+Desde 2026-07-26: preparação inicial para acesso público — disclaimer visível na
+sidebar (substituindo as estatísticas de corpus, que eram informação interna),
+formulário de feedback (avaliação + sugestões, salvo em data/feedback.jsonl), e
+glosa obrigatória entre colchetes para termos técnicos hebraicos/aramaicos
+(Dirá BeTachtonim, Moach Sholet Al HaLev etc.) na primeira ocorrência de cada
+resposta — ver seção 4.9.
+Desde 2026-07-27: feedback também grava em paralelo numa planilha do Google via
+Form (backend/feedback_sheets.py), configurado e testado de ponta a ponta — ver
+seção 4.10. O grafo estrutural (grafo/schema.py) foi conectado de fato à geração
+de resposta (SINTETIZA/CANALIZA/GOVERNA viram travessia real no NetworkX, não só
+inferência do LLM) — ver seção 4.12. Vocabulário do prompt fixo corrigido para
+nomear "Filosofia Chabad"/"Chabad" em vez do termo genérico "a tradição" — ver
+seção 4.13.
+O que NÃO existe ainda: hardening de produção (autenticação, rate limit),
+hospedagem pública de fato — hoje roda só em localhost.
+
+================================================================================
+2. ESTRUTURA DE ARQUIVOS
+================================================================================
+MASHPIA/
+  00_Estado_Atual.txt          <- este arquivo
+  config.py                    Lê a chave da OpenRouter, define constantes
+  .gitignore                   Protege Openrouter_Ket.txt e data/ de versionamento
+  Openrouter_Ket.txt            A CHAVE DE VERDADE — nunca commitar, nunca colar em texto
+
+  grafo/
+    schema.py                  Constrói o grafo estrutural fixo (NetworkX)
+
+  pipeline/
+    ingestao.py                 .odt/.txt -> texto -> chunks por parágrafo
+    metadados_confirmados.py    Tags por documento (autoria/Sefirah/Tema/Entidade) — DADO, não lógica
+    gerar_corpus.py              Junta ingestao + metadados -> corpus_confirmado.json
+    corpus_confirmado.json       1486 chunks, texto real + metadado (GERADO, não editar à mão)
+    vetorizar.py                 Embeddings + escrita no ChromaDB
+
+  backend/
+    adam_kadmon.py               Classificação de 3 eixos (o "roteador" da pergunta)
+    teste_calibracao.py          8 perguntas de teste para inspeção manual
+    gerar_resposta.py            Classifica + recupera chunks EXPRESSA/DEFINE + gera resposta
+    main.py                      API FastAPI (GET /estatisticas, /grafo; POST /classificar, /responder)
+
+  data/
+    chroma/                      ChromaDB local (persistente, gerado por vetorizar.py)
+
+  Comentario_PYs.odt             Notas próprias do usuário (não é parte do pipeline)
+
+================================================================================
+3. COMO RODAR CADA ETAPA (reprodutibilidade)
+================================================================================
+Todos os comandos abaixo assumem `cd /home/m/GraphRAG/MASHPIA` primeiro.
+
+  Verificar o grafo estrutural:
+    python3 grafo/schema.py
+
+  Reprocessar o corpus a partir dos documentos-fonte (idempotente — pode rodar
+  quantas vezes quiser, os IDs são estáveis, não duplica):
+    python3 pipeline/gerar_corpus.py
+
+  Gerar embeddings e gravar/atualizar o ChromaDB (idempotente pelo mesmo motivo):
+    python3 pipeline/vetorizar.py
+
+  Testar uma pergunta isolada:
+    python3 backend/adam_kadmon.py "sua pergunta aqui"
+
+  Rodar o conjunto de 8 perguntas de calibração:
+    python3 backend/teste_calibracao.py
+
+  Testar geração de resposta completa (sem subir servidor):
+    python3 backend/gerar_resposta.py "sua pergunta aqui"
+
+  Subir a API:
+    uvicorn backend.main:app --reload --port 8000
+  Endpoints: GET /, GET /estatisticas, GET /grafo, POST /classificar
+  {"pergunta": "..."}, POST /responder {"pergunta": "..."}
+
+  ORDEM CORRETA depois de qualquer mudança em metadados_confirmados.py ou
+  ingestao.py: gerar_corpus.py -> vetorizar.py (nessa ordem, sempre).
+
+================================================================================
+4. ESTADO DE CADA COMPONENTE
+================================================================================
+
+4.1 grafo/schema.py — TESTADO, verificado contra o documento de arquitetura
+Constrói o esqueleto fixo: EinSof(1), AdamKadmon(1), Sefirah(11), Entidade(14),
+Tema(9), e as arestas estruturais (PONTE, HISHTALSHELUT, MESMA_COLUNA, SINTETIZA,
+GOVERNA, CANALIZA). Contagens de nós/arestas conferidas uma a uma contra a seção 3
+do documento de arquitetura — batem exatamente. NÃO inclui Chunks — isso é papel do
+pipeline, não deste módulo. Este grafo ainda não está conectado ao ChromaDB/
+classificador (são dois sistemas paralelos hoje — ver seção 6, pendência).
+
+4.2 config.py — TESTADO
+Lê a chave de Openrouter_Ket.txt (ou variável de ambiente OPENROUTER_API_KEY).
+EMBEDDING_MODEL = "openai/text-embedding-3-large" (confirmado funcionando, embeddings
+normalizados, norma ≈ 1.0). LLM_MODEL = "anthropic/claude-sonnet-5" (confirmado
+funcionando via OpenRouter, roteado pela Amazon Bedrock).
+
+4.3 pipeline/ingestao.py — TESTADO, 2 bugs de chunking corrigidos na revisão
+`chunkear_por_paragrafo`: separa por linha em branco; qualquer bloco resultante
+maior que 2000 caracteres é, por sua vez, quebrado por linha simples (cobre .txt
+digitados manualmente sem linha em branco real, ex. Klalei.txt). Depois disso,
+mescla fragmentos consecutivos menores que 150 caracteres com o seguinte.
+LIMITAÇÃO CONHECIDA: o limiar de 2000 caracteres foi calibrado no caso do
+Klalei.txt; um documento com blocos legitimamente longos (uma citação longa em
+bloco único, por exemplo) seria fatiado por linha sem precisar. Ainda não apareceu
+um caso assim, mas fique atento se aparecer.
+`_id_estavel`: gera ID determinístico (documento + posição + hash do texto) — é o
+que torna gerar_corpus.py/vetorizar.py idempotentes. NÃO trocar essa lógica sem
+entender que isso reseta a idempotência (rodar de novo duplicaria tudo, como
+aconteceu uma vez durante a calibração, corrigido).
+
+4.4 pipeline/metadados_confirmados.py — DADO, parcialmente auditado
+Contém as tags de 47 documentos + 1 arquivo vazio registrado à parte (52 no total
+processados por gerar_corpus.py). Re-derivado da análise feita ao longo da
+conversa de design. AUDITORIA FEITA: os 34 documentos de Novos/1-10 foram
+conferidos linha por linha contra os `CHAT_NIVEL_2/Novos/N/00_Analise.txt`
+correspondentes — 3 discrepâncias reais encontradas e corrigidas (A Dwelling
+Below/nuance Keter; Educacacao.odt/Chochmah+Binah também em DEFINE; Klalei.txt/Daat
+também em DEFINE). AUDITORIA NÃO FEITA: os 13 documentos de Sefirot_Conceitos/ e
+Sefirot_Conceitos_2/ não têm 00_Analise.txt salvo em disco — só existem na
+conversa de design; não foram conferidos contra um registro independente do
+mesmo jeito. Tratar essas 13 entradas com um pouco menos de confiança que as 34
+já auditadas.
+
+4.5 pipeline/gerar_corpus.py — TESTADO
+`resolver_arquivo`: localiza o arquivo real por substring segura (`chave`),
+priorizando nome exato antes de substring (corrigido depois de ambiguidade real
+entre "Self-Esteem.odt" e "Humble Self-Esteem.odt"). Aplica tags de
+Sefirah/Tema/autoria ao documento inteiro (todos os chunks dele) — SIMPLIFICAÇÃO
+DELIBERADA E DOCUMENTADA, não é imprecisão despercebida. Aplica tags de Entidade
+SÓ ao chunk que contém o nome da Entidade literalmente no texto (corrigido na
+calibração — antes também era por documento inteiro, e isso causava erro real de
+classificação, ver seção 5).
+
+4.6 pipeline/vetorizar.py — TESTADO
+Embeddings em lotes de 50, grava no ChromaDB local em `data/chroma/`, coleção
+`mashpia_chunks`. Metadado com lista (temas/sefirot_define/sefirot_expressa/
+entidades) vira string separada por vírgula — ChromaDB só aceita valor escalar em
+metadado. LIMITAÇÃO CONHECIDA: filtro exato por uma tag específica via `where` do
+ChromaDB não é direto hoje (seria preciso substring, não "igual a"); o
+classificador (adam_kadmon.py) contorna isso trazendo todos os vizinhos e
+filtrando em Python, o que funciona bem na escala atual (1486 chunks) mas não
+escalaria indefinidamente sem revisão.
+Espaço de distância da coleção: "l2" (padrão do ChromaDB, não especificado
+explicitamente). CONFIRMADO que isso não distorce o ranking: os embeddings são
+normalizados (norma ≈ 1.0), e para vetores normalizados L2² = 2 − 2·cosseno — a
+ordem de distância L2 e de similaridade de cosseno são idênticas. Verificado por
+comparação manual (ranking por cosseno bateu exatamente com o retorno do
+ChromaDB). Não precisa reconfigurar a coleção para "cosine" — seria redundante.
+
+4.7 backend/adam_kadmon.py — TESTADO E CALIBRADO (6 correções, ver seção 5)
+Implementa a etapa A (busca vetorial bilíngue PT+EN, candidatos por Sefirah/
+Entidade restritos a DEFINE) e etapa B (LLM confinado ao texto DEFINE recuperado,
+decide quais candidatos realmente se aplicam). Retorna
+{protocolo_lacuna, sefirot, entidades, temas, justificativa}.
+Parâmetros atuais: N_CANDIDATOS_ESTREITO=15, N_CANDIDATOS_AMPLO=30,
+MAX_CANDIDATOS_ETAPA_B=8, MIN_OCORRENCIAS (Tema)=2. Esses números foram ajustados
+empiricamente com 8 perguntas de teste — não são derivados de teoria, são
+calibração prática. Podem precisar de novo ajuste se o corpus crescer muito ou se
+aparecerem padrões de pergunta muito diferentes dos testados.
+
+4.8 backend/gerar_resposta.py e backend/main.py — TESTADOS E CALIBRADOS (2026-07-24)
+`gerar_resposta`: chama `classificar`, depois busca até N_CHUNKS_CONTEXTO=8 chunks
+entre os N_VIZINHOS_PARA_FILTRAR=30 vizinhos mais próximos da pergunta (busca
+bilíngue, reaproveitada de adam_kadmon.py) cujo Sefirah/Entidade bate com o que
+foi identificado — aqui já inclui EXPRESSA, não só DEFINE, porque a geração
+precisa de exemplo aplicado, não só definição. Monta o contexto e chama o LLM
+com o prompt fixo como system message.
+`main.py`: FastAPI simples, sem autenticação, sem rate limit, sem tratamento de
+erro além do que FastAPI faz por padrão (uma exceção não tratada vira 500). Não
+é hardened para produção — é suficiente para desenvolvimento/teste local.
+TESTADO: os 4 endpoints respondem corretamente via TestClient E via servidor
+uvicorn real.
+
+CALIBRAÇÃO (backend/teste_calibracao_geracao.py, 5 perguntas incluindo 1 caso de
+lacuna total): checklist derivado do prompt fixo (abertura pela origem, ordem
+Alma->Pensamento->Mente->Sentimento->Ação, fechamento retorna à Fonte, só cita
+conteúdo dos chunks, reconhece lacuna, sem disclaimers, terminologia fixada,
+resposta não corta no meio). Achado único, mas de alto impacto: `max_tokens=1200`
+cortava TODAS as respostas substantivas no meio da frase (4 de 5 casos de teste).
+Corrigido para `max_tokens=3000`. Depois da correção, os 5 casos passaram limpos
+no checklist inteiro, incluindo o caso de lacuna total (pergunta sobre receita de
+bolo — recusou corretamente, sem inventar, ofereceu caminho de reformulação) e um
+caso de lacuna PARCIAL (pergunta sobre níveis da alma — respondeu o que os chunks
+cobriam e reconheceu explicitamente o que não estava desenvolvido no material).
+FIDELIDADE DE CITAÇÃO VERIFICADA: as 8 citações numeradas [1]-[8] de uma resposta
+foram conferidas uma a uma contra o texto real dos chunks recuperados — todas
+fiéis (tradução correta, sem invenção). Não é garantia absoluta para todo caso
+futuro, mas é evidência concreta de que o mecanismo de citação funciona como
+projetado, não só "parece funcionar".
+NÍVEL DE CONFIANÇA: bom para uso continuado, com o mesmo cuidado de qualquer
+sistema calibrado com amostra pequena — se aparecer um padrão de pergunta muito
+diferente dos 5 testados (ou dos 8 de teste_calibracao.py) e a resposta parecer
+estranha,vale voltar a este processo (checklist + verificação de citação) em vez
+de assumir que está tudo bem.
+
+SEGUNDA RODADA DE CALIBRAÇÃO (2026-07-24, feedback do usuário testando a
+interface Streamlit de verdade) — 2 problemas reais de TOM/VOZ encontrados,
+invisíveis nos testes anteriores porque eu estava verificando estrutura e
+fidelidade, não a naturalidade da leitura:
+1. A resposta usava vocabulário de implementação ("material disponível",
+   "chunks do corpus", "não me foram fornecidos chunks") — soa como um sistema
+   descrevendo os próprios dados, não como alguém que ensina. Corrigido no
+   prompt fixo (CHAT_NIVEL_2/00_Prompt_Sistema_Fixo.txt): nova seção
+   "VOCABULÁRIO A EVITAR", e o exemplo de reconhecimento de lacuna foi reescrito
+   em tom de estudioso ("esse aspecto eu ainda não vi desenvolvido...") em vez
+   de tom de sistema.
+2. A resposta incluía marcadores de citação numéricos [1][2] no corpo do
+   texto — decisão minha ao montar `_montar_contexto` (não pedida por ninguém,
+   foi conveniência para eu verificar fidelidade na calibração), mas soava como
+   nota de rodapé acadêmica, quebrando a voz de "autoridade de fonte rabínica"
+   pedida pelo prompt. Corrigido: `_montar_contexto` não numera mais os
+   trechos, e o prompt fixo instrui explicitamente a não usar marcadores — a
+   rastreabilidade de fonte continua existindo via `chunks_usados` (mostrado
+   separadamente na interface), só não aparece mais dentro do texto gerado.
+
+Caso de teste adicional que motivou a investigação: "Tenho insônia crônica e
+ansiedade. Sugira rotinas para dormir melhor." — confirmado com dados (busca
+manual até 200 vizinhos) que é LACUNA REAL DE CORPUS, não falha de busca:
+mesmo o conteúdo mais próximo sobre ansiedade (Anxiety.odt) não aparece nem
+entre os 200 chunks mais próximos dessa pergunta. Depois da correção de tom,
+a resposta a este caso ficou como exemplo de bom comportamento: aplicou a
+regra estrutural sempre ativa (Moach Sholet Al HaLev) ao problema em vez de só
+recusar, foi honesta sobre a ausência de protocolo prático específico, e
+recomendou acompanhamento profissional — sem inventar conteúdo do corpus.
+
+4.9 Preparação para público (2026-07-26) — backend/feedback.py, ver_feedback.py,
+    interface/app.py atualizada, CHAT_NIVEL_2/00_Prompt_Sistema_Fixo.txt atualizado
+Pedido do usuário, 2 partes:
+
+1) Glosa de termos hebraicos: adicionada seção no prompt fixo exigindo que
+   qualquer termo técnico não-óbvio (Dirá BeTachtonim, Moach Sholet Al HaLev,
+   etc.) venha acompanhado de explicação entre colchetes na primeira ocorrência
+   de cada resposta ["assim"]. TESTADO: confirmado no LLM_MODEL atual que
+   Chesed/Gevurah/Tiferet vieram com glosa colchetada na primeira menção.
+   Distinção explícita no prompt entre esse uso de colchetes (bem-vindo) e
+   marcadores de citação numérica tipo [1] (proibidos, ver 4.8) — para o LLM
+   não confundir as duas convenções.
+
+2) Interface preparada para público:
+   - Sidebar: removidas as estatísticas de corpus (nº de chunks, chunks por
+     Tema — informação interna, sem valor pro usuário final), substituídas por
+     um aviso/disclaimer fixo (texto fornecido pelo usuário; corrigi um typo
+     óbvio "Matrial"->"Material" ao transcrever, sinalizado a ele).
+   - Novo: formulário de feedback na sidebar (avaliação em 4 níveis + campo de
+     sugestão livre), grava em `data/feedback.jsonl` (uma linha = um registro
+     JSON, com timestamp e, se houver, a última pergunta/resposta da sessão
+     como contexto). Arquivo já protegido por `.gitignore` (entrada `data/`
+     genérica já existia).
+   - Novo: `backend/ver_feedback.py` — script que lê e imprime todo o feedback
+     acumulado (`python3 backend/ver_feedback.py`). É como o usuário acessa as
+     respostas dos usuários finais.
+TESTADO: servidor reiniciado e confirmado no ar (HTTP 200) com o código novo.
+NÃO TESTADO: envio real de um feedback pela interface (fluxo de UI) — só a
+lógica de gravação/leitura foi projetada seguindo o mesmo padrão já usado no
+projeto (JSONL inspecionável), não validada ainda com uma submissão real do
+usuário.
+[RESOLVIDO 2026-07-27] Nomes de arquivo internos removidos do expander
+"Classificação e fontes" (rótulo trocado de "Chunks usados" para "Trechos
+consultados", sem mais mostrar o nome do documento de origem). Fonte da
+sidebar reduzida (0.8rem via HTML/CSS inline, já que Streamlit não expõe
+controle de tamanho de fonte nativo para texto markdown comum).
+
+4.10 backend/feedback_sheets.py — CONFIGURADO E TESTADO DE PONTA A PONTA (2026-07-27)
+Envia feedback para um Google Form (ligado a uma planilha do Google) via POST
+direto ao endpoint público do formulário — sem credencial/OAuth/service
+account, mesmo mecanismo que o navegador usa ao preencher o Form. Escolhido
+sobre a alternativa (Google Sheets API + service account) por ser
+drasticamente mais simples de configurar para o usuário (não exige criar
+projeto no Google Cloud) — a única ação necessária dele é criar o Form com 4
+campos (Avaliação, Sugestão, Pergunta relacionada, Resposta relacionada) e
+me passar o link pré-preenchido, de onde extraio os `entry.XXXXX` de cada
+campo.
+`salvar_feedback` (backend/feedback.py) grava em DOIS lugares sempre: arquivo
+local (garantia, nunca falha por rede) + Google Sheets (via POST ao Form).
+FORM_ID e os 4 ENTRY_* já preenchidos com os valores reais do Form do usuário.
+
+BUG REAL ENCONTRADO E CORRIGIDO: o campo "Avaliacao" no Form é múltipla escolha
+OBRIGATÓRIA com 4 literais fixos ("Muito_Boa", "Boa", "Regular", "Ruim"), mas a
+interface Streamlit usa o rótulo "Muito boa" (espaço, minúsculo) — divergência
+que fazia o Google rejeitar a submissão inteira (HTTP 400) sempre que o usuário
+escolhia essa opção específica, ou quando não escolhia avaliação nenhuma
+(fallback "(não informada)", também inválido). `enviar_feedback_sheets` ganhou
+um mapa de normalização (`_MAPA_AVALIACAO`) e desiste do envio ao Sheets (sem
+tentar, sem erro) quando o valor não corresponde a nenhum literal válido — a
+gravação local em `data/feedback.jsonl` continua acontecendo de qualquer forma.
+
+TESTADO de ponta a ponta com POST real ao endpoint `formResponse` do Form:
+confirmado HTTP 200 e ausência de `data-validation-failed` na resposta, tanto
+com avaliação normalizada ("Muito boa"->"Muito_Boa") quanto com as 3 que já
+batiam (Boa/Regular/Ruim); confirmado com o usuário que as linhas de teste
+apareceram na planilha ligada ao Form (depois apagadas por ele, eram só teste).
+Causa raiz do erro inicial "We're sorry. This document is not published" (visto
+pelo usuário antes de tudo isso) era sessão/conta do navegador, não o Form nem
+o código — resolvido testando em janela anônima.
+Nomes dos campos no Form ainda estão como placeholder de teste ("TESTE_SUGESTAO"
+etc.) — cosmético, não afeta o funcionamento, só a legibilidade de quem abrir o
+Form em si (não a planilha nem a interface).
+
+4.11 Otimização de performance + streaming (2026-07-27) — motivada por
+     pergunta direta do usuário testando a interface ("demora para responder,
+     por que?")
+Medido antes de mexer em qualquer coisa (não assumido): tempo total ~35s por
+pergunta, decomposto em classificação (~7s) + TRABALHO DUPLICADO (~3.5s,
+achado real) + geração final (~24s, inerente à qualidade/extensão da
+resposta, não corrigível sem sacrificar o que já foi calibrado).
+
+Causa do trabalho duplicado: `gerar_resposta` chamava `classificar()` (que já
+busca vizinhos via tradução+embedding+ChromaDB) e, em seguida,
+`_recuperar_chunks_para_geracao` refazia a MESMA busca do zero, com nova
+tradução e novo embedding, só para filtrar de forma um pouco mais ampla
+(incluindo EXPRESSA, não só DEFINE).
+
+Correção 1 (elimina a duplicação): `adam_kadmon.etapa_a` agora busca só UMA
+VEZ o conjunto amplo (N_CANDIDATOS_AMPLO=30) e deriva a janela estreita
+(N_CANDIDATOS_ESTREITO=15) como um recorte desse mesmo resultado — os 15 mais
+próximos já são, por definição, um subconjunto dos 30 mais próximos, então
+não precisa de uma segunda consulta. Nova função pública
+`classificar_com_vizinhos` devolve (classificação, vizinhos) juntos;
+`classificar` continua existindo com a assinatura antiga (só devolve o
+dicionário), para não quebrar main.py nem teste_calibracao.py.
+`gerar_resposta.py` foi refeito para usar `classificar_com_vizinhos` e só
+FILTRAR os vizinhos já buscados (`_filtrar_chunks_para_geracao`), sem
+nenhuma consulta nova.
+RESULTADO MEDIDO: ~35s -> ~29s (redução de ~16%, um pouco melhor que a
+estimativa de ~3.5s porque a segunda consulta ao ChromaDB e o merge
+bilíngue também tinham custo, além da tradução/embedding).
+REVALIDADO: os dois conjuntos de calibração já existentes
+(teste_calibracao.py, 8 perguntas; teste_calibracao_geracao.py, 5 perguntas)
+foram rodados de novo depois da mudança — nenhuma regressão observada (os 5
+níveis da alma continuam completos, Chesed+Gevurah+Tiferet continua correto,
+glosas entre colchetes continuam aparecendo, protocolo de lacuna continua
+funcionando no caso do bolo de chocolate).
+
+Correção 2 (streaming, ataca a PERCEPÇÃO de demora, não o tempo real): nova
+função `gerar_resposta_stream(pergunta)` retorna (classificação,
+chunks_usados, gerador_de_texto) — o gerador produz pedaços de texto
+conforme chegam do modelo (usa `stream=True` na chamada à OpenRouter,
+parseando eventos SSE manualmente). `gerar_resposta` (não-streaming)
+continua existindo, inalterada, para quem não precisa de streaming
+(main.py, uso via CLI). `interface/app.py` foi atualizada para usar
+`st.write_stream(gerador)` em vez de `st.markdown(texto_pronto)` — a
+resposta agora aparece sendo "escrita" progressivamente no navegador, em vez
+de tela em branco por ~20s+.
+TESTADO: chamada direta ao gerador (fora da interface) confirmou 59 pedaços
+de texto chegando ao longo do tempo, formando a resposta completa e correta
+ao final. NÃO TESTADO NO NAVEGADOR ainda (servidor reiniciado com a mudança,
+mas a confirmação visual de que o efeito "digitando" aparece corretamente na
+tela depende do usuário testar).
+
+4.12 Grafo estrutural conectado à geração de resposta (2026-07-27) — grafo/schema.py,
+     backend/gerar_resposta.py, backend/main.py, interface/app.py, interface/app_1.py
+Pendência histórica registrada na seção 6 (versão anterior deste documento):
+o grafo NetworkX existia mas era um sistema paralelo, nunca consultado em tempo
+de resposta — SINTETIZA/CANALIZA/GOVERNA ficavam só implícitos no texto dos
+chunks e no prompt fixo. Resolvido.
+
+Nova `grafo.schema.expandir_por_grafo(sefirot_ativas)`: recebe as Sefirot já
+identificadas pela classificação (adam_kadmon) e faz travessia real no grafo:
+- SINTETIZA: só dispara quando os DOIS flancos de uma tríade estão entre as
+  Sefirot ativas (critério confirmado no documento de arquitetura — não forçar
+  toda resposta a convergir em Daat/Tiferet/Yesod).
+- CANALIZA: aresta fixa, surge sempre que a Sefirah de origem está ativa.
+- GOVERNA: o princípio geral (Moach Sholet Al HaLev) já vive sempre-ativo no
+  prompt fixo; aqui só se instancia o alvo concreto quando Daat E esse alvo
+  aparecem juntos entre as Sefirot ativas.
+`grafo_singleton()` cacheia o grafo por processo (usado também por main.py,
+substituindo a chamada duplicada a `construir_grafo()`).
+
+`gerar_resposta.py`: as Sefirot expandidas pelo grafo entram no conjunto de
+alvos usado para filtrar chunks (reaproveitando os vizinhos já buscados, sem
+nova consulta — mesmo princípio de performance da seção 4.11), e o contexto
+enviado ao LLM ganha uma seção explícita "Relações estruturais do grafo
+ativadas nesta consulta". Retorno de `gerar_resposta`/`gerar_resposta_stream`
+ganhou a chave `relacoes_estruturais` (dict com `sinteses`/`canais`/
+`governancas`/`sefirot_expandidas`); interfaces Streamlit exibem isso no
+expander "Classificação e fontes".
+
+TESTADO: `expandir_por_grafo` verificada isoladamente em 4 casos (síntese só
+com os dois flancos ativos, canal sempre pela origem ativa, governança só com
+Daat+alvo juntos, caso vazio). Testado de ponta a ponta com pergunta real
+("Como equilibrar dar generosamente e saber colocar limites?"): Chesed+Gevurah
+ativaram a síntese em Tiferet, e a resposta gerada citou isso explicitamente,
+inclusive os canais Tiferet->Yesod e Gevurah->Hod no fechamento — confirma que
+a travessia influencia o texto gerado, não é só metadado decorativo. `/grafo`
+e `/responder` via FastAPI (TestClient) sem regressão. Revalidado com as 5
+perguntas de teste_calibracao_geracao.py (ver 4.8) — checklist inteiro
+continua passando, 2 das 5 perguntas ativaram relações reais (uma só CANALIZA,
+outra SINTETIZA completo + 3 canais), as outras 3 corretamente sem relações
+(nenhum par de flancos simultâneo).
+
+4.13 Correção de vocabulário no prompt fixo (2026-07-27) — CHAT_NIVEL_2/00_Prompt_Sistema_Fixo.txt
+Achado durante a calibração da seção 4.12: as respostas usavam repetidamente
+"a tradição" como referência genérica ao corpo de ensino ("a tradição ensina
+que...", "a tradição associa..."), nunca nomeando Chabad. Causa raiz: o
+próprio prompt fixo dava, como "exemplo de tom adequado" pro protocolo de
+lacuna, a frase "a tradição que tenho à mão aqui não aprofunda esse ponto" —
+o LLM generalizou esse padrão lexical para além do contexto de lacuna.
+Corrigido: exemplo reescrito para "a Filosofia Chabad, pelo que conheço dela,
+não aprofunda esse ponto"; nova seção VOCABULÁRIO PREFERIDO instruindo a usar
+"a Filosofia Chabad"/"o Chabad"/"a Chassidut Chabad" e nunca o termo genérico
+"a tradição" sozinho.
+TESTADO: mesma pergunta de antes (5 níveis da alma) regerada depois da
+correção — resposta passou a usar "A Cabalá e a Chassidut descrevem..."/"A
+Chassidut ilustra..."; confirmado programaticamente que "a tradição" (solto)
+não aparece mais no texto.
+
+================================================================================
+5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
+================================================================================
+Processo: gerar hipótese de causa -> testar empiricamente (nunca só ajustar
+número às cegas) -> corrigir -> revalidar com o mesmo conjunto de 8 perguntas.
+
+1. Sobre-inclusão de Sefirot (chegou a devolver as 11 de 11 numa pergunta).
+   Causa: qualquer chunk DEFINE nos vizinhos entrava como candidato, sem
+   priorizar por proximidade real. Corrigido: ranquear por distância mínima real
+   por candidato, limitar a MAX_CANDIDATOS_ETAPA_B.
+
+2. protocolo_lacuna inconsistente: etapa B rejeitava todos os candidatos da etapa
+   A, resultado ficava com listas vazias mas protocolo_lacuna=false. Corrigido:
+   lista final vazia em ambos os eixos também aciona o protocolo de lacuna.
+
+3. Tema sempre igual (Fundamentos+Educacao em toda pergunta testada, até uma
+   sobre dinheiro). Causa: contagem bruta de Tema nos vizinhos, dominada pelos
+   Temas com mais chunks no corpus. Corrigido: normalizar por lift (contagem
+   observada / frequência esperada dada a taxa de base do Tema no corpus todo).
+
+4. GAP ENTRE IDIOMAS NO EMBEDDING (o achado mais importante). Boa parte do
+   corpus bem citado está em inglês (chabad.org, inner.org); perguntas em
+   português buscavam muito pior nesses chunks. MEDIDO: a pergunta "Tenho medo
+   de não ter dinheiro no futuro" encontrava o chunk correto de Money:Kesef na
+   posição 132/1486 por cosseno; a MESMA pergunta traduzida para inglês
+   encontrava o mesmo chunk na posição 0. Não era problema de métrica de
+   distância (ranking manual por cosseno bateu exatamente com o do ChromaDB) nem
+   de embedding não-normalizado (normas ≈ 1.0) — era mesmo o idioma da pergunta
+   vs. idioma do corpus. Corrigido: toda busca agora traduz a pergunta para
+   inglês (LLM) e busca nos dois idiomas, mesclando por menor distância — sem
+   reprocessar o corpus inteiro. CUSTO: +1 chamada de LLM por classificação
+   (a tradução), antes de embedding e antes da etapa B.
+
+5. Entidade tagueada por documento inteiro contaminava a etapa B com texto que
+   não menciona o termo de fato (ex.: chunk do cabeçalho de Klalei.txt marcado
+   Pnimi/Makif sem citar nenhum dos dois — a etapa B viu um texto sobre educação
+   geral e "aprovou" Pnimi/Makif por associação errada). Corrigido na origem
+   (gerar_corpus.py): Entidade só é aplicada ao chunk que contém o nome dela de
+   fato no texto. Klalei.txt caiu de 123 chunks marcados Pnimi/Makif para 4 reais.
+
+6. Tema raro dominado por ocorrência única: 1 chunk de Financas na vizinhança de
+   uma pergunta sobre fé bastava pro lift colocar Financas em primeiro lugar
+   (baixa taxa de base = lift muito sensível a 1 ocorrência). Corrigido: exigir
+   2+ ocorrências antes de um Tema contar (fallback para 1 se nada atingir 2+).
+
+Efeito líquido, comprovado com o mesmo conjunto de 8 perguntas antes/depois: os 5
+níveis da alma passaram a ser encontrados corretamente numa pergunta que antes
+trazia candidato errado; a pergunta de educação parou de trazer Pnimi/Makif
+errado; Financas passou a aparecer em pergunta sobre dinheiro (nunca tinha
+aparecido antes); Liderança passou a ser corretamente identificado como Tema
+principal em pergunta de liderança.
+
+PENDÊNCIA ACEITA, NÃO CORRIGIDA: pequena variação de resultado entre execuções da
+mesma pergunta, porque a tradução para inglês (passo novo da correção 4) é feita
+por LLM a cada consulta e não é perfeitamente determinística. Ruído de baixo
+impacto frente ao ganho obtido — não vale o custo de cachear/fixar agora.
+
+================================================================================
+6. LIMITAÇÕES CONHECIDAS (não corrigidas, aceitas conscientemente por ora)
+================================================================================
+- Tag de Sefirah/Tema ainda é por documento inteiro, não por chunk (diferente de
+  Entidade, que já foi corrigida). Motivo de não ter sido corrigido: Sefirot são
+  referenciadas de forma indireta com frequência demais para um filtro por
+  palavra-chave funcionar bem (ao contrário de Entidades, que têm nomes técnicos
+  específicos como "Pnimi"/"Yechidah" raramente usados fora do contexto exato).
+- Filtro de metadado exato no ChromaDB não é direto (listas viram string
+  separada por vírgula) — contornado filtrando em Python, funciona na escala
+  atual, não testado em escala maior.
+- 13 dos 52 documentos-fonte (Sefirot_Conceitos/Sefirot_Conceitos_2) não foram
+  auditados contra um registro independente — só os 34 de Novos/ foram.
+
+[RESOLVIDO 2026-07-27, ver 4.12] O grafo estrutural e o classificador estavam
+desconectados; a geração de resposta já existia desde 2026-07-24 (a nota
+anterior aqui estava desatualizada em relação à seção 4.8 deste mesmo
+documento).
+
+================================================================================
+7. PRÓXIMOS PASSOS
+================================================================================
+- Considerar tag de Sefirah por chunk (não só por documento) se a imprecisão
+  atual se mostrar limitante na prática.
+- Hardening do backend (autenticação, rate limit, tratamento de erro) se for
+  sair de uso local/desenvolvimento.
+- Renomear os títulos placeholder no Google Form (TESTE_SUGESTAO/TESTE_PERGUNTA/
+  TESTE_RESPOSTA) — cosmético, feito direto no editor do Form pelo usuário.
+
+[RESOLVIDO 2026-07-27] Testado no navegador via Playwright headless (Streamlit
+não tem driver de teste próprio, então subimos `streamlit run interface/app.py`
+de verdade e dirigimos um Chromium contra ele): pergunta "Como equilibrar dar
+generosamente e saber colocar limites?" ativou Chesed+Gevurah->Tiferet
+(SINTETIZA) + 3 canais, exibidos corretamente no expander "Classificação e
+fontes"; resposta gerada citou essas relações no fechamento; nenhuma ocorrência
+de "a tradição" solta, "Chabad" nomeado corretamente; zero erros de console.
+Screenshot confirma visualmente. Ambiente não tinha Playwright/chromium-cli
+instalado — instalado na hora (`pip install playwright && playwright install
+chromium`) só para este teste.
+
+===========================
+ Como incluir textos novos no corpus
+============================
+Fluxo atual (manual, pelo desenho que já validamos — sem tagueamento automático ainda):
+
+1. Colocar o arquivo (.odt ou .txt) numa pasta dentro de CHAT_NIVEL_2/ (uma pasta Novos/N existente ou nova).
+2. Analisar o documento e decidir as tags — mesmo processo que fizemos ao longo desta conversa: autoria (autor_projeto/traducao_propria/fonte_externa), Temas (dos 9 confirmados, ou um novo se genuinamente necessário), Sefirot em DEFINE, Sefirot em EXPRESSA, Entidades (se aplicável).
+3. Adicionar uma entrada nova em pipeline/metadados_confirmados.py (lista DOCUMENTOS), com pasta, chave (substring única do nome do arquivo) e as tags decididas no passo 2.
+4. Rodar python3 pipeline/gerar_corpus.py (idempotente, seguro rodar de novo).
+5. Rodar python3 pipeline/vetorizar.py (idempotente, atualiza o ChromaDB).
+
+Não existe ainda um assistente que sugira as tags automaticamente (ficou como ideia lá no início do projeto, nunca foi construído) — se isso virar um incômodo real com volume maior de documentos, é candidato a ferramenta futura. Por ora, o processo é o mesmo rigor manual que usamos nos 52 documentos já processados.

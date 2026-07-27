@@ -1,0 +1,79 @@
+"""Gera embeddings (OpenRouter) para os chunks de corpus_confirmado.json e
+grava no ChromaDB local (fase 1 — ver seção 11.2 do documento de arquitetura).
+
+Campos de metadado que são listas (temas, sefirot_define, sefirot_expressa,
+entidades) são gravados como string separada por vírgula — o ChromaDB só
+aceita valores escalares em metadado. Refinar para filtro por tag exata é
+melhoria futura, não bloqueia o uso inicial.
+"""
+
+import json
+import sys
+import time
+from pathlib import Path
+
+import chromadb
+import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from config import CHROMA_DIR, EMBEDDING_MODEL, OPENROUTER_BASE_URL, get_openrouter_key
+
+CORPUS_JSON = Path(__file__).resolve().parent / "corpus_confirmado.json"
+NOME_COLECAO = "mashpia_chunks"
+TAMANHO_LOTE = 50
+
+
+def embed_lote(textos: list[str]) -> list[list[float]]:
+    resp = requests.post(
+        f"{OPENROUTER_BASE_URL}/embeddings",
+        headers={"Authorization": f"Bearer {get_openrouter_key()}"},
+        json={"model": EMBEDDING_MODEL, "input": textos},
+        timeout=60,
+    )
+    resp.raise_for_status()
+    dados = resp.json()["data"]
+    return [item["embedding"] for item in dados]
+
+
+def _lista_para_str(valor) -> str:
+    return ",".join(valor) if valor else ""
+
+
+def popular_chromadb():
+    corpus = json.loads(CORPUS_JSON.read_text(encoding="utf-8"))
+    chunks = corpus["chunks"]
+
+    CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+    cliente = chromadb.PersistentClient(path=str(CHROMA_DIR))
+    colecao = cliente.get_or_create_collection(NOME_COLECAO)
+
+    total = len(chunks)
+    for inicio in range(0, total, TAMANHO_LOTE):
+        lote = chunks[inicio:inicio + TAMANHO_LOTE]
+        textos = [c["texto"] for c in lote]
+
+        embeddings = embed_lote(textos)
+
+        colecao.upsert(
+            ids=[c["id"] for c in lote],
+            embeddings=embeddings,
+            documents=textos,
+            metadatas=[{
+                "documento": c["documento"],
+                "pasta": c["pasta"],
+                "autoria": c["autoria"] or "",
+                "temas": _lista_para_str(c["temas"]),
+                "sefirot_define": _lista_para_str(c["sefirot_define"]),
+                "sefirot_expressa": _lista_para_str(c["sefirot_expressa"]),
+                "entidades": _lista_para_str(c["entidades"]),
+                "posicao": c["posicao"],
+            } for c in lote],
+        )
+        print(f"  {min(inicio + TAMANHO_LOTE, total)}/{total} chunks vetorizados")
+        time.sleep(0.2)
+
+    print(f"Concluído: {colecao.count()} chunks na coleção '{NOME_COLECAO}' em {CHROMA_DIR}")
+
+
+if __name__ == "__main__":
+    popular_chromadb()

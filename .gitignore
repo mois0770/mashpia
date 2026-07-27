@@ -1,0 +1,10 @@
+Openrouter_Ket.txt
+*.key
+.env
+.streamlit/secrets.toml
+data/
+__pycache__/
+*.pyc
+.claude/skills/run-mashpia/screenshots/
+.~lock.*#
+Comentario_PYs.odt
