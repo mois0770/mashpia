@@ -36,10 +36,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import LLM_MODEL
 from backend.adam_kadmon import _dividir, classificar_com_vizinhos
 from backend.openrouter_client import ErroOpenRouter, post_com_retry
-from grafo.schema import expandir_por_grafo
+from grafo.schema import CONCEITOS_ESTRUTURAIS, expandir_por_grafo
 
 PROMPT_FIXO_PATH = Path(__file__).resolve().parent.parent / "00_Prompt_Sistema_Fixo.txt"
 N_CHUNKS_CONTEXTO = 8
+
+# A partir deste peso (escala 0-5, ver grafo.schema.CONCEITOS_ESTRUTURAIS) um
+# chunk é considerado central o suficiente pra sinalizar explicitamente ao
+# LLM — mesmo motivo das relações do grafo: não depender de síntese implícita
+# do modelo pra reconhecer um conceito que o corpus expressa sem nomear
+# (achado "Dirá BeTachtonim": 0 ocorrências literais, 25 chunks do conceito).
+PESO_MINIMO_DESTAQUE = 4
 
 NIVEL_PADRAO = 1
 
@@ -131,6 +138,19 @@ def _formatar_relacoes(relacoes: dict) -> str | None:
     return "Relações estruturais do grafo ativadas nesta consulta:\n" + "\n".join(linhas)
 
 
+def _conceitos_centrais_chunk(meta: dict) -> list[str]:
+    """Lê os campos peso_<id> gravados por vetorizar.py e devolve uma nota
+    por conceito estrutural com peso >= PESO_MINIMO_DESTAQUE — só para
+    documentos já passados por sugerir_tags.py (os demais têm peso 0 em
+    tudo, não geram nota nenhuma)."""
+    notas = []
+    for c in CONCEITOS_ESTRUTURAIS:
+        peso = meta.get(f"peso_{c['id']}", 0)
+        if peso >= PESO_MINIMO_DESTAQUE:
+            notas.append(f"{c['nome']} (peso {peso}/5)")
+    return notas
+
+
 def _montar_contexto(classificacao: dict, chunks: list[dict], relacoes: dict) -> str:
     # Formatação deliberadamente SEM marcadores tipo "[1]" — isso induzia o
     # LLM a citar com colchetes numéricos no texto final, o que soava como
@@ -151,7 +171,9 @@ def _montar_contexto(classificacao: dict, chunks: list[dict], relacoes: dict) ->
         "no texto — apenas use o conteúdo deles com naturalidade):",
     ]
     for c in chunks:
-        partes.append(f"\n— De \"{c['meta']['documento']}\":\n{c['texto']}")
+        conceitos = _conceitos_centrais_chunk(c["meta"])
+        nota_conceitos = f" [expressa centralmente: {', '.join(conceitos)}]" if conceitos else ""
+        partes.append(f"\n— De \"{c['meta']['documento']}\"{nota_conceitos}:\n{c['texto']}")
     return "\n".join(partes)
 
 

@@ -708,14 +708,52 @@ chunks com `pasta` contendo "Divididos", 125 documentos distintos);
 `teste_calibracao.py` (8 perguntas) revalidado — todas passaram sem erro,
 protocolo de lacuna correto em todas, Sefirot/Temas/Entidades plausíveis.
 
-PENDENTE (real, não feito): eixo `conceitos_estruturais` (peso 0-5 por
-chunk) foi gerado e revisado no relatório, mas ainda NÃO está conectado a
-nada — não está em `corpus_confirmado.json`, não chega em
-`gerar_resposta.py`. Diferente das outras tags (Sefirah/Tema/Entidade, que
-já alimentam o classificador de verdade), o peso de conceitos estruturais
-hoje só existe no relatório de curadoria (`sugestao_tags.json`) — conectar
-isso à geração (equivalente ao que já foi feito para as relações do grafo
-estrutural, seção 4.12) é trabalho futuro, ainda não solicitado.
+4.17 Conceitos estruturais conectados à geração (2026-07-28) — pipeline/gerar_corpus.py,
+     pipeline/vetorizar.py, backend/gerar_resposta.py, pipeline/metadados_confirmados.py
+Completa o que ficou pendente na seção 4.16: o peso de conceitos estruturais
+(0-5 por documento dividido, já revisado no relatório) agora percorre todo o
+caminho até o LLM, no mesmo espírito das relações do grafo estrutural
+(seção 4.12) — sinalizado explicitamente, não deixado para síntese implícita
+do modelo.
+- `metadados_confirmados.py`: as 125 entradas de `Divididos/` ganharam o
+  campo `conceitos_estruturais` (lista de {conceito, peso, justificativa}),
+  vindo direto do relatório já revisado pelo usuário.
+- `gerar_corpus.py`: propaga `conceitos_estruturais` (via `doc.get(...,
+  [])`, default vazio para os 39 documentos que não passaram por essa
+  curadoria) para cada chunk.
+- `vetorizar.py`: nova `_pesos_conceitos()` achata a lista em campos
+  escalares `peso_<id>` (ChromaDB só aceita escalar em metadado) — um campo
+  inteiro por conceito de `CONCEITOS_ESTRUTURAIS`, 0 quando o chunk não tem
+  pontuação.
+- `gerar_resposta.py`: nova `_conceitos_centrais_chunk()` lê os campos
+  `peso_<id>` de cada chunk usado no contexto; a partir de
+  `PESO_MINIMO_DESTAQUE=4`, o chunk ganha uma nota inline no contexto do LLM
+  ("De '<documento>' [expressa centralmente: Dirá BeTachtonim (peso 5/5)]").
+TESTADO: confirmado no ChromaDB que os campos `peso_*` existem e são
+consultáveis (248 chunks com `peso_DiraBeTachtonim>=4`). Pergunta genérica
+("Por que Deus quis criar o mundo material?") não ativou nenhuma nota — os
+chunks recuperados vieram todos de documentos que NÃO passaram pela
+curadoria de peso (ver limitação abaixo), confirmando que o mecanismo é
+condicional à cobertura, não quebrado. Pergunta direcionada a um documento
+já dividido ("Qual o sentido de este mundo ser uma morada para D-us?")
+ativou a nota corretamente ("Dirá BeTachtonim (peso 5/5), Adon Olam (peso
+4/5)"), e a resposta gerada nomeou Dirá BeTachtonim explicitamente no
+fechamento. Revalidado com `teste_calibracao.py` (8 perguntas), sem
+regressão.
+
+LIMITAÇÃO CONHECIDA (real, não resolvida): só os 125 arquivos de
+`Divididos/` (13 documentos originais) têm pontuação de conceitos
+estruturais — os outros 39 documentos originais nunca passaram por
+`sugerir_tags.py`, então têm peso 0 em tudo, mesmo quando o conteúdo é
+genuinamente relevante. Achado concreto: "What Is the Purpose of this
+World?.odt" e "Partzuf: The Four Reasons for Creating the World.odt" — dois
+dos quatro documentos que, na investigação original de Dirá BeTachtonim,
+mostraram discutir "dwelling in the lower realms" extensivamente — nunca
+foram sinalizados "alta" dispersão (então nunca divididos nem pontuados) e
+hoje não geram nenhuma nota de conceito estrutural, mesmo quando
+recuperados para uma pergunta claramente relacionada. Estender
+`sugerir_tags.py` (ou só a parte de peso) aos 39 documentos restantes
+resolveria isso — não feito ainda, não solicitado nesta sessão.
 
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada

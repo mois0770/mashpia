@@ -74,6 +74,7 @@ def gerar() -> dict:
                 "sefirot_define": doc["sefirot_define"],
                 "sefirot_expressa": doc["sefirot_expressa"],
                 "entidades": entidades_chunk,
+                "conceitos_estruturais": doc.get("conceitos_estruturais", []),
                 "observacoes_documento": doc["observacoes"],
             })
 

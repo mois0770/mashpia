@@ -17,6 +17,7 @@ import chromadb
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import CHROMA_DIR, EMBEDDING_MODEL
 from backend.openrouter_client import post_com_retry
+from grafo.schema import CONCEITOS_ESTRUTURAIS
 
 CORPUS_JSON = Path(__file__).resolve().parent / "corpus_confirmado.json"
 NOME_COLECAO = "mashpia_chunks"
@@ -35,6 +36,18 @@ def embed_lote(textos: list[str]) -> list[list[float]]:
 
 def _lista_para_str(valor) -> str:
     return ",".join(valor) if valor else ""
+
+
+def _pesos_conceitos(conceitos_estruturais) -> dict[str, int]:
+    """Achata a lista [{conceito, peso, justificativa}, ...] em campos
+    escalares "peso_<id>" (ChromaDB só aceita escalar em metadado) — um
+    campo por conceito conhecido em CONCEITOS_ESTRUTURAIS, 0 se o chunk não
+    tem pontuação para ele (documento ainda não passou por sugerir_tags.py)."""
+    por_nome = {c["conceito"]: c["peso"] for c in (conceitos_estruturais or [])}
+    return {
+        f"peso_{c['id']}": por_nome.get(c["nome"], 0)
+        for c in CONCEITOS_ESTRUTURAIS
+    }
 
 
 def popular_chromadb():
@@ -65,6 +78,7 @@ def popular_chromadb():
                 "sefirot_expressa": _lista_para_str(c["sefirot_expressa"]),
                 "entidades": _lista_para_str(c["entidades"]),
                 "posicao": c["posicao"],
+                **_pesos_conceitos(c.get("conceitos_estruturais")),
             } for c in lote],
         )
         print(f"  {min(inicio + TAMANHO_LOTE, total)}/{total} chunks vetorizados")
