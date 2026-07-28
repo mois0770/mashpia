@@ -741,19 +741,32 @@ ativou a nota corretamente ("Dirá BeTachtonim (peso 5/5), Adon Olam (peso
 fechamento. Revalidado com `teste_calibracao.py` (8 perguntas), sem
 regressão.
 
-LIMITAÇÃO CONHECIDA (real, não resolvida): só os 125 arquivos de
-`Divididos/` (13 documentos originais) têm pontuação de conceitos
-estruturais — os outros 39 documentos originais nunca passaram por
-`sugerir_tags.py`, então têm peso 0 em tudo, mesmo quando o conteúdo é
-genuinamente relevante. Achado concreto: "What Is the Purpose of this
-World?.odt" e "Partzuf: The Four Reasons for Creating the World.odt" — dois
-dos quatro documentos que, na investigação original de Dirá BeTachtonim,
-mostraram discutir "dwelling in the lower realms" extensivamente — nunca
-foram sinalizados "alta" dispersão (então nunca divididos nem pontuados) e
-hoje não geram nenhuma nota de conceito estrutural, mesmo quando
-recuperados para uma pergunta claramente relacionada. Estender
-`sugerir_tags.py` (ou só a parte de peso) aos 39 documentos restantes
-resolveria isso — não feito ainda, não solicitado nesta sessão.
+4.18 Curadoria de peso estendida aos 39 documentos restantes (2026-07-28) —
+     pipeline/sugerir_pesos_restantes.py
+Fecha a limitação registrada acima. Novo script, irmão de sugerir_tags.py
+mas só para o eixo de peso (Sefirah/Tema/Entidade dos 39 já existiam e não
+eram o alvo). Granularidade por DOCUMENTO INTEIRO, não por chunk —
+diferente da decisão para os 13 divididos, mas consistente com como
+Sefirah/Tema/Entidade já funcionam para estes 39, e mais defensável aqui:
+são documentos de dispersão média/baixa, coesos o suficiente para uma única
+pontuação por documento fazer sentido.
+TESTADO: 39/39 processados sem erro. Achado que fecha exatamente a lacuna
+identificada: "What Is the Purpose of this World?.odt" e "Partzuf: The Four
+Reasons for Creating the World.odt" (os 2 documentos sinalizados como gap)
+receberam peso 5/5 em Dirá BeTachtonim, confirmando a suspeita.
+Gravado em metadados_confirmados.py (inserção cirúrgica via ast, mesmo
+método já usado antes — localiza a linha "observacoes" de cada dict e
+insere "conceitos_estruturais" logo antes, preservando todo o resto do
+arquivo). Todas as 164 entradas (125 + 39) agora têm o campo.
+`gerar_corpus.py` e `vetorizar.py` rodados de novo: 1486 chunks, sem
+órfãos (nada foi removido do corpus desta vez, só adicionado metadado).
+Cobertura de `peso_DiraBeTachtonim>=4` subiu de 248 para 408 chunks.
+CONFIRMADO: a mesma pergunta que antes ("Por que Deus quis criar o mundo
+material?") não ativava nenhuma nota agora ativa em TODOS os chunks
+recuperados, incluindo os dois documentos da lacuna original.
+Revalidado com teste_calibracao.py (8 perguntas), sem regressão.
+Estado final: `conceitos_estruturais` cobre 100% do corpus (164/164
+documentos), conectado de ponta a ponta até a geração de resposta.
 
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
