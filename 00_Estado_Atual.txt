@@ -41,9 +41,15 @@ seção 4.10. O grafo estrutural (grafo/schema.py) foi conectado de fato à gera
 de resposta (SINTETIZA/CANALIZA/GOVERNA viram travessia real no NetworkX, não só
 inferência do LLM) — ver seção 4.12. Vocabulário do prompt fixo corrigido para
 nomear "Filosofia Chabad"/"Chabad" em vez do termo genérico "a tradição" — ver
-seção 4.13.
-O que NÃO existe ainda: hardening de produção (autenticação, rate limit),
-hospedagem pública de fato — hoje roda só em localhost.
+seção 4.13. Também nesse dia: retry+tratamento de erro amigável nas chamadas à
+OpenRouter (backend/openrouter_client.py) e DEPLOY NO STREAMLIT COMMUNITY
+CLOUD concluído — app público em mashpia.streamlit.app, código em repositório
+GitHub privado (github.com/mois0770/mashpia), acesso ao app aberto a qualquer
+pessoa com o link (não exige login nem ser colaborador do repo) — ver seção
+4.14 pra detalhes do processo de deploy.
+O que NÃO existe ainda: autenticação de usuário e rate limit por usuário no
+app público — hoje qualquer pessoa com o link pode usar sem limite,
+consumindo a chave OpenRouter configurada nos Secrets do Streamlit Cloud.
 
 ================================================================================
 2. ESTRUTURA DE ARQUIVOS
@@ -475,6 +481,29 @@ NÃO TESTADO: interrupção real no meio de um streaming genuíno (o teste (2)
 cobre falha ANTES do streaming começar, não durante) — a lógica foi revisada
 por inspeção de código, mas não há evidência empírica desse caminho
 específico ainda.
+
+DEPLOY CONCLUÍDO E CONFIRMADO (2026-07-27): app no ar em
+mashpia.streamlit.app. Detalhes do processo, para referência:
+- Repositório `mashpia` no GitHub é PRIVADO. Isso exigiu autorizar o GitHub
+  App do Streamlit ("Connect here" em Settings -> Private access) a acessar
+  repositórios privados — sem isso o deploy não conseguia (re)clonar o
+  código. Escopo da autorização limitado a "Only select repositories" ->
+  `mashpia`, não à conta inteira.
+- Autenticação de push resolvida com chave SSH dedicada (`~/.ssh/id_ed25519`,
+  sem passphrase) — HTTPS com usuário/token não funcionava neste ambiente
+  (git não conseguia abrir prompt interativo mesmo via terminal do usuário).
+  Remote trocado de `https://github.com/...` para `git@github.com:...`.
+- CONFIRMADO: repositório privado não implica app restrito — o app publicado
+  é acessível a qualquer pessoa com o link, mesmo deslogada/anônima (testado
+  em janela anônima pelo usuário). Ou seja, testadores externos não
+  precisam de conta GitHub nem de serem adicionados como colaboradores do
+  repo — só precisam da URL. Isso resolve, sem exigir tornar o repo público,
+  a tensão entre "código/corpus privado" e "app aberto a testadores".
+- Nota lateral: um commit "Added Dev Container Folder" (`.devcontainer/
+  devcontainer.json`) apareceu sozinho no repositório remoto — causado pelo
+  próprio GitHub App do Streamlit, que tem permissão de escrita (write) no
+  código, não só leitura. Mesclado sem conflito (arquivo novo, sem
+  sobreposição com o projeto).
 
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
