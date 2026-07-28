@@ -650,10 +650,36 @@ caiu de 38 -> 2 arquivos; "Fundamentos" sozinho caiu de 66 -> 7 ocorrências.
 corrigido isoladamente e mesclado no relatório sem afetar os outros 105.
 Relatório final: 0 erros em 106 arquivos, publicado como Artifact.
 
+Klalei.txt como 13º candidato (2026-07-28) — usuário revisando o relatório
+de tags perguntou por que "Adam Kadmon" tinha peso mas não virou conceito
+estrutural igual Dirá BeTachtonim/Adon Olam. Investigação (não a pergunta em
+si) revelou algo mais importante: `AdamKadmon` em sefirot_define/expressa
+tem 188 chunks tageados no corpus inteiro, mas o termo literal "Adam Kadmon"
+só aparece em 11 chunks — checagem por documento mostrou Klalei.txt com 0%
+(nenhum dos 123 chunks cita o termo) apesar de carregar a tag inteira.
+Achado lateral: Klalei.txt tinha saído "alta" no teste-piloto isolado da
+Etapa 1, mas "media" no lote completo de 52 (mesma variação de execução do
+LLM já documentada alhures) — por pouco não entrou nos 12 originais.
+Tratado como 13º candidato por decisão do usuário (evidência manual prévia,
+17 seções distintas, já pesava mais que o veredito automático "media").
+Dividido em 19 arquivos (soma de palavras bate exatamente, 8592), tageado
+(sugerir_tags.py) — resultado limpo, maioria só "Educacao", `AdamKadmon`
+corretamente ausente em todos (confirma que a tag no documento original era
+mesmo infundada), Pnimi/Makif e Chochmah/Binah/Daat capturados corretamente
+no trecho que os discute. `autoria` herdada corretamente como
+"traducao_propria" (a mesma do Klalei.txt original).
+ERRO REAL COMETIDO E CORRIGIDO: rodar `sugerir_tags.py "klalei"` (escopado a
+1 pasta) sobrescreveu o relatório inteiro, apagando os 106 resultados já
+revisados — só não houve perda porque o commit anterior já tinha essa
+versão no git. `rodar()` corrigido para MESCLAR com o relatório existente
+em vez de sobrescrever quando `apenas_pastas` é passado. Relatório
+republicado com 125 arquivos (106 + 19 do Klalei).
+
 PENDENTE: revisão humana final do relatório de tags (o curador ainda não
 confirmou linha por linha) e gravação em metadados_confirmados.py + reentradas
 de DOCUMENTOS + gerar_corpus.py + vetorizar.py (passos 6-7 do fluxo) — nada
-disso foi feito ainda, é a próxima etapa depois da revisão.
+disso foi feito ainda, é a próxima etapa depois da revisão. Total agora: 13
+documentos originais -> 125 arquivos divididos.
 
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada

@@ -3422,5 +3422,623 @@
     "documento_original": "The Secret of Enclothement.odt",
     "autoria": "fonte_externa",
     "pasta_relativa": "Divididos/the_secret_of_enclothement"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "Não há menção ao propósito da Criação ou morada Divina; é um índice de princípios pedagógicos."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 1,
+        "justificativa": "O tema geral de educação e orientação toca tangencialmente na formação do caráter, mas o trecho é apenas um índice, sem desenvolver a relação mente-sentimento."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Nenhuma referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "Trecho introdutório e sumário de uma obra sobre princípios de Educação e Orientação chassídica, com nota de rodapé remetendo o acróstico Chochmah-Binah-Da'at ao capítulo sobre Sefirot.",
+    "arquivo": "klalei/01_introdução_e_índice_geral_da_obra.txt",
+    "titulo": "Introdução e Índice Geral da Obra",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [
+      "Nefesh_dimensao"
+    ],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 2,
+        "justificativa": "Menciona que toda ação provém do espiritual para o material e que os talentos, forças da alma, se investem no físico, ecoando a ideia de descida do espiritual ao material, mas sem tratar do propósito de morada divina em si."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 0,
+        "justificativa": "Não há qualquer discussão sobre primazia da mente/intelecto sobre sentimento ou impulso."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "O texto não aborda a atuação Divina atemporal antes/durante/depois da Criação."
+      }
+    ],
+    "observacoes": "O trecho apresenta a educação como ciência baseada em talentos dados por D-us, forças da alma que se investem e se dividem entre efeitos materiais e espirituais.",
+    "arquivo": "klalei/02_a_ciência_dos_talentos_aplicada_à_educação.txt",
+    "titulo": "A Ciência dos Talentos Aplicada à Educação",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O texto não trata do objetivo da Criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 2,
+        "justificativa": "Há menção à natureza animalesca e material da criança que precisa ser corrigida/refinada, tangencial à ideia de disciplina sobre o instinto, mas o foco é pedagógico, não sobre governo da mente sobre o sentimento em si."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho contrasta o trabalho intelectual do ensino com a tarefa mais ampla e arriscada de Educação e Orientação, que lida com a natureza bruta e material da pessoa desde a infância.",
+    "arquivo": "klalei/03_diferença_entre_ensino_e_educaçãoorientação.txt",
+    "titulo": "Diferença entre Ensino e Educação/Orientação",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Humildade",
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 2,
+        "justificativa": "Menciona o 'propósito Divino' de trazer a alma a este mundo para servir através de Torah e Mitzvot, mas apenas de forma lateral, não como foco central."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 5,
+        "justificativa": "O texto é centralmente sobre como o 'amor próprio' (emoção/instinto) cega o intelecto e o coração, exigindo autocrítica racional disciplinada para governar esse impulso."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho alerta que o 'amor próprio' selvagem é o maior inimigo da autocrítica moral, cegando o intelecto e distorcendo a autopercepção, e defende a necessidade de vigilância racional constante sobre esse instinto para cumprir o propósito espiritual da vida.",
+    "arquivo": "klalei/04_o_amor_próprio_como_inimigo_da_autocrítica.txt",
+    "titulo": "O 'Amor Próprio' como Inimigo da Autocrítica",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [
+      "Gevurah"
+    ],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 2,
+        "justificativa": "A imagem de 'transformar o escuro em luz e o amargo em doce' remete à ideia de elevação/transformação do material bruto, mas o foco do trecho é pessoal-pedagógico, não a morada Divina como objetivo cósmico."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 1,
+        "justificativa": "Há ênfase no esforço deliberado e trabalho consciente sobre a própria natureza (virtudes e defeitos), mas não se trata especificamente de mente governando sentimento."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho trata da autocrítica como primeira condição do educador, mostrando que cada pessoa possui virtudes e defeitos (de nascimento e de costume) que podem e devem ser trabalhados, sendo o esforço de transformar o defeito em virtude a fonte de maior satisfação e crescimento moral.",
+    "arquivo": "klalei/05_1_condição_autocrítica_do_educador_-_virtudes_e_defeitos.txt",
+    "titulo": "1ª Condição: Autocrítica do Educador - Virtudes e Defeitos",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho trata de pedagogia e conduta do educador, sem relação com o objetivo cósmico da Criação."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 4,
+        "justificativa": "O texto exige que o educador domine suas emoções (zanga, desprezo, agitação) através de autocrítica, deliberação e polidez, subordinando o impulso emocional ao controle racional no modo de ensinar."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho descreve a segunda condição do educador — autocrítica constante e cuidado com o tom, as palavras e a paciência ao corrigir e instruir, evitando desprezo ou agitação para não prejudicar o aluno.",
+    "arquivo": "klalei/06_2_condição_adequação_do_educador_-_modos_e_linguagem.txt",
+    "titulo": "2ª Condição: Adequação do Educador - Modos e Linguagem",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [
+      "Chochmah",
+      "Binah",
+      "Daat"
+    ],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [
+      "Nefesh_dimensao"
+    ],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho trata de pedagogia e avaliação do aluno, sem relação com o objetivo de a matéria se tornar morada divina."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 1,
+        "justificativa": "Há referência a capacidades intelectuais (cognição, explicação, reflexão) do aluno, mas não se trata do domínio da mente sobre o sentimento como tema central."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há discussão sobre a atuação Divina atemporal ou Ein Sof; o foco é inteiramente pedagógico."
+      }
+    ],
+    "observacoes": "O trecho detalha a terceira condição da educação chassídica: a necessidade de o Educador avaliar tanto a essência/caráter quanto a situação do aluno, distinguindo essa tarefa da do professor comum, e conclui que todas as almas são intrinsecamente iguais, diferindo apenas na revelação de seus potenciais.",
+    "arquivo": "klalei/07_3_condição_percepção_da_essência_e_situação_do_discípulo.txt",
+    "titulo": "3ª Condição: Percepção da Essência e Situação do Discípulo",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 1,
+        "justificativa": "Há menção indireta a controlar impulsos (vaidade, conversa fútil), mas o foco não é a mente governando o sentimento, e sim respeitar a essência natural de cada um."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao Ein Sof."
+      }
+    ],
+    "observacoes": "O trecho discute como o Educador deve avaliar e respeitar a essência individual e única de cada discípulo, com exemplos práticos de erros relativos ao caráter de cada pessoa e os limites de tentar elevar alguém acima de sua natureza.",
+    "arquivo": "klalei/08_a_essência_individual_do_discípulo_-_exemplos_e_limites.txt",
+    "titulo": "A Essência Individual do Discípulo - Exemplos e Limites",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "Não há menção ao propósito da Criação ou morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 0,
+        "justificativa": "O texto não trata da relação entre mente e sentimento/impulso, mas de tipologia social para fins educacionais."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho apresenta uma classificação prática das pessoas em quatro categorias (ocupação, situação financeira, costume, lugar) para orientar métodos de Educação e Orientação adequados a cada perfil.",
+    "arquivo": "klalei/09_classificação_das_pessoas_em_quatro_categorias.txt",
+    "titulo": "Classificação das Pessoas em Quatro Categorias",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho não trata do objetivo da Criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 2,
+        "justificativa": "Há menção a disciplinar impulsos infantis (gula, limpeza, modos) e progressão para autocontrole nas Mitzvot, mas o foco central é a adequação pedagógica, não a supremacia da mente sobre o sentimento em si."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há discussão da atuação Divina atemporal ou eterna; o texto é prático e pedagógico."
+      }
+    ],
+    "observacoes": "O trecho discute como a Educação e Orientação deve ser graduada conforme a idade e capacidade do aluno, usando analogias (crescimento humano, alimento físico, vestimenta) para ilustrar a necessidade de progressão adequada de ensinamentos morais e religiosos.",
+    "arquivo": "klalei/10_adequação_da_educação_à_idade.txt",
+    "titulo": "Adequação da Educação à Idade",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao",
+      "Financas"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho não trata do propósito da Criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 1,
+        "justificativa": "Há referência indireta a controle sobre o tempo e a conduta, mas não se discute a relação mente-sentimento propriamente."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há discussão da atuação Divina atemporal ou do molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho distingue as ocupações de 'dedicados ao estudo' e 'negociantes', mostrando que essa divisão não é anímica mas prática, e discute as diferentes exigências de educação, comportamento e permissividade moral entre esses dois grupos.",
+    "arquivo": "klalei/11_categoria_a_dedicados_ao_estudo_vs_negociantes.txt",
+    "titulo": "Categoria A: Dedicados ao Estudo vs. Negociantes",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Financas",
+      "Educacao",
+      "Autoestima",
+      "Humildade"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho não trata do objetivo da criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 1,
+        "justificativa": "Menciona 'intelecto e sentimento' e 'mente e coração' ao descrever os efeitos da pobreza, mas não desenvolve a hierarquia mente-sobre-coração como tema central."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho classifica as pessoas segundo riqueza ou pobreza, descrevendo as cinco naturezas de cada polo (autoconfiança/orgulho vs. humildade/abatimento) e defende que a Educação e Orientação deve ser adaptada a cada perfil, curando os excessos e fortalecendo as virtudes de cada natureza.",
+    "arquivo": "klalei/12_categoria_b_ricos_e_pobres_-_as_dez_naturezas.txt",
+    "titulo": "Categoria B: Ricos e Pobres - As Dez Naturezas",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho não trata do objetivo da Criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 3,
+        "justificativa": "O texto contrasta a atuação suave do intelecto (que esclarece e explica) com a atuação dominadora do hábito/vontade (por decreto), tema próximo à dinâmica mente-sentimento, embora aqui o hábito vença sobre o intelecto em força, não o inverso."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há discussão sobre a atuação Divina atemporal ou o molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho classifica os hábitos como uma força quase-natural que age por decreto e domínio sobre corpo e alma, e defende que a Educação deve fortalecer os bons hábitos e erradicar os maus, orientando o indivíduo aos caminhos da Torah.",
+    "arquivo": "klalei/13_categoria_c_os_hábitos.txt",
+    "titulo": "Categoria C: Os Hábitos",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 3,
+        "justificativa": "O homem é descrito como único ser composto de natureza superior (alma, como anjos/Sefirot) e inferior (corpo, como criaturas terrestres), agindo de forma dupla - essa dualidade é a base estrutural que permite ao homem servir de elo entre o espiritual e o material, embora o texto não mencione explicitamente o objetivo de tornar o mundo morada Divina."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 0,
+        "justificativa": "Não há discussão sobre a mente governando o sentimento ou disciplina intelectual sobre impulsos; o foco é a composição corpo-alma e o ambiente de moradia."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 1,
+        "justificativa": "Menciona D-us como criador que implantou as naturezas diferenciadas nas criaturas, mas não discute a atuação Divina atemporal antes/durante/depois da criação de forma central."
+      }
+    ],
+    "observacoes": "O trecho contrasta a natureza única do homem - composto de elementos superiores (como anjos/Sefirot) e inferiores (como criaturas terrestres), agindo tanto pelo corpo quanto pela alma - com a influência determinante do ambiente e local de moradia (cidade grande ou pequena) sobre todos os aspectos de sua vida.",
+    "arquivo": "klalei/14_categoria_d_local_de_moradia_e_a_natureza_dupla_do_homem.txt",
+    "titulo": "Categoria D: Local de Moradia e a Natureza Dupla do Homem",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho trata de pedagogia e relação educador-educando, sem relação com a morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 3,
+        "justificativa": "O Educador deve julgar com sabedoria e raciocínio ponderado, e não por impulso, antes de declarar algo agradável ou repugnante, refletindo a primazia da mente sobre a reação emocional imediata."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho detalha a quarta condição do Educador: discernir com sabedoria o que é agradável ou repugnante para cada educando, adequando seu julgamento e comunicação para fortalecer a confiança e a aceitação de seus ensinamentos.",
+    "arquivo": "klalei/15_4_condição_o_agradável_e_o_repugnante.txt",
+    "titulo": "4ª Condição: O Agradável e o Repugnante",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [
+      "Chesed",
+      "Gevurah"
+    ],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho não trata do propósito da Criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 3,
+        "justificativa": "O Educador deve ponderar racionalmente, observar e analisar com precisão antes de agir com firmeza ou amor, refletindo a mente governando a ação/sentimento, embora aplicado à pedagogia e não citado literalmente."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+      }
+    ],
+    "observacoes": "O trecho detalha a 5ª condição da Educação e Orientação: a necessidade de avaliação cuidadosa e ponderada do educando (analogia do artesão) e a combinação de firmeza inabalável com amor e bons modos para formar uma base educacional sólida e duradoura.",
+    "arquivo": "klalei/16_5_condição_reflexão_ponderada_e_firmeza_educativa.txt",
+    "titulo": "5ª Condição: Reflexão Ponderada e Firmeza Educativa",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [
+      "Chochmah",
+      "Binah",
+      "Daat"
+    ],
+    "temas": [
+      "Fundamentos"
+    ],
+    "entidades": [
+      "Nefesh_nivel",
+      "Pnimi",
+      "Makif"
+    ],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho não trata do propósito da criação ou da morada Divina no mundo material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 3,
+        "justificativa": "O texto discute a superioridade racional do homem, cujo cérebro dirige pensamentos, falas e ações, mas nota que a força da vontade (makif) é ainda mais forte que o intelecto, matizando a relação mente-sentimento/vontade."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao Ein Sof; o foco é estritamente psicológico/estrutural das forças da alma."
+      }
+    ],
+    "observacoes": "O trecho detalha a divisão das forças da alma humana em dois sistemas estruturais - Pnimiim (internas, específicas) e Makifim (circundantes, gerais) - destacando as particularidades do prazer e da vontade dentro do sistema makif.",
+    "arquivo": "klalei/17_6_condição_as_forças_da_alma_-_pnimiim_e_makifim.txt",
+    "titulo": "6ª Condição: As Forças da Alma - Pnimiim e Makifim",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [
+      "Keter"
+    ],
+    "sefirot_expressa": [],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "Não há menção ao objetivo da criação ou morada Divina no material."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 2,
+        "justificativa": "Menciona-se que o temperamento quente pode causar desequilíbrio mental, sugerindo tensão entre razão e impulso, mas o foco não é a disciplina intelectual sobre o sentimento em si."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho define a natureza intrínseca versus figurativa da vontade (e demais faculdades da alma) e aplica esse princípio pedagogicamente, orientando o Educador a corrigir com discernimento e ordem de prioridade as falhas mais prejudiciais do educando.",
+    "arquivo": "klalei/18_atributos_intrínsecos_e_figurativos_-_ordem_de_correção.txt",
+    "titulo": "Atributos Intrínsecos e Figurativos - Ordem de Correção",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
+  },
+  {
+    "sefirot_define": [],
+    "sefirot_expressa": [
+      "Chesed",
+      "Gevurah"
+    ],
+    "temas": [
+      "Educacao"
+    ],
+    "entidades": [],
+    "conceitos_estruturais": [
+      {
+        "conceito": "Dirá BeTachtonim",
+        "peso": 0,
+        "justificativa": "O trecho trata de metodologia educacional, sem relação com o propósito da Criação como morada Divina."
+      },
+      {
+        "conceito": "Moach Sholet Al HaLev",
+        "peso": 2,
+        "justificativa": "Há uma noção de refinamento e disciplina de qualidades (exaltar as boas, eliminar as ruins), lembrando a hierarquia intelecto-sentimento, mas aplicada à relação educador-educado, não ao autogoverno interno."
+      },
+      {
+        "conceito": "Adon Olam",
+        "peso": 0,
+        "justificativa": "Não há menção à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+      }
+    ],
+    "observacoes": "O trecho discute o papel do Educador/Orientador em dosar elogios, recompensas, críticas e punições como ferramentas para moldar o caráter do educado, evocando implicitamente a dinâmica de Chesed (recompensa) e Gevurah (punição).",
+    "arquivo": "klalei/19_7_condição_elogio_recompensa_e_punição.txt",
+    "titulo": "7ª Condição: Elogio, Recompensa e Punição",
+    "documento_original": "Klalei.txt",
+    "autoria": "traducao_propria",
+    "pasta_relativa": "Divididos/klalei"
   }
 ]

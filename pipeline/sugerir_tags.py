@@ -154,6 +154,17 @@ def rodar(apenas_pastas: list[str] | None = None) -> list[dict]:
         else:
             print(f"  -> temas={resultado['temas']}, sefirot_define={resultado['sefirot_define']}")
 
+    # Quando rodado só num subconjunto (apenas_pastas), MESCLA com o relatório
+    # já existente em vez de sobrescrever — rodar de novo uma pasta não pode
+    # apagar o resultado já revisado de todas as outras (erro real cometido
+    # nesta sessão: rodar só "klalei" sobrescreveu os 106 resultados
+    # anteriores, recuperados do git por sorte).
+    if apenas_pastas and RELATORIO_JSON.exists():
+        existentes = json.loads(RELATORIO_JSON.read_text(encoding="utf-8"))
+        arquivos_novos = {r["arquivo"] for r in resultados if "arquivo" in r}
+        existentes = [r for r in existentes if r.get("arquivo") not in arquivos_novos]
+        resultados = existentes + resultados
+
     RELATORIO_JSON.write_text(json.dumps(resultados, ensure_ascii=False, indent=2), encoding="utf-8")
     return resultados
 
