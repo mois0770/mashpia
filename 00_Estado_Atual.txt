@@ -681,6 +681,42 @@ de DOCUMENTOS + gerar_corpus.py + vetorizar.py (passos 6-7 do fluxo) — nada
 disso foi feito ainda, é a próxima etapa depois da revisão. Total agora: 13
 documentos originais -> 125 arquivos divididos.
 
+GRAVAÇÃO CONCLUÍDA (2026-07-28) — passos 6-7 do fluxo, depois da revisão do
+usuário aprovando o relatório de tags.
+`metadados_confirmados.py`: removidas as 13 entradas dos documentos
+originais (localizadas via `ast.parse`, span exato de linhas de cada dict —
+não por busca de texto ingênua, para não remover nada por engano) e
+adicionadas 125 novas entradas (uma por arquivo dividido, `pasta=
+"Divididos/<slug>"`, `autoria` herdada do original, tags do relatório já
+revisado). Total: 39 entradas antigas preservadas intocadas + 125 novas =
+164 documentos em DOCUMENTOS (era 52). TESTADO: todas as 164 resolvem sem
+erro via `resolver_arquivo` antes de rodar o pipeline de verdade.
+`gerar_corpus.py`: rodado com sucesso, 164/164 documentos processados, 1486
+chunks (mesmo total de antes — esperado, é o mesmo texto, só reparticionado
+em mais arquivos focados).
+`vetorizar.py`: BUG REAL ENCONTRADO E CORRIGIDO. `popular_chromadb` só fazia
+`upsert` (nunca remove) — depois de rodar, a coleção tinha 2312 chunks
+contra 1486 no corpus, porque os 826 chunks dos 13 documentos removidos
+ficaram órfãos na coleção (nunca mais apagados, já que `upsert` não sabe que
+um chunk saiu do corpus). Corrigido: `popular_chromadb` agora calcula
+`ids_na_colecao - ids_atuais` depois do upsert e chama `colecao.delete(...)`
+nos órfãos. Esse bug afeta qualquer remoção futura de documento do corpus,
+não só este caso — importante para quem mexer no pipeline depois.
+TESTADO: coleção reconciliada para 1486 (bate exato com o corpus);
+confirmado que os 826 chunks de `Divididos/` estão de fato indexados (826
+chunks com `pasta` contendo "Divididos", 125 documentos distintos);
+`teste_calibracao.py` (8 perguntas) revalidado — todas passaram sem erro,
+protocolo de lacuna correto em todas, Sefirot/Temas/Entidades plausíveis.
+
+PENDENTE (real, não feito): eixo `conceitos_estruturais` (peso 0-5 por
+chunk) foi gerado e revisado no relatório, mas ainda NÃO está conectado a
+nada — não está em `corpus_confirmado.json`, não chega em
+`gerar_resposta.py`. Diferente das outras tags (Sefirah/Tema/Entidade, que
+já alimentam o classificador de verdade), o peso de conceitos estruturais
+hoje só existe no relatório de curadoria (`sugestao_tags.json`) — conectar
+isso à geração (equivalente ao que já foi feito para as relações do grafo
+estrutural, seção 4.12) é trabalho futuro, ainda não solicitado.
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================

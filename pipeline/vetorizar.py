@@ -70,6 +70,18 @@ def popular_chromadb():
         print(f"  {min(inicio + TAMANHO_LOTE, total)}/{total} chunks vetorizados")
         time.sleep(0.2)
 
+    # upsert só adiciona/atualiza — nunca remove. Se um documento saiu do
+    # corpus (removido/dividido em metadados_confirmados.py), seus chunks
+    # antigos ficam órfãos na coleção para sempre sem isto (achado real:
+    # 826 chunks órfãos de 13 documentos divididos em 2026-07-28, coleção
+    # com 2312 quando o corpus tinha só 1486).
+    ids_atuais = {c["id"] for c in chunks}
+    ids_na_colecao = set(colecao.get(include=[])["ids"])
+    orfaos = list(ids_na_colecao - ids_atuais)
+    if orfaos:
+        colecao.delete(ids=orfaos)
+        print(f"Removidos {len(orfaos)} chunks órfãos (documentos que saíram do corpus).")
+
     print(f"Concluído: {colecao.count()} chunks na coleção '{NOME_COLECAO}' em {CHROMA_DIR}")
 
 
