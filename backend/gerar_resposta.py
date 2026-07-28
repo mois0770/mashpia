@@ -63,10 +63,13 @@ NIVEIS = {
             "conteúdo (fonte exclusiva nos trechos fornecidos, vocabulário, terminologia "
             "fixada, protocolo de lacuna) continuam valendo integralmente.\n"
             "Mantenha a travessia (abertura pela Fonte -> corpo pelas Sefirot ativadas, "
-            "seguindo Alma->Pensamento->Mente->Sentimento->Ação -> fechamento em Dirá "
-            "BeTachtonim), mas compacte cada etapa a 1-2 frases, não parágrafos longos. Sem "
-            "subtítulos. Alvo: um texto corrido, bem mais curto que o padrão, mas ainda "
-            "reconhecível como a mesma travessia estruturada."
+            "seguindo Alma->Pensamento->Mente->Sentimento->Ação -> fechamento NOMEANDO Dirá "
+            "BeTachtonim explicitamente), mas compacte cada etapa a 1-2 frases, não parágrafos "
+            "longos. Sem subtítulos. Ao comprimir, prefira manter frases-chave exatas do "
+            "corpus (citações diretas, nomes de conceitos) em vez de parafraseá-las totalmente "
+            "— a compressão deve cortar elaboração e exemplos, não a terminologia central. "
+            "Alvo: um texto corrido, bem mais curto que o padrão, mas ainda reconhecível como "
+            "a mesma travessia estruturada."
         ),
     },
     3: {
@@ -78,10 +81,13 @@ NIVEIS = {
             "conteúdo (fonte exclusiva nos trechos fornecidos, vocabulário, terminologia "
             "fixada, protocolo de lacuna) continuam valendo integralmente.\n"
             "Vá direto à resposta prática em 2-4 frases corridas: sem abrir necessariamente "
-            "pela Fonte, sem percorrer cada etapa da cadeia estrutural, sem subtítulos. Ainda "
-            "assim a resposta precisa refletir fielmente o que os trechos fornecidos ensinam "
-            "— comprimida ao essencial, nunca genérica ou vaga. Se a pergunta cair em "
-            "protocolo de lacuna, reconheça isso numa frase só."
+            "pela Fonte, sem percorrer cada etapa da cadeia estrutural, sem subtítulos — mas "
+            "SEMPRE nomeando Dirá BeTachtonim explicitamente ao final, mesmo comprimido (é o "
+            "fechamento-assinatura, não opcional em nenhum nível). Ainda assim a resposta "
+            "precisa refletir fielmente o que os trechos fornecidos ensinam — comprimida ao "
+            "essencial, nunca genérica ou vaga. Ao comprimir, prefira manter frases-chave "
+            "exatas do corpus (citações diretas, nomes de conceitos) em vez de parafraseá-las "
+            "totalmente. Se a pergunta cair em protocolo de lacuna, reconheça isso numa frase só."
         ),
     },
 }

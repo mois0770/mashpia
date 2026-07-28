@@ -547,6 +547,30 @@ run-mashpia (estendido para aceitar o nível como argumento) — seletor
 aparece corretamente, nível "Essência prática" selecionado e aplicado,
 classificação/relações estruturais/vocabulário continuam corretos.
 
+ACHADO DE CALIBRAÇÃO (2026-07-28): usuário testou "Qual objetivo do homem" em
+produção (Streamlit Cloud) e nenhum dos 3 níveis nomeou "Dirá BeTachtonim" no
+fechamento, e o nível 3 usou a ideia de "servir o Criador" sem citar a frase
+literal. Reproduzido aqui: a MESMA pergunta, rodada de novo, incluiu ambos
+corretamente nos 3 níveis — ou seja, não é bug determinístico do código, é
+variação normal entre execuções do LLM (temperature=0.4), a mesma classe de
+limitação já aceita em outro ponto do projeto (ver seção 5, item 4, sobre a
+tradução PT->EN). O fechamento em Dirá BeTachtonim é regra "sempre ativa"
+(item 3 do prompt fixo) desde antes dos 3 níveis existirem — o nível 1
+("Completo") também falhou nesse teste do usuário, confirmando que a causa é
+anterior à feature de níveis, não introduzida por ela.
+CORRIGIDO (reforço, não elimina variação, reduz a chance): item 3
+("Fechamento") do prompt fixo agora exige NOMEAR "Dirá BeTachtonim"
+explicitamente, não só aludir à ideia — e frisa que isso vale em qualquer
+nível, mesmo o mais comprimido. Instruções dos níveis 2 e 3 em
+`gerar_resposta.py` (NIVEIS) reforçadas no mesmo sentido, e ganharam uma
+regra adicional: ao comprimir, preferir manter frases-chave/citações exatas
+do corpus em vez de parafraseá-las totalmente. TESTADO: nível 3 (o mais
+arriscado, por ser o mais comprimido) rodado 2x depois do reforço com a
+mesma pergunta — nas duas vezes citou "servir ao meu Criador" (ou variação
+próxima) e nomeou Dirá BeTachtonim com glosa. Não é garantia de 100% (é
+reforço de probabilidade, não regra determinística de código), mas melhora
+a consistência observada.
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================
