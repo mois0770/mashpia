@@ -862,38 +862,6 @@
   },
   {
     "topicos": [
-      "Sofrimento de Job como via de acesso à revelação divina e autoconsciência",
-      "Correspondência entre os cinco interlocutores de Job e os cinco níveis da alma (Nefesh, Ruach, Neshamah, Chayah, Yechidah)",
-      "Diferença entre níveis da alma limitados pelo corpo e níveis mais livres dele",
-      "Paralelo entre processo terapêutico/diálogo com terapeuta e revelação progressiva dos níveis da alma",
-      "Ideia de 'falar consigo mesmo espelhado no outro' como mecanismo terapêutico",
-      "Teodiceia: impossibilidade humana de entender sofrimento dos justos e tranquilidade dos ímpios (citação talmúdica)",
-      "Papel do Mashiach como 'arch-psychologist' que revelará o bem oculto no mal aparente",
-      "Transformação escatológica: escuridão em luz, amargura em doçura",
-      "Citação de Eclesiastes sobre temor a D-us como essência do homem"
-    ],
-    "veredito": "media",
-    "justificativa": "As tags cobrem bem o núcleo central sobre os cinco níveis da alma e sua ligação com saúde mental/terapia, mas não capturam elementos importantes como teodiceia, o papel do Mashiach como redentor psicológico e as referências bíblicas (Job, Eclesiastes) que estruturam o argumento.",
-    "documento": "Anxiety.odt",
-    "n_chunks": 4,
-    "n_palavras": 483,
-    "tags_atuais": {
-      "temas": [
-        "Saude_Mental"
-      ],
-      "sefirot_define": [],
-      "sefirot_expressa": [],
-      "entidades": [
-        "Chayah_nivel",
-        "Nefesh_nivel",
-        "Neshamah_nivel",
-        "Ruach_nivel",
-        "Yechidah_nivel"
-      ]
-    }
-  },
-  {
-    "topicos": [
       "Baixa autoestima e insegurança social em pré-adolescente",
       "Ruminação/ansiedade sobre o que os outros pensam após interações sociais",
       "Impossibilidade de controlar o pensamento alheio e importância de confiar no próprio julgamento",
@@ -1585,6 +1553,40 @@
         "Malchut"
       ],
       "entidades": []
+    }
+  },
+  {
+    "topicos": [
+      "O sofrimento de Job como via para revelação das raízes da Torá",
+      "Paralelo entre o final de Job e Eclesiastes (temer a D-us como essência do homem)",
+      "Os cinco interlocutores de Job como correspondência aos cinco níveis da alma (Nefesh, Ruach, Neshamah, Chayah, Yechidah)",
+      "Nefesh, Ruach e Neshamah como níveis da alma limitados pelo corpo",
+      "Chayah como nível parcialmente livre das restrições corporais (representado por Elihu)",
+      "Yechidah como nível supremo, fonte divina da alma (revelação de D-us a Job)",
+      "Processo terapêutico como divestidura progressiva das camadas da alma através do diálogo",
+      "Analogia entre terapia psicológica e o diálogo com um terapeuta como espelho do self",
+      "Limites do entendimento humano sobre o sofrimento dos justos e a tranquilidade dos ímpios",
+      "O Mashiach como 'arch-psicólogo' que revelará o bem oculto dentro do mal aparente",
+      "Transformação futura da escuridão em luz e do amargor em doçura na era messiânica"
+    ],
+    "veredito": "media",
+    "justificativa": "As tags cobrem bem o eixo central (Saúde Mental e os cinco níveis da alma), mas não capturam elementos específicos como a analogia com Job/Eclesiastes, o papel do terapeuta, ou o tema messiânico, que são desenvolvimentos textuais distintos ainda que relacionados ao tema principal.",
+    "documento": "Anxiety.odt",
+    "n_chunks": 4,
+    "n_palavras": 483,
+    "tags_atuais": {
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [],
+      "entidades": [
+        "Chayah_nivel",
+        "Nefesh_nivel",
+        "Neshamah_nivel",
+        "Ruach_nivel",
+        "Yechidah_nivel"
+      ]
     }
   },
   {

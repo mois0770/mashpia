@@ -118,6 +118,15 @@ def rodar(apenas_documentos: list[str] | None = None) -> list[dict]:
             pesos = {c["conceito"]: c["peso"] for c in resultado["conceitos_estruturais"]}
             print(f"  -> {pesos}")
 
+    # Mescla com o relatório existente quando escopado a um subconjunto —
+    # mesmo bug real já cometido e corrigido em sugerir_tags.py e
+    # diagnostico_dispersao.py.
+    if apenas_documentos and RELATORIO_JSON.exists():
+        existentes = json.loads(RELATORIO_JSON.read_text(encoding="utf-8"))
+        nomes_novos = {r["documento"] for r in resultados if "documento" in r}
+        existentes = [r for r in existentes if r.get("documento") not in nomes_novos]
+        resultados = existentes + resultados
+
     RELATORIO_JSON.write_text(json.dumps(resultados, ensure_ascii=False, indent=2), encoding="utf-8")
     return resultados
 

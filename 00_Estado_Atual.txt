@@ -873,64 +873,9 @@ chromium`) só para este teste.
 ===========================
  Como incluir textos novos no corpus
 ============================
-Fluxo ATUAL (manual, o que roda hoje, sem tagueamento automático ainda):
-
-1. Colocar o arquivo (.odt ou .txt) numa pasta dentro de CHAT_NIVEL_2/ (uma pasta Novos/N existente ou nova).
-2. Analisar o documento e decidir as tags — mesmo processo que fizemos ao longo desta conversa: autoria (autor_projeto/traducao_propria/fonte_externa), Temas (dos 9 confirmados, ou um novo se genuinamente necessário), Sefirot em DEFINE, Sefirot em EXPRESSA, Entidades (se aplicável).
-3. Adicionar uma entrada nova em pipeline/metadados_confirmados.py (lista DOCUMENTOS), com pasta, chave (substring única do nome do arquivo) e as tags decididas no passo 2.
-4. Rodar python3 pipeline/gerar_corpus.py (idempotente, seguro rodar de novo).
-5. Rodar python3 pipeline/vetorizar.py (idempotente, atualiza o ChromaDB).
-
-FLUXO PLANEJADO (2026-07-28, desenho fixado, AINDA NÃO CONSTRUÍDO): motivado
-por um achado real de calibração — a checagem de fidelidade da resposta
-sobre "objetivo do homem" revelou que "Dirá BeTachtonim" (nome dado pelo
-PROJETO a um conceito) tem 0 ocorrências literais no corpus, enquanto o
-conceito subjacente ("dwelling in the lower realms") aparece em 25 chunks —
-o LLM deu mais peso a uma frase citável pronta ("I was created to serve my
-Creator", 5 chunks) do que ao conceito mais central, porque um exige síntese
-implícita do modelo e o outro não. Causa raiz: assimetria na forma como os
-textos-fonte foram escritos/preparados, não viés arbitrário do LLM. Correção
-de arquitetura, não de prompt.
-
-O fluxo de 5 passos acima ganha 2 passos novos, ANTES da curadoria de tags
-(passo 2), e essa mesma curadoria ganha um sub-passo novo:
-
-1. Colocar o arquivo na pasta.
-2. NOVO — Diagnóstico de dispersão temática: script que avalia se o
-   documento cobre mais assuntos/conceitos do que tags no nível do documento
-   inteiro conseguem capturar (o caso Klalei.txt, que só não precisou disso
-   porque o próprio autor/tradutor já o estruturou em 17 seções numeradas,
-   cada uma com seu "Resumo:" — a exceção, não a regra).
-3. NOVO — Se sinalizado no diagnóstico: proposta de divisão (títulos
-   candidatos, pontos de corte, breve justificativa) — revisada e aprovada
-   pelo curador (usuário) antes do documento entrar no corpus como está, ou
-   já dividido em arquivos focados menores.
-4. Decidir tags (Sefirah/Tema/Entidade) — igual ao passo 2 do fluxo atual,
-   mas agora sobre arquivos já focados por tópico (mais precisos, porque a
-   granularidade do arquivo passa a bater com a granularidade do conteúdo).
-5. NOVO — Curadoria de peso de conceitos estruturais por chunk (novo eixo de
-   metadado, `conceitos_estruturais`: lista de {conceito, peso,
-   justificativa} — diferente de Sefirah/Tema/Entidade, que marcam "sobre o
-   que é o chunk"; este eixo marca QUÃO CENTRALMENTE o chunk expressa um
-   conceito estrutural do projeto, mesmo quando o termo do projeto não
-   aparece literalmente no texto-fonte). Mesmo padrão já usado no projeto
-   ("IA sugere, curador confirma").
-6. Rodar python3 pipeline/gerar_corpus.py.
-7. Rodar python3 pipeline/vetorizar.py.
-
-Dois artefatos ficam permanentes e extensíveis (não fixos, crescem conforme o
-projeto encontra novos casos):
-- Lista de "conceitos estruturais" a verificar — hoje: Dirá BeTachtonim,
-  Moach Sholet Al HaLev. Vira constante mantida (mesmo espírito de
-  SEFIROT/ENTIDADES/TEMAS em grafo/schema.py), estendida sempre que um novo
-  conceito central for identificado.
-- Os passos 2, 3 e 5 viram SCRIPTS PERMANENTES do pipeline (ao lado de
-  ingestao.py, gerar_corpus.py) — rodam em todo documento novo dali em
-  diante, não são ferramenta de uso único. Também serão rodados uma vez
-  contra os 52 documentos já existentes (limpeza do acervo atual), mas o
-  ganho principal é que o corpus não volta a acumular esse mesmo tipo de
-  desequilíbrio conforme cresce.
-
-PENDENTE DE CONSTRUÇÃO: nenhum dos 3 scripts novos (diagnóstico, proposta de
-divisão, curadoria de peso) existe ainda — este registro fixa o desenho
-acordado antes de começar a implementação.
+Guia detalhado, passo a passo, com os comandos reais: ver ARQUITETURA.md,
+seção "Como adicionar um documento novo". As ferramentas de curadoria
+(diagnóstico de dispersão, proposta de divisão, sugestão de tags/peso)
+descritas como "planejadas" nas notas de calibração acima (seção 4.16-4.18)
+foram construídas e já rodaram contra os 52 documentos originais — não são
+mais desenho pendente, são o fluxo real.

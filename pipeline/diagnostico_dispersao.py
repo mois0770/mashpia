@@ -142,6 +142,18 @@ def rodar_diagnostico(apenas_documentos: list[str] | None = None) -> list[dict]:
         resultado = diagnosticar_documento(nome, dados)
         resultados.append(resultado)
         print(f"  -> veredito: {resultado['veredito']}")
+
+    # Quando rodado só num subconjunto (apenas_documentos), MESCLA com o
+    # relatório já existente em vez de sobrescrever — mesmo bug real já
+    # cometido e corrigido em sugerir_tags.py (rodar escopado a 1 pasta
+    # apagou os 106 resultados anteriores, só não houve perda porque o
+    # commit anterior já tinha essa versão no git).
+    if apenas_documentos and RELATORIO_JSON.exists():
+        existentes = json.loads(RELATORIO_JSON.read_text(encoding="utf-8"))
+        nomes_novos = {r["documento"] for r in resultados if "documento" in r}
+        existentes = [r for r in existentes if r.get("documento") not in nomes_novos]
+        resultados = existentes + resultados
+
     resultados.sort(key=lambda r: ORDEM_VEREDITO.get(r["veredito"], 4))
     RELATORIO_JSON.write_text(json.dumps(resultados, ensure_ascii=False, indent=2), encoding="utf-8")
     return resultados
