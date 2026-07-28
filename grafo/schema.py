@@ -47,6 +47,36 @@ TEMAS = [
     "Autoestima", "Humildade", "Fundamentos", "Proposito",
 ]
 
+# Conceitos centrais e sempre-ativos do projeto que frequentemente aparecem no
+# corpus SEM usar o termo literal do projeto (achado de calibração 2026-07-28:
+# "Dirá BeTachtonim" tem 0 ocorrências literais no corpus, mas o conceito
+# subjacente aparece em 25 chunks em inglês, "dwelling in the lower realms").
+# Lista extensível — adicionar aqui sempre que um novo conceito central for
+# identificado como sofrendo o mesmo gap. Usada pela curadoria de peso
+# (pipeline/sugerir_tags.py, passo 5 do fluxo em 00_Estado_Atual.txt).
+CONCEITOS_ESTRUTURAIS = [
+    {"id": "DiraBeTachtonim", "nome": "Dirá BeTachtonim",
+     "definicao": "O Objetivo da Criação: que o mundo material se torne morada para a "
+                   "Presença Divina. No corpus em inglês costuma aparecer sem o termo "
+                   "literal, como \"a dwelling in the lower realms/worlds\", \"dwelling "
+                   "below\"."},
+    {"id": "MoachSholetAlHalev", "nome": "Moach Sholet Al HaLev",
+     "definicao": "A Mente sempre governa o Sentimento (o \"Lev\"), nunca o contrário. "
+                   "No corpus aparece como disciplina racional/intelectual sobre "
+                   "impulso, emoção ou instinto, mesmo sem citar o termo hebraico."},
+    {"id": "AdonOlam", "nome": "Adon Olam",
+     "definicao": "Hino que explica a atuação Divina antes-durante-depois da Criação — "
+                   "forma velada de se referir a Ein Sof, e nome dado ao próprio molde "
+                   "retórico do projeto (abertura pela Fonte -> corpo -> fechamento na "
+                   "Fonte). No corpus pode aparecer como discussão da atuação Divina "
+                   "atemporal/eterna sem citar o hino pelo nome."},
+]
+
+# Nós do grafo usados como valor válido de sefirot_define/sefirot_expressa
+# além dos 11 Sefirot nucleares — convenção já em uso em
+# metadados_confirmados.py (ex.: "sefirot_define": ["EinSof", "AdamKadmon", "Keter"]).
+SEFIROT_E_NOS_PONTE = [s["id"] for s in SEFIROT] + ["EinSof", "AdamKadmon"]
+
 HISHTALSHELUT_ORDEM = [s["id"] for s in sorted(SEFIROT, key=lambda s: s["ordem"])]
 
 MESMA_COLUNA_GRUPOS = {

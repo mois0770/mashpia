@@ -9,3 +9,5 @@ __pycache__/
 .~lock.*#
 Comentario_PYs.odt
 Nova_Fase.txt
+Observacao_LLM.txt
+pipeline/propostas_divisao/

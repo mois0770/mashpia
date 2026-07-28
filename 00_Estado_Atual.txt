@@ -571,6 +571,90 @@ próxima) e nomeou Dirá BeTachtonim com glosa. Não é garantia de 100% (é
 reforço de probabilidade, não regra determinística de código), mas melhora
 a consistência observada.
 
+4.16 Fluxo de curadoria planejado — Etapas 1-2-3 construídas e rodadas (2026-07-28)
+     — pipeline/diagnostico_dispersao.py, pipeline/propor_divisao.py,
+     pipeline/sugerir_tags.py, grafo/schema.py (CONCEITOS_ESTRUTURAIS,
+     SEFIROT_E_NOS_PONTE), CHAT_NIVEL_2/Divididos/
+Implementa as 3 primeiras etapas do fluxo planejado registrado mais abaixo
+("Como incluir textos novos no corpus"). Todas rodadas contra os 52
+documentos existentes (a limpeza do acervo atual), não só desenhadas.
+
+ETAPA 1 (diagnóstico de dispersão temática): script lê cada documento
+completo, compara com suas tags de documento inteiro, e pede a um LLM uma
+lista de tópicos reais + veredito baixa/media/alta. Rodado nos 52
+documentos: 12 alta, 32 media, 8 baixa. Achado técnico: o modelo gasta
+"reasoning tokens" em quantidade variável antes do JSON final — 1500
+max_tokens truncava o JSON no meio em documentos grandes (Klalei.txt, 8592
+palavras); corrigido para 4000. Relatório completo publicado como Artifact
+(link na conversa, não reproduzido aqui).
+
+ETAPA 2 (proposta de divisão), só nos 12 documentos "alta": para cada um,
+pede ao LLM uma partição dos chunks (já numerados na ordem original) em
+grupos contíguos, cada um virando um arquivo focado. FIDELIDADE GARANTIDA
+POR DESENHO: o LLM só decide ONDE cortar; o texto de cada arquivo novo é
+montado pelo script concatenando o texto ORIGINAL dos chunks, nunca
+reescrito pelo modelo. Validação de partição (sem gaps/sobreposição)
+programática, não confiada ao LLM. Resultado: 106 arquivos a partir dos 12
+documentos, soma de palavras conferida = bate exatamente com o original em
+todos os casos. Achado de conteúdo: "The Purpose of the Soul's Descent to
+This World.odt" (232 chunks) repete o conteúdo inteiro 2x (inglês e depois
+bilíngue inglês/iídiche) — a divisão capturou isso corretamente, separando
+as duas versões. Achado técnico: mesmo problema de reasoning tokens da
+Etapa 1, em escala maior (documentos de 232/260 chunks pedem ~20-30 grupos
+titulados na resposta) — corrigido com max_tokens=12000 + retry específico
+(até 3 tentativas) quando finish_reason=length, distinto do retry genérico
+de post_com_retry (que não sabe julgar completude de JSON).
+Arquivos movidos para CHAT_NIVEL_2/Divididos/<slug-do-documento-original>/
+(pasta nova, nome escolhido nesta sessão). Os 12 documentos originais
+permanecem no disco, intocados — serão só removidos de DOCUMENTOS em
+metadados_confirmados.py quando os novos entrarem no lugar (ainda não
+feito), mesmo padrão já usado para Livros/documentos_entrada/ (exclusão de
+escopo, nunca apagar arquivo do disco).
+
+ETAPA 4/5 (sugestão de tags + peso de conceitos estruturais), nos 106
+arquivos divididos: novo script pede ao LLM, por arquivo, Sefirah
+DEFINE/EXPRESSA + Tema + Entidade (passo 4) e peso 0-5 de cada conceito
+estrutural (passo 5) numa única chamada. `autoria` NÃO é perguntada ao
+LLM — herdada automaticamente do documento original (dividir um texto não
+muda quem o escreveu).
+Nova constante `CONCEITOS_ESTRUTURAIS` em grafo/schema.py (Dirá
+BeTachtonim, Moach Sholet Al HaLev, e agora também Adon Olam — ver achado
+abaixo), extensível conforme mais conceitos forem identificados.
+
+ACHADO DE CALIBRAÇÃO REAL (usuário revisando o primeiro relatório, antes de
+qualquer gravação): média de 2.32 Temas por arquivo, com 38 dos 106
+arquivos carregando "Fundamentos" E "Proposito" simultaneamente — os dois
+Temas mais genéricos/estruturais aplicados em excesso. Duas causas
+identificadas:
+1. O prompt de Temas não tinha a mesma instrução de seletividade já
+   validada em PROMPT_ETAPA_B (adam_kadmon.py) — "seja seletivo, prefira
+   1-3 bem escolhidos, não relação remota" — reforçada agora com a mesma
+   redação, mais uma ressalva explícita para Fundamentos/Proposito
+   especificamente (só usar quando genuinamente centrais, não porque todo
+   ensinamento chassídico toca neles em algum grau).
+2. Observação do usuário: "Adon Olam" e "Adam Kadmon" não apareciam em
+   lugar nenhum das listas oferecidas ao LLM. Investigação confirmou:
+   `EinSof` e `AdamKadmon` já são valores válidos e usados de fato em
+   `sefirot_define`/`sefirot_expressa` na convenção existente do projeto
+   (ex.: `Sefirot_Grafo_3` tem `"sefirot_define": ["EinSof", "AdamKadmon",
+   "Keter"]`), mas a lista de Sefirot passada ao prompt vinha só de
+   `SEFIROT` (os 11 nucleares), sem esses 2 nós-ponte — conteúdo sobre
+   EinSof/AdamKadmon não tinha onde ir e caía genericamente em
+   "Fundamentos". Corrigido com nova constante `SEFIROT_E_NOS_PONTE` (13
+   valores). "Adon Olam" virou 3º conceito estrutural (nome do próprio
+   molde retórico do projeto, referência velada a Ein Sof).
+RESULTADO APÓS AS DUAS CORREÇÕES, revalidado nos 106 arquivos: média de
+Temas por arquivo caiu de 2.32 -> 1.27; "Fundamentos"+"Proposito" juntos
+caiu de 38 -> 2 arquivos; "Fundamentos" sozinho caiu de 66 -> 7 ocorrências.
+1 arquivo deu erro de truncamento (mesmo problema de reasoning tokens);
+corrigido isoladamente e mesclado no relatório sem afetar os outros 105.
+Relatório final: 0 erros em 106 arquivos, publicado como Artifact.
+
+PENDENTE: revisão humana final do relatório de tags (o curador ainda não
+confirmou linha por linha) e gravação em metadados_confirmados.py + reentradas
+de DOCUMENTOS + gerar_corpus.py + vetorizar.py (passos 6-7 do fluxo) — nada
+disso foi feito ainda, é a próxima etapa depois da revisão.
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================
