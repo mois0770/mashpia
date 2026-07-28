@@ -1,0 +1,240 @@
+# Arquitetura do Mashpia
+
+Referência de estado atual, organizada por programa. Não é histórico — para
+o que mudou, quando e por quê (achados de calibração, bugs corrigidos,
+decisões revisadas), ver `00_Estado_Atual.txt`. Este documento explica só o
+que cada programa faz hoje.
+
+## Visão geral do pipeline
+
+```
+documentos-fonte (CHAT_NIVEL_2/*.odt, *.txt)
+    │
+    ▼
+pipeline/metadados_confirmados.py    (curadoria manual: Sefirah/Tema/Entidade/
+    │                                  conceitos_estruturais por documento)
+    ▼
+pipeline/ingestao.py                 (texto real + chunking por parágrafo)
+    │
+    ▼
+pipeline/gerar_corpus.py             (junta metadados + texto → corpus_confirmado.json)
+    │
+    ▼
+pipeline/vetorizar.py                (embeddings OpenRouter → ChromaDB local)
+    │
+    ▼
+backend/adam_kadmon.py               (classifica a pergunta: Sefirah/Entidade/Tema)
+    │
+    ▼
+grafo/schema.py                      (expande por travessia estrutural: SINTETIZA/CANALIZA/GOVERNA)
+    │
+    ▼
+backend/gerar_resposta.py            (monta contexto + gera resposta com o LLM)
+    │
+    ▼
+interface/app.py  ou  backend/main.py  (Streamlit ou API HTTP)
+```
+
+Ferramentas de curadoria (`pipeline/diagnostico_dispersao.py`,
+`propor_divisao.py`, `sugerir_tags.py`, `sugerir_pesos_restantes.py`) rodam
+**antes** de `gerar_corpus.py`, sempre que um documento novo entra ou um
+existente precisa de revisão — não fazem parte do caminho de cada pergunta
+do usuário, só do processo de manter o corpus curado.
+
+---
+
+## `config.py`
+
+Configuração compartilhada: caminhos (`BASE_DIR`, `DATA_DIR`, `CHROMA_DIR`) e
+`get_openrouter_key()`, que tenta em ordem: variável de ambiente
+`OPENROUTER_API_KEY` → `st.secrets` (Streamlit Cloud) → arquivo local
+`Openrouter_Ket.txt` (nunca versionado). `EMBEDDING_MODEL` e `LLM_MODEL`
+também ficam aqui — um lugar só para trocar de modelo.
+
+## `grafo/schema.py`
+
+Schema estrutural fixo do projeto — o "vocabulário controlado" que todo o
+resto do sistema usa:
+
+- `SEFIROT` (11), `ENTIDADES` (14), `TEMAS` (9), `CONCEITOS_ESTRUTURAIS` (3:
+  Dirá BeTachtonim, Moach Sholet Al HaLev, Adon Olam) — listas canônicas,
+  únicas fontes de verdade para esses nomes em todo o projeto.
+- `SEFIROT_E_NOS_PONTE` — os 11 Sefirot mais `EinSof`/`AdamKadmon` (nós-ponte
+  do grafo que também são valores válidos de `sefirot_define`/`expressa`).
+- `construir_grafo()` monta o grafo NetworkX (nós + arestas PONTE,
+  HISHTALSHELUT, MESMA_COLUNA, SINTETIZA, GOVERNA, CANALIZA) — chunks não
+  entram aqui, isso é papel do pipeline. `grafo_singleton()` cacheia por
+  processo.
+- `expandir_por_grafo(sefirot_ativas)` — dado o conjunto de Sefirot que a
+  classificação já ativou para uma pergunta, faz a travessia real: SINTETIZA
+  só dispara com os dois flancos da tríade ativos; CANALIZA é sempre que a
+  origem está ativa; GOVERNA só quando Daat e o alvo aparecem juntos. Usado
+  por `backend/gerar_resposta.py`.
+
+## `pipeline/` — construção do corpus
+
+### `ingestao.py`
+Extrai texto de `.odt` (via `pandoc`) ou `.txt`, e divide em chunks por
+parágrafo (`chunkear_por_paragrafo`): separa por linha em branco, quebra por
+linha simples qualquer bloco maior que 2000 caracteres (casos como
+`Klalei.txt`, sem linha em branco real entre pontos numerados), e mescla
+fragmentos curtos com o seguinte. `_id_estavel` gera um ID determinístico
+(documento + posição + hash do texto) — é o que torna o pipeline idempotente
+(rodar de novo não duplica).
+
+### `metadados_confirmados.py`
+**Dado, não lógica.** Lista `DOCUMENTOS`: um dict por documento-fonte, com
+`pasta`, `chave` (substring única do nome de arquivo), `autoria`
+(`autor_projeto`/`traducao_propria`/`fonte_externa`), `temas`,
+`sefirot_define`, `sefirot_expressa`, `entidades`, `conceitos_estruturais` e
+`observacoes`. Granularidade por documento inteiro — simplificação
+deliberada (ver seção de limitações em `00_Estado_Atual.txt`). Todo o
+conteúdo aqui vem de curadoria humana (ou de curadoria assistida por IA já
+revisada), nunca gerado sem revisão.
+
+### `gerar_corpus.py`
+Combina `DOCUMENTOS` com o texto real (via `ingestao.processar_documento`) e
+grava `corpus_confirmado.json`. `resolver_arquivo(pasta, chave)` localiza o
+arquivo real dentro de `CHAT_NIVEL_2/<pasta>/`. Cada chunk de saída herda
+todas as tags do documento — exceto `entidades`, que só é aplicada ao chunk
+se o nome da entidade aparecer de fato no texto dele (para não contaminar a
+etapa B do classificador com falsos positivos).
+
+### `vetorizar.py`
+Gera embeddings (`embed_lote`, em lotes de 50) e grava/atualiza a coleção
+ChromaDB `mashpia_chunks`. Campos-lista viram string separada por vírgula
+(ChromaDB só aceita escalar em metadado); `conceitos_estruturais` é
+achatado em campos `peso_<id>` inteiros via `_pesos_conceitos`.
+**Reconcilia órfãos**: depois do upsert, apaga da coleção qualquer ID que
+não esteja mais no corpus atual — necessário sempre que um documento é
+removido/dividido em `metadados_confirmados.py`, senão os chunks antigos
+ficam presos na coleção para sempre.
+
+### `diagnostico_dispersao.py`
+**Etapa 1 de curadoria.** Para cada documento já em `DOCUMENTOS`, reconstitui
+o texto completo e pede a um LLM uma lista dos tópicos reais cobertos + um
+veredito de dispersão temática (`baixa`/`media`/`alta`) comparando com as
+tags de documento inteiro já atribuídas. Não decide nada sozinho — produz
+`diagnostico_dispersao.json` para revisão humana. Documentos "alta" são
+candidatos à Etapa 2.
+
+### `propor_divisao.py`
+**Etapa 2**, só para documentos sinalizados "alta". Propõe uma partição dos
+chunks (já numerados na ordem original) em grupos contíguos, cada um virando
+um arquivo focado. **Fidelidade por desenho**: o LLM só decide ONDE cortar —
+o texto de cada arquivo novo é montado pelo script concatenando o texto
+ORIGINAL dos chunks, nunca reescrito. Validação de partição (sem gaps nem
+sobreposição) é programática. Grava arquivos em
+`pipeline/propostas_divisao/<slug>/` para revisão antes de mover para
+`CHAT_NIVEL_2/Divididos/`.
+
+### `sugerir_tags.py`
+**Etapas 4+5**, para arquivos já em `CHAT_NIVEL_2/Divididos/`. Por arquivo,
+pede ao LLM Sefirah DEFINE/EXPRESSA + Tema + Entidade (passo 4) e peso 0-5
+de cada conceito estrutural (passo 5) numa única chamada. `autoria` é
+herdada do documento original, não perguntada ao LLM. Grava
+`sugestao_tags.json`. Ao rodar escopado a um subconjunto de pastas,
+**mescla** com o relatório existente em vez de sobrescrever.
+
+### `sugerir_pesos_restantes.py`
+Mesma ideia de `sugerir_tags.py`, mas só o eixo de peso (Sefirah/Tema/
+Entidade dos documentos não-divididos já existem e não são o alvo), e
+granularidade por documento inteiro — consistente com como esses documentos
+já são tratados, e defensável porque são documentos de dispersão média/baixa
+(mais coesos). Grava `pesos_documentos_restantes.json`.
+
+---
+
+## `backend/` — classificação, geração, API
+
+### `openrouter_client.py`
+`post_com_retry` — toda chamada à OpenRouter do projeto passa por aqui.
+Retry com backoff (1s, 2s) em timeout/desconexão/429/5xx; erro definitivo
+(401, 400) falha na hora, sem retry inútil. Depois de esgotar tentativas,
+levanta `ErroOpenRouter` (mensagem amigável) em vez de deixar a exceção
+crua de `requests` subir.
+
+### `adam_kadmon.py`
+Classificação de 3 eixos (Sefirah/Entidade/Tema) para uma pergunta:
+- **Etapa A** (`etapa_a`): busca vetorial bilíngue (a pergunta é traduzida
+  para inglês via LLM e as duas versões são buscadas, porque boa parte do
+  corpus está em inglês) contra ChromaDB. Candidatos de Sefirah/Entidade só
+  a partir de chunks DEFINE; candidatos de Tema usam lift (contagem
+  observada / frequência esperada no corpus) para não deixar Temas grandes
+  (Fundamentos, Educacao) dominarem por volume.
+- **Etapa B** (`etapa_b`): um LLM decide quais candidatos realmente se
+  aplicam, vendo só o texto DEFINE recuperado — nunca conhecimento geral.
+- Se a etapa A não encontra candidato, ou a etapa B rejeita todos, aciona
+  `protocolo_lacuna=True`.
+- `classificar_com_vizinhos` devolve também os vizinhos buscados, para
+  `gerar_resposta.py` reaproveitar sem repetir a busca.
+
+### `gerar_resposta.py`
+O módulo que gera a resposta final — ver docstring do próprio arquivo para
+o fluxo completo (classificar → expandir por grafo → montar contexto com
+notas de relações estruturais e conceitos de peso alto → gerar com o
+prompt fixo, ajustado pelo `NIVEIS` escolhido → retry/streaming via
+`openrouter_client`).
+`NIVEIS` (1=Completo, 2=Resumido, 3=Essência prática): cada nível só muda
+extensão/estrutura (instrução anexada ao prompt fixo) e `max_tokens` — as
+regras de conteúdo do prompt fixo valem sempre, em qualquer nível.
+
+### `main.py`
+API FastAPI: `GET /`, `GET /estatisticas`, `GET /grafo`, `POST /classificar`,
+`POST /responder` (aceita `nivel` opcional). `ErroOpenRouter` vira HTTP 503
+com JSON limpo via `exception_handler`, não 500 genérico.
+
+### `feedback.py` / `feedback_sheets.py` / `ver_feedback.py`
+`feedback.py`: grava feedback (avaliação + sugestão + pergunta/resposta do
+turno) em `data/feedback.jsonl` (garantia local) e tenta enviar em paralelo
+para uma planilha do Google via `feedback_sheets.enviar_feedback_sheets`
+(POST direto ao endpoint público do Form, sem credencial). Se o Sheets
+falhar por qualquer motivo, o registro local já foi gravado — nada se
+perde. `feedback_sheets.py` normaliza o valor de avaliação para os literais
+exatos que o Form exige (`_MAPA_AVALIACAO`) antes de enviar.
+`ver_feedback.py`: script de linha de comando pra ler `feedback.jsonl` e
+imprimir tudo formatado.
+
+### `teste_calibracao.py` / `teste_calibracao_geracao.py`
+Não são suítes com asserts — são ferramentas de inspeção manual. O primeiro
+roda 8 perguntas fixas contra `adam_kadmon.classificar` (checa
+Sefirah/Entidade/Tema/lacuna). O segundo roda 5 perguntas contra
+`gerar_resposta.gerar_resposta` e imprime a resposta completa pra conferir
+contra o checklist do prompt fixo (ver docstring do arquivo).
+
+---
+
+## `interface/`
+
+### `app.py` (principal, deploy usa este)
+Interface Streamlit com streaming (`gerar_resposta_stream` +
+`st.write_stream`). Sidebar: seletor de nível de resposta (sempre visível
+antes de perguntar) e formulário de feedback. `_garantir_indice()`
+reconstrói o ChromaDB a partir de `corpus_confirmado.json` se ausente ou
+desatualizado (necessário no Streamlit Cloud, onde `data/chroma/` não é
+versionado e o container sobe do zero a cada deploy). `ErroOpenRouter` vira
+`st.error()` amigável em vez da tela de traceback do Streamlit.
+
+### `app_1.py` (variante sem streaming)
+Mesma estrutura, mas usa `gerar_resposta` (não-streaming) — mantida como
+alternativa mais simples, não é o arquivo principal do deploy.
+
+---
+
+## Convenções que atravessam o projeto
+
+- **"IA sugere, curador confirma"**: toda classificação/tag gerada por LLM
+  (Sefirah, Tema, Entidade, peso de conceito estrutural, proposta de
+  divisão) é gravada em relatório separado para revisão humana antes de
+  entrar em `metadados_confirmados.py`. Nenhum script escreve direto no
+  arquivo de metadados definitivo.
+- **Fidelidade de conteúdo**: nenhuma etapa do sistema (classificação,
+  geração, curadoria) usa conhecimento geral do modelo para afirmar
+  conteúdo doutrinário — só o que está nos trechos/documentos fornecidos.
+  Onde isso é regra do prompt fixo (geração), está explícito no próprio
+  prompt; onde é regra de ferramenta de curadoria (ex.: `propor_divisao.py`
+  nunca reescreve texto), está documentado no docstring do script.
+- **Retry consciente de causa**: erro definitivo (ex.: chave inválida,
+  request malformado) falha na hora; erro transiente (rede, rate limit,
+  reasoning tokens truncando um JSON) tenta de novo — nunca os dois
+  tratados da mesma forma.

@@ -4,8 +4,9 @@ fixo de perguntas e inspecionar contra o checklist derivado do prompt fixo:
 
   1. Abertura pela origem/propósito, não pelo sintoma direto
   2. Ordem Alma -> Pensamento -> Mente -> Sentimento -> Ação presente
-  3. Fechamento reconecta à Fonte / Dirá BeTachtonim
-  4. Só cita conteúdo dos chunks fornecidos (marcadores [N]), nada de fora
+  3. Fechamento nomeia Dirá BeTachtonim explicitamente, não só alude à ideia
+  4. Só cita conteúdo dos chunks fornecidos, sem marcadores numéricos [1][2]
+     no texto (a rastreabilidade vem por fora, via chunks_usados)
   5. Se protocolo_lacuna=True, reconhece a lacuna em vez de improvisar
   6. Sem disclaimers de neutralidade/distanciamento
   7. Terminologia fixada correta (Daat=interface, Dirá BeTachtonim=Objetivo da Criação)

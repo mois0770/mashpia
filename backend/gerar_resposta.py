@@ -1,29 +1,25 @@
-"""Geração de resposta final: classifica a pergunta (adam_kadmon), recupera
-chunks EXPRESSA/DEFINE relevantes às Sefirot/Entidades identificadas, e gera a
-resposta usando o prompt fixo do projeto.
+"""Geração de resposta final — o módulo que efetivamente conversa com o
+usuário. Para uma pergunta, em ordem:
 
-Calibrada (checklist do prompt fixo + verificação de fidelidade de citação,
-ver 00_Estado_Atual.txt seção 4.8) e otimizada para performance (2026-07-27):
-reaproveita a mesma busca vetorial da classificação em vez de repeti-la do
-zero na hora de montar o contexto de geração (ver
-adam_kadmon.classificar_com_vizinhos).
+1. Classifica (adam_kadmon.classificar_com_vizinhos) e recupera os chunks
+   EXPRESSA/DEFINE relevantes às Sefirot/Entidades identificadas.
+2. Expande por grafo (grafo.schema.expandir_por_grafo): SINTETIZA/CANALIZA/
+   GOVERNA viram travessia real no NetworkX a partir das Sefirot ativadas,
+   não inferência implícita do LLM a partir do texto dos chunks.
+3. Monta o contexto: além do texto dos chunks, cada um ganha uma nota
+   inline quando tem peso alto (>= PESO_MINIMO_DESTAQUE) num dos
+   CONCEITOS_ESTRUTURAIS (Dirá BeTachtonim etc.) — mesmo princípio do
+   grafo, sinalizar explicitamente em vez de depender de síntese implícita.
+4. Gera com o prompt fixo (00_Prompt_Sistema_Fixo.txt) como system message,
+   ajustado pelo nível de resposta escolhido (NIVEIS: extensão/estrutura
+   variam, as regras de conteúdo do prompt fixo nunca).
+5. Chama a OpenRouter via openrouter_client.post_com_retry (retry com
+   backoff em timeout/desconexão/429/5xx). `gerar_resposta_stream` trata
+   separadamente uma queda NO MEIO do streaming (depois que a resposta já
+   começou a chegar) — não é caso de retry, gera uma nota de interrupção.
 
-Grafo estrutural conectado à geração (2026-07-27): as Sefirot ativadas pela
-classificação são expandidas via grafo.schema.expandir_por_grafo antes de
-filtrar chunks — SINTETIZA/CANALIZA/GOVERNA passam a ser travessia real no
-NetworkX, não só inferência implícita do LLM a partir do texto dos chunks.
-
-Retry + tratamento de erro (2026-07-27): as chamadas à OpenRouter passam por
-openrouter_client.post_com_retry (retry com backoff em timeout/desconexão/
-429/5xx) em vez de requests.post cru — ver backend/openrouter_client.py.
-gerar_resposta_stream também trata desconexão NO MEIO do streaming (depois
-que a resposta já começou a chegar), caso em que retry do zero não é
-apropriado — yield uma nota de interrupção em vez de estourar exceção.
-
-3 níveis de resposta (2026-07-27, ver NIVEIS abaixo): o usuário escolhe antes
-de perguntar. As regras de CONTEÚDO do prompt fixo (fonte, vocabulário,
-terminologia, protocolo de lacuna) valem sempre, em qualquer nível — só
-extensão/estrutura variam, via instrução extra anexada ao system message.
+Calibrado com checklist do prompt fixo + verificação de fidelidade de
+citação — ver 00_Estado_Atual.txt seção 4.8 para o histórico de calibração.
 """
 
 import json

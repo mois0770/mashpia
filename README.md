@@ -6,8 +6,9 @@ perguntas classificando-as por Sefirot/Entidades/Temas (grafo estrutural em
 a resposta seguindo o molde retórico Adon Olam com um prompt fixo
 (`00_Prompt_Sistema_Fixo.txt`).
 
-Estado detalhado da implementação, o que já foi testado/calibrado e o que
-ainda falta: ver `00_Estado_Atual.txt`.
+Referência do que cada programa faz: ver `ARQUITETURA.md`. Estado detalhado
+da implementação, histórico de calibração e o que ainda falta: ver
+`00_Estado_Atual.txt`.
 
 ## Rodar localmente
 

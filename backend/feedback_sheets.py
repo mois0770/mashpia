@@ -4,16 +4,13 @@ mecanismo que o próprio formulário usa quando alguém o preenche pelo
 navegador. Não precisa de credencial/OAuth/service account: é o mesmo tipo de
 requisição que um Google Form aceita de qualquer navegador.
 
-Configurado e testado (2026-07-27): FORM_ID e ENTRY_* apontam para o Form
-real, submissão de ponta a ponta confirmada (linha aparece na planilha
-ligada). O campo "Avaliacao" é múltipla escolha obrigatória no Form com
-literais fixos (`_MAPA_AVALIACAO`) — se o texto vindo da interface não bater
-com o mapa, `enviar_feedback_sheets` desiste do envio (retorna False) em vez
-de mandar um valor que o Google rejeitaria.
-
-feedback.py continua sendo a gravação garantida em paralelo (dupla gravação:
-local + planilha) — nenhum feedback se perde mesmo se o envio ao Sheets
-falhar por qualquer motivo (rede, validação, Form fora do ar).
+O campo "Avaliacao" é múltipla escolha obrigatória no Form, com literais
+fixos (`_MAPA_AVALIACAO`) diferentes do texto exibido na interface — se o
+valor vindo da interface não bater com o mapa, `enviar_feedback_sheets`
+desiste do envio (retorna False) em vez de mandar algo que o Google
+rejeitaria. `feedback.py` é a gravação garantida em paralelo (dupla
+gravação: local + planilha) — nenhum feedback se perde mesmo se o envio ao
+Sheets falhar por qualquer motivo (rede, validação, Form fora do ar).
 """
 
 import requests
