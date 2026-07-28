@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.adam_kadmon import classificar
-from backend.gerar_resposta import gerar_resposta
+from backend.gerar_resposta import NIVEL_PADRAO, gerar_resposta
 from backend.openrouter_client import ErroOpenRouter
 from grafo.schema import grafo_singleton
 
@@ -27,6 +27,7 @@ def erro_openrouter_handler(request: Request, exc: ErroOpenRouter):
 
 class PerguntaRequest(BaseModel):
     pergunta: str
+    nivel: int = NIVEL_PADRAO
 
 
 @app.get("/estatisticas")
@@ -81,7 +82,7 @@ def classificar_endpoint(req: PerguntaRequest):
 
 @app.post("/responder")
 def responder_endpoint(req: PerguntaRequest):
-    return gerar_resposta(req.pergunta)
+    return gerar_resposta(req.pergunta, nivel=req.nivel)
 
 
 @app.get("/")

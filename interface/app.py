@@ -13,10 +13,13 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
-from backend.gerar_resposta import gerar_resposta_stream
+from backend.gerar_resposta import NIVEIS, gerar_resposta_stream
 from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
+
+# Ordenado por número de nível (1, 2, 3) para o radio aparecer nessa ordem.
+NIVEL_NOMES_PARA_NUMERO = {v["nome"]: k for k, v in sorted(NIVEIS.items())}
 
 
 @st.cache_resource
@@ -80,6 +83,10 @@ div.st-key-caixa_titulo {
     border: 2px solid #B08D57 !important; border-radius: 8px;
     background-color: rgba(176, 141, 87, 0.10); padding: 0.3rem 0.6rem;
 }
+div.st-key-caixa_nivel {
+    border: 2px solid #4A7A8C !important; border-radius: 8px;
+    background-color: rgba(74, 122, 140, 0.10); padding: 0.3rem 0.6rem;
+}
 div.st-key-caixa_avaliacao {
     border: 2px solid #6B8E9E !important; border-radius: 8px;
     background-color: rgba(107, 142, 158, 0.10); padding: 0.3rem 0.6rem;
@@ -108,6 +115,18 @@ with st.sidebar:
     st.divider()
 
     st.markdown(CAIXAS_CSS, unsafe_allow_html=True)
+
+    with st.container(border=True, key="caixa_nivel"):
+        st.subheader("Nível de resposta")
+        nivel_nome = st.radio(
+            "Escolha antes de perguntar",
+            list(NIVEL_NOMES_PARA_NUMERO.keys()),
+            index=0, key="nivel_input",
+        )
+    nivel = NIVEL_NOMES_PARA_NUMERO[nivel_nome]
+
+    st.divider()
+
     with st.container(key="grupo_feedback"):
         with st.container(border=True, key="caixa_titulo"):
             st.subheader("Sua opinião importa")
@@ -168,6 +187,7 @@ for turno in st.session_state.historico:
         st.markdown(turno["resposta"])
         with st.expander("Classificação e fontes"):
             c = turno["classificacao"]
+            st.write(f"**Nível de resposta:** {turno['nivel_nome']}")
             st.write(f"**Lacuna:** {c['protocolo_lacuna']}")
             st.write(f"**Sefirot:** {', '.join(c['sefirot']) or '—'}")
             st.write(f"**Entidades:** {', '.join(c['entidades']) or '—'}")
@@ -186,11 +206,12 @@ if pergunta:
     with st.chat_message("assistant"):
         try:
             with st.spinner("Consultando as Sefirot..."):
-                classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta)
+                classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta, nivel=nivel)
             # A partir daqui o texto vai aparecendo progressivamente (streaming),
             # em vez de ficar em silêncio pelos ~20s+ que a geração completa leva.
             resposta_texto = st.write_stream(gerador)
             with st.expander("Classificação e fontes"):
+                st.write(f"**Nível de resposta:** {nivel_nome}")
                 st.write(f"**Lacuna:** {classificacao['protocolo_lacuna']}")
                 st.write(f"**Sefirot:** {', '.join(classificacao['sefirot']) or '—'}")
                 st.write(f"**Entidades:** {', '.join(classificacao['entidades']) or '—'}")
@@ -210,4 +231,5 @@ if pergunta:
         "classificacao": classificacao,
         "chunks_usados": chunks_usados,
         "relacoes_estruturais": relacoes_estruturais,
+        "nivel_nome": nivel_nome,
     })

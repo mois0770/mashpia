@@ -1,7 +1,10 @@
 """Drives the Mashpia Streamlit app with Playwright and takes screenshots.
 
 Usage (from MASHPIA/ directory, with the app already launched — see SKILL.md):
-    python3 .claude/skills/run-mashpia/driver.py ["pergunta opcional"]
+    python3 .claude/skills/run-mashpia/driver.py ["pergunta opcional"] ["nivel opcional"]
+
+`nivel` is the exact radio label: "Completo" (default), "Resumido", or
+"Essência prática" (2026-07-27: 3 níveis de resposta, ver backend/gerar_resposta.py NIVEIS).
 
 Screenshots are written next to this script, in ./screenshots/.
 """
@@ -17,6 +20,7 @@ SCREENSHOT_DIR.mkdir(exist_ok=True)
 PERGUNTA = sys.argv[1] if len(sys.argv) > 1 else (
     "Como equilibrar dar generosamente e saber colocar limites?"
 )
+NIVEL = sys.argv[2] if len(sys.argv) > 2 else "Completo"
 
 with sync_playwright() as p:
     browser = p.chromium.launch(args=["--no-sandbox"])
@@ -27,6 +31,9 @@ with sync_playwright() as p:
     page.goto("http://localhost:8501", wait_until="networkidle", timeout=60000)
     page.wait_for_selector("text=Mashpia", timeout=30000)
     page.screenshot(path=str(SCREENSHOT_DIR / "01_inicial.png"), full_page=True)
+
+    if NIVEL != "Completo":
+        page.get_by_text(NIVEL, exact=True).click()
 
     chat_input = page.get_by_placeholder("Sua pergunta...")
     chat_input.click()

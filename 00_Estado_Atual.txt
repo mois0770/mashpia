@@ -505,6 +505,48 @@ mashpia.streamlit.app. Detalhes do processo, para referência:
   código, não só leitura. Mesclado sem conflito (arquivo novo, sem
   sobreposição com o projeto).
 
+4.15 Três níveis de resposta (2026-07-27) — backend/gerar_resposta.py (NIVEIS),
+     interface/app.py, interface/app_1.py, backend/main.py
+Pedido do usuário: dois públicos diferentes — quem lê a resposta completa e
+quem prefere algo mais direto. Desenhado como 3 níveis (não 2), decisão do
+usuário depois de eu propor as duas pontas (estrutura completa compactada vs.
+simplificação forte) como opções: ele quis as duas E o nível atual, juntos.
+
+- Nível 1 "Completo" (padrão, preserva o comportamento já calibrado):
+  sem instrução extra, max_tokens=3000.
+- Nível 2 "Resumido": mantém a travessia (Fonte -> Sefirot -> Dirá
+  BeTachtonim, ordem Alma->Pensamento->Mente->Sentimento->Ação), mas compacta
+  cada etapa a 1-2 frases, sem subtítulos. max_tokens=1200.
+- Nível 3 "Essência prática": vai direto à resposta prática em 2-4 frases
+  corridas, sem abrir necessariamente pela Fonte nem percorrer cada etapa da
+  cadeia. max_tokens=600 (testado com 400 primeiro — cortava a última frase
+  no meio; 600 dá folga suficiente pra sempre fechar).
+
+Princípio de design: os níveis só mudam EXTENSÃO/ESTRUTURA via instrução
+anexada ao final do prompt fixo (`_prompt_fixo(nivel)`), explicitamente
+delimitada como sobrepondo só esses dois aspectos — as regras de CONTEÚDO do
+prompt fixo (fonte exclusiva nos chunks, vocabulário, terminologia fixada,
+protocolo de lacuna) continuam valendo integralmente em qualquer nível, sem
+exceção. `00_Prompt_Sistema_Fixo.txt` em si não foi alterado.
+
+UI: novo seletor `st.radio` na sidebar ("Nível de resposta"), acima da caixa
+de feedback, sempre visível antes do usuário digitar a pergunta — atende ao
+requisito "definir o nível antes de consultar". Nome do nível gravado no
+histórico da sessão (`nivel_nome`) e exibido no expander "Classificação e
+fontes", tanto no turno atual quanto nos anteriores. `backend/main.py`
+(`POST /responder`) ganhou campo opcional `nivel` no request, default 1.
+
+TESTADO: os 3 níveis rodados com a mesma pergunta ("Como equilibrar dar
+generosamente e saber colocar limites?") via CLI — nível 1 manteve a
+estrutura completa de sempre; nível 2 ficou bem mais curto mas ainda
+reconhecível como a mesma travessia (sem subtítulos, como pedido); nível 3
+foi direto ao ponto em 3-4 frases, sem abrir pela Fonte, mas ainda fiel aos
+chunks (não genérico). Também testado via API (POST /responder com
+nivel=3, protocolo de lacuna) e no navegador via driver Playwright do skill
+run-mashpia (estendido para aceitar o nível como argumento) — seletor
+aparece corretamente, nível "Essência prática" selecionado e aplicado,
+classificação/relações estruturais/vocabulário continuam corretos.
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================

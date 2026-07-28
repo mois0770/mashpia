@@ -19,6 +19,11 @@ openrouter_client.post_com_retry (retry com backoff em timeout/desconexão/
 gerar_resposta_stream também trata desconexão NO MEIO do streaming (depois
 que a resposta já começou a chegar), caso em que retry do zero não é
 apropriado — yield uma nota de interrupção em vez de estourar exceção.
+
+3 níveis de resposta (2026-07-27, ver NIVEIS abaixo): o usuário escolhe antes
+de perguntar. As regras de CONTEÚDO do prompt fixo (fonte, vocabulário,
+terminologia, protocolo de lacuna) valem sempre, em qualquer nível — só
+extensão/estrutura variam, via instrução extra anexada ao system message.
 """
 
 import json
@@ -36,9 +41,56 @@ from grafo.schema import expandir_por_grafo
 PROMPT_FIXO_PATH = Path(__file__).resolve().parent.parent / "00_Prompt_Sistema_Fixo.txt"
 N_CHUNKS_CONTEXTO = 8
 
+NIVEL_PADRAO = 1
 
-def _prompt_fixo() -> str:
-    return PROMPT_FIXO_PATH.read_text(encoding="utf-8")
+# Cada nível só ajusta EXTENSÃO/ESTRUTURA (via instrução anexada ao prompt
+# fixo) e o teto de max_tokens (também ajuda velocidade/custo nos níveis mais
+# curtos) — nunca as regras de conteúdo do prompt fixo, que continuam valendo
+# integralmente em qualquer nível (fonte, vocabulário, terminologia,
+# protocolo de lacuna).
+NIVEIS = {
+    1: {
+        "nome": "Completo",
+        "max_tokens": 3000,
+        "instrucao": None,  # comportamento padrão já calibrado, sem instrução extra
+    },
+    2: {
+        "nome": "Resumido",
+        "max_tokens": 1200,
+        "instrucao": (
+            "NÍVEL DE RESPOSTA SOLICITADO PARA ESTA CONSULTA: Resumido.\n"
+            "Isto sobrepõe SÓ a extensão/estrutura das instruções acima — as regras de "
+            "conteúdo (fonte exclusiva nos trechos fornecidos, vocabulário, terminologia "
+            "fixada, protocolo de lacuna) continuam valendo integralmente.\n"
+            "Mantenha a travessia (abertura pela Fonte -> corpo pelas Sefirot ativadas, "
+            "seguindo Alma->Pensamento->Mente->Sentimento->Ação -> fechamento em Dirá "
+            "BeTachtonim), mas compacte cada etapa a 1-2 frases, não parágrafos longos. Sem "
+            "subtítulos. Alvo: um texto corrido, bem mais curto que o padrão, mas ainda "
+            "reconhecível como a mesma travessia estruturada."
+        ),
+    },
+    3: {
+        "nome": "Essência prática",
+        "max_tokens": 600,
+        "instrucao": (
+            "NÍVEL DE RESPOSTA SOLICITADO PARA ESTA CONSULTA: Essência prática.\n"
+            "Isto sobrepõe SÓ a extensão/estrutura das instruções acima — as regras de "
+            "conteúdo (fonte exclusiva nos trechos fornecidos, vocabulário, terminologia "
+            "fixada, protocolo de lacuna) continuam valendo integralmente.\n"
+            "Vá direto à resposta prática em 2-4 frases corridas: sem abrir necessariamente "
+            "pela Fonte, sem percorrer cada etapa da cadeia estrutural, sem subtítulos. Ainda "
+            "assim a resposta precisa refletir fielmente o que os trechos fornecidos ensinam "
+            "— comprimida ao essencial, nunca genérica ou vaga. Se a pergunta cair em "
+            "protocolo de lacuna, reconheça isso numa frase só."
+        ),
+    },
+}
+
+
+def _prompt_fixo(nivel: int) -> str:
+    base = PROMPT_FIXO_PATH.read_text(encoding="utf-8")
+    instrucao = NIVEIS.get(nivel, NIVEIS[NIVEL_PADRAO])["instrucao"]
+    return base if instrucao is None else f"{base}\n\n{instrucao}"
 
 
 def _filtrar_chunks_para_geracao(vizinhos: list[dict], alvos: set[str]) -> list[dict]:
@@ -97,7 +149,7 @@ def _montar_contexto(classificacao: dict, chunks: list[dict], relacoes: dict) ->
     return "\n".join(partes)
 
 
-def _preparar_geracao(pergunta: str) -> tuple[dict, list[dict], dict, list[dict]]:
+def _preparar_geracao(pergunta: str, nivel: int) -> tuple[dict, list[dict], dict, list[dict]]:
     """Classifica e recupera os chunks — parte compartilhada entre a geração
     normal e a de streaming. Retorna (classificacao, chunks_usados,
     relacoes_estruturais, mensagens_para_o_llm)."""
@@ -113,19 +165,20 @@ def _preparar_geracao(pergunta: str) -> tuple[dict, list[dict], dict, list[dict]
 
     contexto = _montar_contexto(classificacao, chunks, relacoes)
     mensagens = [
-        {"role": "system", "content": _prompt_fixo()},
+        {"role": "system", "content": _prompt_fixo(nivel)},
         {"role": "user", "content": f"Pergunta: {pergunta}\n\n{contexto}"},
     ]
     chunks_usados = [{"documento": c["meta"]["documento"], "texto": c["texto"]} for c in chunks]
     return classificacao, chunks_usados, relacoes, mensagens
 
 
-def gerar_resposta(pergunta: str) -> dict:
-    classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta)
+def gerar_resposta(pergunta: str, nivel: int = NIVEL_PADRAO) -> dict:
+    classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta, nivel)
+    max_tokens = NIVEIS.get(nivel, NIVEIS[NIVEL_PADRAO])["max_tokens"]
 
     resp = post_com_retry(
         "/chat/completions",
-        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": 3000, "temperature": 0.4},
+        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": max_tokens, "temperature": 0.4},
         timeout=90,
     )
     resposta_texto = resp.json()["choices"][0]["message"]["content"].strip()
@@ -139,14 +192,15 @@ def gerar_resposta(pergunta: str) -> dict:
     }
 
 
-def gerar_resposta_stream(pergunta: str):
+def gerar_resposta_stream(pergunta: str, nivel: int = NIVEL_PADRAO):
     """Como gerar_resposta, mas devolve (classificacao, chunks_usados,
     relacoes_estruturais, gerador_de_texto) em vez do texto pronto — o
     gerador produz pedaços de texto conforme chegam do modelo, para a
     interface poder exibir a resposta sendo escrita progressivamente em vez
     de ficar em silêncio pelos ~20s+ que a geração completa costuma levar
     (feedback do usuário sobre demora, 2026-07-27)."""
-    classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta)
+    classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta, nivel)
+    max_tokens = NIVEIS.get(nivel, NIVEIS[NIVEL_PADRAO])["max_tokens"]
 
     # A conexão inicial (até o primeiro byte) passa pelo retry normal de
     # post_com_retry. Depois que o streaming já começou, uma queda no meio
@@ -156,7 +210,7 @@ def gerar_resposta_stream(pergunta: str):
     # st.write_stream sem aviso), avisa com uma nota curta.
     resp = post_com_retry(
         "/chat/completions",
-        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": 3000,
+        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": max_tokens,
          "temperature": 0.4, "stream": True},
         timeout=90,
         stream=True,
@@ -191,8 +245,10 @@ def gerar_resposta_stream(pergunta: str):
 
 if __name__ == "__main__":
     pergunta = sys.argv[1] if len(sys.argv) > 1 else "Como equilibrar dar generosamente e saber colocar limites?"
-    r = gerar_resposta(pergunta)
-    print(f"PERGUNTA: {r['pergunta']}\n")
+    nivel = int(sys.argv[2]) if len(sys.argv) > 2 else NIVEL_PADRAO
+    r = gerar_resposta(pergunta, nivel=nivel)
+    print(f"PERGUNTA: {r['pergunta']}")
+    print(f"NIVEL: {nivel} ({NIVEIS[nivel]['nome']})\n")
     print(f"SEFIROT: {r['classificacao']['sefirot']}")
     print(f"RELACOES ESTRUTURAIS: {r['relacoes_estruturais']}")
     print(f"CHUNKS USADOS: {[c['documento'] for c in r['chunks_usados']]}\n")

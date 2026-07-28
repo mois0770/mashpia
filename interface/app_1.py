@@ -13,10 +13,13 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
-from backend.gerar_resposta import gerar_resposta
+from backend.gerar_resposta import NIVEIS, gerar_resposta
 from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
+
+# Ordenado por número de nível (1, 2, 3) para o radio aparecer nessa ordem.
+NIVEL_NOMES_PARA_NUMERO = {v["nome"]: k for k, v in sorted(NIVEIS.items())}
 
 AVISO_PARAGRAFOS = [
     "Chat baseado na Filosofia Chabad. Respostas segundo o conceito de Sefirot.",
@@ -35,6 +38,12 @@ div.st-key-caixa_feedback {
     background-color: rgba(176, 141, 87, 0.08);
     padding: 0.6rem 0.8rem;
 }
+div.st-key-caixa_nivel {
+    border: 2px solid #4A7A8C !important;
+    border-radius: 10px;
+    background-color: rgba(74, 122, 140, 0.08);
+    padding: 0.6rem 0.8rem;
+}
 </style>
 """
 
@@ -46,6 +55,17 @@ with st.sidebar:
     st.divider()
 
     st.markdown(CAIXA_FEEDBACK_CSS, unsafe_allow_html=True)
+
+    with st.container(border=True, key="caixa_nivel"):
+        st.subheader("Nível de resposta")
+        nivel_nome = st.radio(
+            "Escolha antes de perguntar",
+            list(NIVEL_NOMES_PARA_NUMERO.keys()),
+            index=0, key="nivel_input",
+        )
+    nivel = NIVEL_NOMES_PARA_NUMERO[nivel_nome]
+
+    st.divider()
     with st.container(border=True, key="caixa_feedback"):
         st.subheader("Sua opinião importa")
         st.caption("Este chat está em desenvolvimento — avalie e deixe sugestões.")
@@ -100,6 +120,7 @@ for turno in st.session_state.historico:
         st.markdown(turno["resposta"])
         with st.expander("Classificação e fontes"):
             c = turno["classificacao"]
+            st.write(f"**Nível de resposta:** {turno['nivel_nome']}")
             st.write(f"**Lacuna:** {c['protocolo_lacuna']}")
             st.write(f"**Sefirot:** {', '.join(c['sefirot']) or '—'}")
             st.write(f"**Entidades:** {', '.join(c['entidades']) or '—'}")
@@ -118,10 +139,12 @@ if pergunta:
     with st.chat_message("assistant"):
         try:
             with st.spinner("Consultando as Sefirot..."):
-                resultado = gerar_resposta(pergunta)
+                resultado = gerar_resposta(pergunta, nivel=nivel)
+            resultado["nivel_nome"] = nivel_nome
             st.markdown(resultado["resposta"])
             with st.expander("Classificação e fontes"):
                 c = resultado["classificacao"]
+                st.write(f"**Nível de resposta:** {nivel_nome}")
                 st.write(f"**Lacuna:** {c['protocolo_lacuna']}")
                 st.write(f"**Sefirot:** {', '.join(c['sefirot']) or '—'}")
                 st.write(f"**Entidades:** {', '.join(c['entidades']) or '—'}")
