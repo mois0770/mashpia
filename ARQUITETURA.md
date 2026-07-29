@@ -238,3 +238,128 @@ alternativa mais simples, não é o arquivo principal do deploy.
   request malformado) falha na hora; erro transiente (rede, rate limit,
   reasoning tokens truncando um JSON) tenta de novo — nunca os dois
   tratados da mesma forma.
+
+---
+
+## Como adicionar um documento novo
+
+Passo a passo com os comandos reais. Sempre a partir de `cd MASHPIA/`. As
+ferramentas de curadoria (`diagnostico_dispersao.py`, `propor_divisao.py`,
+`sugerir_tags.py`, `sugerir_pesos_restantes.py`) leem o texto a partir de
+`corpus_confirmado.json`, não do arquivo bruto direto — por isso o
+documento precisa de uma entrada (mesmo provisória) em
+`metadados_confirmados.py` **antes** de qualquer diagnóstico.
+
+### 1. Colocar o arquivo
+Copiar o `.odt`/`.txt` para dentro de uma pasta em `CHAT_NIVEL_2/` — uma
+pasta `Novos/N` existente, uma pasta temática, ou uma nova.
+
+### 2. Entrada provisória em `metadados_confirmados.py`
+Adicionar em `DOCUMENTOS`, com tags vazias (só `autoria` já dá pra
+preencher com o valor real — é a única coisa que não muda ao longo do
+processo):
+```python
+{"pasta": "Novos/N", "chave": "nome_unico_do_arquivo", "autoria": "fonte_externa",
+ "temas": [], "sefirot_define": [], "sefirot_expressa": [],
+ "entidades": [], "conceitos_estruturais": [],
+ "observacoes": "PROVISÓRIO — aguardando diagnóstico/tags."},
+```
+
+### 3. Puxar o texto real pro corpus
+```bash
+python3 pipeline/gerar_corpus.py
+```
+Idempotente. Extrai o texto do documento novo (via `pandoc`/leitura direta)
+e grava em `corpus_confirmado.json` — a partir daqui as ferramentas de
+curadoria conseguem ler o conteúdo dele. **Não** rodar `vetorizar.py`
+ainda — isso é caro (embeddings de verdade) e só faz sentido rodar uma
+vez, no fim, depois das tags finais decididas.
+
+### 4. Diagnóstico de dispersão temática
+```bash
+python3 pipeline/diagnostico_dispersao.py "nome_do_arquivo.odt"
+```
+Um LLM lê o texto completo e avalia se o documento cobre mais assuntos do
+que uma única tag de documento inteiro consegue capturar. Salva/mescla em
+`pipeline/diagnostico_dispersao.json` (rodar escopado nunca apaga o
+relatório de outros documentos — bug real já corrigido). Ver o veredito
+impresso: `baixa`, `media` ou `alta`.
+
+### 5. Se "alta": proposta de divisão
+```bash
+python3 pipeline/propor_divisao.py "nome_do_arquivo.odt"
+```
+Propõe uma partição dos chunks em arquivos focados, salvos em
+`pipeline/propostas_divisao/<slug>/` (um `.txt` por grupo + `_proposta.json`
+com título/justificativa de cada um). **Revisar antes de mover** — abrir o
+`_proposta.json` e pelo menos alguns dos `.txt` pra conferir se os cortes
+fazem sentido.
+
+Se aprovado:
+```bash
+mkdir -p CHAT_NIVEL_2/Divididos
+cp -r pipeline/propostas_divisao/<slug> CHAT_NIVEL_2/Divididos/
+```
+E então **remover** a entrada provisória do documento original em
+`metadados_confirmados.py` (ela some, cada arquivo dividido vira sua
+própria entrada no passo 7).
+
+Se "media"/"baixa": pula direto para o passo 6, mantendo a entrada
+provisória do passo 2 (só vai ganhar tags de verdade, sem dividir).
+
+### 6. Sugestão de tags (Sefirah/Tema/Entidade) + peso de conceitos estruturais
+
+**Se o documento foi dividido** (passo 5): decidir Sefirah/Tema/Entidade
+de cada arquivo novo com o mesmo rigor manual sempre usado no projeto, e
+rodar a sugestão de peso automaticamente:
+```bash
+python3 pipeline/sugerir_tags.py "<slug>"
+```
+Gera sugestão de Sefirah/Tema/Entidade **e** peso de conceitos estruturais
+juntos, salvos/mesclados em `pipeline/sugestao_tags.json`. Revisar linha
+por linha antes de gravar.
+
+**Se o documento NÃO foi dividido**: Sefirah/Tema/Entidade continuam sendo
+decisão manual direta (mesmo processo de sempre); só o peso de conceitos
+estruturais precisa de ferramenta, porque é um eixo novo:
+```bash
+python3 pipeline/sugerir_pesos_restantes.py "nome_do_arquivo.odt"
+```
+Salva/mescla em `pipeline/pesos_documentos_restantes.json`.
+
+### 7. Gravação final em `metadados_confirmados.py`
+- **Documento não dividido**: substituir a entrada provisória pelos valores
+  reais — `temas`/`sefirot_define`/`sefirot_expressa`/`entidades`
+  decididos manualmente, `conceitos_estruturais` copiado do relatório do
+  passo 6, `observacoes` reescrita de verdade.
+- **Documento dividido**: nenhuma entrada provisória sobra (já removida no
+  passo 5); adicionar uma entrada nova por arquivo dividido, com
+  `pasta="Divididos/<slug>"`, `chave=<nome do arquivo>`, tags e
+  `conceitos_estruturais` do relatório do passo 6.
+
+### 8. Regenerar corpus e reindexar
+```bash
+python3 pipeline/gerar_corpus.py
+python3 pipeline/vetorizar.py
+```
+`vetorizar.py` reconcilia sozinho — se alguma entrada foi removida (caso de
+divisão), os chunks órfãos correspondentes são apagados da coleção
+automaticamente.
+
+### 9. Testar
+```bash
+python3 backend/teste_calibracao.py
+python3 backend/gerar_resposta.py "uma pergunta que deveria puxar o conteúdo novo"
+```
+Conferir que o Sefirah/Tema esperado aparece, e que nada regrediu nas 8
+perguntas fixas.
+
+### 10. Commit e deploy
+```bash
+git add pipeline/metadados_confirmados.py pipeline/corpus_confirmado.json ...
+git commit -m "..."
+git push origin main
+```
+O Streamlit Cloud reconstrói o índice a partir de `corpus_confirmado.json`
+no próximo restart do container — dar "Reboot app" no painel se quiser ver
+refletido na hora.
