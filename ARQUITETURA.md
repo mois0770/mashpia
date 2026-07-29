@@ -152,7 +152,21 @@ já são tratados, e defensável porque são documentos de dispersão média/bai
 Retry com backoff (1s, 2s) em timeout/desconexão/429/5xx; erro definitivo
 (401, 400) falha na hora, sem retry inútil. Depois de esgotar tentativas,
 levanta `ErroOpenRouter` (mensagem amigável) em vez de deixar a exceção
-crua de `requests` subir.
+crua de `requests` subir. Chamadas não-streaming também registram o custo
+real (`usage.cost`) no teto diário de `limites.py` automaticamente.
+
+### `limites.py`
+Proteção de custo para uso público (demo protegida) — `TETO_CUSTO_DIARIO_USD`
+(padrão US$5) e `MAX_PERGUNTAS_POR_SESSAO` (padrão 10), ambas constantes
+fáceis de ajustar. `verificar_teto()` levanta `TetoDeCustoAtingido` se o
+gasto acumulado do dia (`data/uso_diario.json`, resetado quando a data
+muda) já atingiu o teto — chamada no início de `gerar_resposta._preparar_
+geracao`, antes de qualquer chamada à OpenRouter. `registrar_custo(usd)` é
+chamada automaticamente por `post_com_retry` (chamadas não-streaming) e
+manualmente dentro de `gerar_resposta_stream` (que precisa pedir
+`"usage": {"include": true}` no request pra ter o custo disponível no
+evento final do SSE). O rate limit por sessão em si vive em
+`interface/app.py`/`app_1.py` (contador em `st.session_state`), não aqui.
 
 ### `adam_kadmon.py`
 Classificação de 3 eixos (Sefirah/Entidade/Tema) para uma pergunta:

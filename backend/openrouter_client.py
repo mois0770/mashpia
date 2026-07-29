@@ -3,13 +3,20 @@ do projeto (tradução, classificação, geração, vetorização), para que uma
 transiente de rede ou uma sobrecarga momentânea da API (timeout, desconexão,
 429, 5xx) não estoure um traceback cru na interface. Depois de esgotar as
 tentativas, levanta `ErroOpenRouter` — uma mensagem amigável, para a camada de
-interface decidir como mostrar ao usuário."""
+interface decidir como mostrar ao usuário.
+
+Registra o custo real (`usage.cost`, devolvido pela própria OpenRouter) de
+toda chamada NÃO-streaming no teto diário (backend/limites.py) — chamadas
+streaming não têm o custo disponível na resposta inicial, então quem chama
+com stream=True precisa registrar por conta própria a partir do evento
+final do SSE (ver gerar_resposta.gerar_resposta_stream)."""
 
 import time
 
 import requests
 
 from config import OPENROUTER_BASE_URL, get_openrouter_key
+from backend.limites import registrar_custo
 
 TENTATIVAS_PADRAO = 3
 
@@ -59,6 +66,14 @@ def post_com_retry(caminho: str, corpo: dict, timeout: int,
             raise ErroOpenRouter(
                 f"Erro da OpenRouter ({resp.status_code}): {resp.text[:200]}"
             ) from e
+
+        if not stream:
+            try:
+                custo = resp.json().get("usage", {}).get("cost", 0)
+            except (ValueError, KeyError):
+                custo = 0
+            if custo:
+                registrar_custo(custo)
 
         return resp
 

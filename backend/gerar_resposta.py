@@ -18,6 +18,10 @@ usuário. Para uma pergunta, em ordem:
    separadamente uma queda NO MEIO do streaming (depois que a resposta já
    começou a chegar) — não é caso de retry, gera uma nota de interrupção.
 
+Antes de tudo isso, `limites.verificar_teto()` checa o teto diário de gasto
+(backend/limites.py) — se já atingido, recusa a pergunta sem gastar mais
+nada, em vez de deixar o pipeline inteiro rodar pra só então recusar.
+
 Calibrado com checklist do prompt fixo + verificação de fidelidade de
 citação — ver 00_Estado_Atual.txt seção 4.8 para o histórico de calibração.
 """
@@ -31,6 +35,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import LLM_MODEL
 from backend.adam_kadmon import _dividir, classificar_com_vizinhos
+from backend.limites import registrar_custo, verificar_teto
 from backend.openrouter_client import ErroOpenRouter, post_com_retry
 from grafo.schema import CONCEITOS_ESTRUTURAIS, expandir_por_grafo
 
@@ -177,6 +182,7 @@ def _preparar_geracao(pergunta: str, nivel: int) -> tuple[dict, list[dict], dict
     """Classifica e recupera os chunks — parte compartilhada entre a geração
     normal e a de streaming. Retorna (classificacao, chunks_usados,
     relacoes_estruturais, mensagens_para_o_llm)."""
+    verificar_teto()
     classificacao, vizinhos = classificar_com_vizinhos(pergunta)
     relacoes = expandir_por_grafo(classificacao["sefirot"])
 
@@ -235,7 +241,12 @@ def gerar_resposta_stream(pergunta: str, nivel: int = NIVEL_PADRAO):
     resp = post_com_retry(
         "/chat/completions",
         {"model": LLM_MODEL, "messages": mensagens, "max_tokens": max_tokens,
-         "temperature": 0.4, "stream": True},
+         "temperature": 0.4, "stream": True,
+         # pede o resumo de uso (inclui "cost") no evento final do SSE —
+         # sem isso o streaming não tem custo disponível em lugar nenhum,
+         # ao contrário da chamada não-streaming (post_com_retry já registra
+         # sozinho). Ver limites.py.
+         "usage": {"include": True}},
         timeout=90,
         stream=True,
     )
@@ -256,6 +267,9 @@ def gerar_resposta_stream(pergunta: str, nivel: int = NIVEL_PADRAO):
                         obj = json.loads(dado)
                     except json.JSONDecodeError:
                         continue
+                    custo = obj.get("usage", {}).get("cost")
+                    if custo:
+                        registrar_custo(custo)
                     delta = obj.get("choices", [{}])[0].get("delta", {})
                     pedaco = delta.get("content")
                     if pedaco:

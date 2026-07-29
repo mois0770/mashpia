@@ -12,6 +12,7 @@ from pydantic import BaseModel
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.adam_kadmon import classificar
 from backend.gerar_resposta import NIVEL_PADRAO, gerar_resposta
+from backend.limites import TetoDeCustoAtingido
 from backend.openrouter_client import ErroOpenRouter
 from grafo.schema import grafo_singleton
 
@@ -23,6 +24,11 @@ _grafo = grafo_singleton()
 @app.exception_handler(ErroOpenRouter)
 def erro_openrouter_handler(request: Request, exc: ErroOpenRouter):
     return JSONResponse(status_code=503, content={"erro": str(exc)})
+
+
+@app.exception_handler(TetoDeCustoAtingido)
+def teto_custo_handler(request: Request, exc: TetoDeCustoAtingido):
+    return JSONResponse(status_code=429, content={"erro": str(exc)})
 
 
 class PerguntaRequest(BaseModel):

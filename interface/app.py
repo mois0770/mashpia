@@ -14,6 +14,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
 from backend.gerar_resposta import NIVEIS, gerar_resposta_stream
+from backend.limites import MAX_PERGUNTAS_POR_SESSAO, TetoDeCustoAtingido
 from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
@@ -204,6 +205,17 @@ if pergunta:
     with st.chat_message("user"):
         st.markdown(pergunta)
     with st.chat_message("assistant"):
+        # Rate limit por sessão (protege contra uma sessão só martelando
+        # perguntas) — camada mais fraca que o teto de custo global em
+        # limites.py (reseta se o usuário recarregar a página / abrir nova
+        # aba), mas simples e sem depender de identificar IP.
+        if st.session_state.get("perguntas_nesta_sessao", 0) >= MAX_PERGUNTAS_POR_SESSAO:
+            st.error(
+                f"Você atingiu o limite de {MAX_PERGUNTAS_POR_SESSAO} perguntas nesta "
+                "sessão. Recarregue a página para começar uma nova sessão."
+            )
+            st.stop()
+        st.session_state["perguntas_nesta_sessao"] = st.session_state.get("perguntas_nesta_sessao", 0) + 1
         try:
             with st.spinner("Consultando as Sefirot..."):
                 classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta, nivel=nivel)
@@ -222,6 +234,9 @@ if pergunta:
                     st.write("**Trechos consultados:**")
                     for chunk in chunks_usados:
                         st.markdown(f"- {chunk['texto'][:150]}…")
+        except TetoDeCustoAtingido as e:
+            st.error(str(e))
+            st.stop()
         except ErroOpenRouter as e:
             st.error(f"Não consegui gerar uma resposta agora: {e}")
             st.stop()

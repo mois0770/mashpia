@@ -768,6 +768,76 @@ Revalidado com teste_calibracao.py (8 perguntas), sem regressão.
 Estado final: `conceitos_estruturais` cobre 100% do corpus (164/164
 documentos), conectado de ponta a ponta até a geração de resposta.
 
+4.19 Camada de proteção para demo público — teto de custo + rate limit
+     (2026-07-28/29) — backend/limites.py, backend/openrouter_client.py,
+     backend/gerar_resposta.py, backend/main.py, interface/app.py, interface/app_1.py
+Motivado por decisão de avançar para uso público (demo protegida, não
+produto pago) — até aqui, qualquer pessoa com o link consumia a chave
+OpenRouter pessoal do usuário sem limite nenhum.
+
+Novo `backend/limites.py`:
+- `TETO_CUSTO_DIARIO_USD = 5.0` e `MAX_PERGUNTAS_POR_SESSAO = 10` — valores
+  padrão conservadores, constantes fáceis de ajustar, escolhidos por mim
+  (não pelo usuário, que preferiu não fixar o número numa pergunta
+  direta) — sinalizar se se mostrarem folgados ou apertados demais.
+- Custo rastreado com o valor REAL em dólar que a própria OpenRouter
+  devolve (`usage.cost`), não estimado por contagem de token.
+- Estado persistido em `data/uso_diario.json` (gitignored), resetado
+  automaticamente quando a data muda.
+- `verificar_teto()` levanta `TetoDeCustoAtingido` se o teto do dia já foi
+  atingido — chamada no INÍCIO de `_preparar_geracao` (gerar_resposta.py),
+  antes de qualquer chamada à OpenRouter, pra recusar sem gastar mais nada
+  em vez de deixar o pipeline inteiro rodar pra só então recusar.
+
+Registro de custo:
+- Chamadas NÃO-streaming: `post_com_retry` (openrouter_client.py) já
+  registra sozinho, lendo `usage.cost` da resposta, depois de toda chamada
+  bem-sucedida — cobre tradução, etapa B e geração não-streaming
+  automaticamente, sem precisar tocar em cada chamador.
+- Chamada de streaming (`gerar_resposta_stream`, o caminho usado pelo app
+  publicado): `usage.cost` não vem disponível numa resposta streaming do
+  jeito normal — precisa pedir explicitamente `"usage": {"include": True}`
+  no corpo do request; o custo chega então no evento SSE final, capturado
+  e registrado dentro do próprio gerador.
+
+Rate limit por sessão: contador em `st.session_state` (não em IP — mais
+fraco, reseta se a página for recarregada, mas simples e não depende de
+identificar visitante). Ao atingir `MAX_PERGUNTAS_POR_SESSAO`, mostra erro
+amigável e para, sem chamar `gerar_resposta_stream`.
+
+`TetoDeCustoAtingido` tratado como classe própria (não herda de
+`ErroOpenRouter`, para evitar import circular entre `limites.py` e
+`openrouter_client.py`) — capturado explicitamente em `interface/app.py`,
+`app_1.py` (st.error) e `backend/main.py` (HTTP 429, distinto do 503 de
+ErroOpenRouter).
+
+TESTADO: (1) `verificar_teto`/`registrar_custo`/`teto_atingido` testados
+isoladamente — bloqueiam corretamente ao simular teto atingido; (2)
+pergunta real não-streaming registrou custo real automaticamente
+(~US$0.037 pra uma pergunta completa: tradução+classificação+geração); (3)
+pergunta real via `gerar_resposta_stream` também registrou custo real
+(~US$0.028) — confirma que `usage: {include: true}` funciona; (4) teto
+simulado como atingido bloqueou `gerar_resposta` instantaneamente, sem
+esperar os ~20-30s normais de geração — confirma que `verificar_teto` roda
+ANTES de qualquer chamada; (5) revalidado com `teste_calibracao.py`, sem
+regressão (uma variação pontual de JSON inválido na etapa B numa pergunta
+foi confirmada como o mesmo tipo de não-determinismo já documentado do
+projeto, não causada por esta mudança — reproduzida e resolvida numa
+segunda tentativa da mesma pergunta); (6) testado no navegador real (driver
+Playwright do skill run-mashpia) — pergunta normal funcionou, e
+`data/uso_diario.json` mostrou o custo real da sessão de navegador
+registrado corretamente (~US$0.032).
+
+NÃO TESTADO: o rate limit por sessão realmente bloqueando na prática (só
+verificado por revisão de código — testar ao vivo exigiria 10 perguntas
+reais pagas só para essa verificação, não valeu o custo agora). Também não
+testado: comportamento em produção real no Streamlit Cloud (rate limit por
+`st.session_state` e teto por `data/uso_diario.json` dependem de estarem
+no MESMO processo/container — se o Streamlit Cloud um dia rodar múltiplas
+réplicas do app, cada uma teria seu próprio teto/contador independente,
+não um teto global compartilhado; não é o caso hoje, mas fica registrado
+como limitação da abordagem atual).
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================
