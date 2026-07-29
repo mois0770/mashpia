@@ -838,6 +838,46 @@ réplicas do app, cada uma teria seu próprio teto/contador independente,
 não um teto global compartilhado; não é o caso hoje, mas fica registrado
 como limitação da abordagem atual).
 
+4.20 Suporte multilíngue — resposta no idioma da pergunta (2026-07-29) —
+     CHAT_NIVEL_2/00_Prompt_Sistema_Fixo.txt
+Motivado por pergunta direta do usuário: "como usar este programa com
+outros idiomas (inglês, hebraico, espanhol)". Testado empiricamente antes
+de qualquer mudança:
+- CLASSIFICAÇÃO (adam_kadmon.py) já funciona bem em português/inglês/
+  espanhol — confirmado rodando a mesma pergunta em cada idioma 2x. Um
+  primeiro teste com inglês/espanhol retornando `sefirot=[]` (quase
+  lacuna) se mostrou ser a mesma variação de execução do LLM já
+  documentada no projeto (etapa B), não um problema de idioma — repetido,
+  os dois idiomas encontraram Sefirot corretamente. Faz sentido: a busca
+  já é bilíngue PT/EN desde a correção de 2026-07-24 (tradução da pergunta
+  para inglês antes de buscar).
+- GERAÇÃO (gerar_resposta.py) tinha um problema real: o prompt fixo não
+  tinha NENHUMA instrução sobre idioma de resposta. Testado com pergunta
+  em inglês, espanhol e hebraico — inglês e espanhol saíram em PORTUGUÊS
+  (a resposta ignorava o idioma da pergunta), só hebraico (alfabeto muito
+  diferente) respondeu no idioma certo. Hipótese: o prompt fixo inteiro
+  está em português, com muita terminologia/exemplos em português — isso
+  "puxa" a resposta pra português com força suficiente pra vencer o
+  idioma da pergunta em casos de alfabeto latino (inglês, espanhol), mas
+  não em hebraico.
+CORRIGIDO: nova seção "IDIOMA DA RESPOSTA" no topo do prompt fixo (logo
+depois da abertura, antes até de POSTURA OPERACIONAL — decisão de idioma
+vem antes de tudo o mais), instruindo responder sempre no idioma da
+pergunta do usuário, traduzindo o conteúdo dos trechos de fonte para esse
+idioma. Terminologia fixada (Dirá BeTachtonim, nomes das Sefirot etc.)
+continua em hebraico/transliteração sempre — só a glosa entre colchetes e
+o resto do texto mudam de idioma.
+TESTADO após a correção: mesmas 3 perguntas (inglês, espanhol, hebraico)
+regeradas — as três responderam integralmente no idioma certo, com Dirá
+BeTachtonim nomeado e com glosa traduzida corretamente em cada idioma
+(ex.: espanhol "morada para la Presencia Divina", hebraico "משכן
+לשכינה"). Revalidado com teste_calibracao_geracao.py (5 perguntas em
+português), sem regressão — inclusive o caso de lacuna (bolo de chocolate)
+continuou correto.
+NÃO TESTADO: outros idiomas além dos 3 verificados (francês, árabe,
+etc.) — não há razão pra esperar que não funcionem (a instrução não é
+específica de idioma), mas não foi verificado empiricamente.
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================
