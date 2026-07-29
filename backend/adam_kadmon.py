@@ -22,7 +22,7 @@ import chromadb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import CHROMA_DIR, LLM_MODEL
-from backend.openrouter_client import post_com_retry
+from backend.openrouter_client import ErroOpenRouter, post_com_retry
 from pipeline.vetorizar import NOME_COLECAO, embed_lote
 
 N_CANDIDATOS_AMPLO = 30
@@ -67,14 +67,29 @@ def _traduzir_para_ingles(pergunta: str) -> str:
     chunk correto na posição 0; em português, na posição 132 — ver
     calibração de 2026-07-24). Traduzir a pergunta e buscar nos dois
     idiomas corrige isso sem precisar reprocessar o corpus inteiro."""
-    resp = post_com_retry(
-        "/chat/completions",
-        {"model": LLM_MODEL, "temperature": 0, "max_tokens": 200,
-         "messages": [{"role": "user", "content":
-             f"Traduza para o inglês, só a tradução, nada mais:\n\n{pergunta}"}]},
-        timeout=30,
+    # Mesmo risco de "reasoning tokens" estourando o max_tokens antes de
+    # emitir a tradução (content=None) — ver etapa_b logo abaixo, onde o
+    # mesmo problema apareceu de forma reproduzível com perguntas em
+    # hebraico. Retry com o mesmo padrão de propor_divisao.py.
+    ultimo_erro = None
+    for _tentativa in range(1, 3 + 1):
+        resp = post_com_retry(
+            "/chat/completions",
+            {"model": LLM_MODEL, "temperature": 0, "max_tokens": 400,
+             "messages": [{"role": "user", "content":
+                 f"Traduza para o inglês, só a tradução, nada mais:\n\n{pergunta}"}]},
+            timeout=30,
+        )
+        escolha = resp.json()["choices"][0]
+        conteudo = (escolha["message"]["content"] or "").strip()
+        if conteudo:
+            return conteudo
+        ultimo_erro = f"resposta vazia (finish_reason={escolha.get('finish_reason')})"
+
+    raise ErroOpenRouter(
+        "Não consegui processar sua pergunta agora — o modelo não respondeu de forma "
+        f"utilizável após {_tentativa} tentativas ({ultimo_erro}). Tente novamente."
     )
-    return resp.json()["choices"][0]["message"]["content"].strip()
 
 
 def _buscar_vizinhos(pergunta: str, n: int) -> list[dict]:
@@ -214,18 +229,37 @@ def etapa_b(pergunta: str, candidatos: dict[str, str]) -> dict:
     definicoes = "\n\n".join(f"[{nome}]\n{texto}" for nome, texto in candidatos.items())
     prompt = PROMPT_ETAPA_B.format(pergunta=pergunta, definicoes=definicoes)
 
-    resp = post_com_retry(
-        "/chat/completions",
-        {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}],
-         "max_tokens": 400, "temperature": 0},
-        timeout=60,
+    # O modelo gasta uma quantidade variável de "reasoning tokens" antes do
+    # JSON final — às vezes estoura o max_tokens antes de emitir qualquer
+    # conteúdo, devolvendo content=None (visto sobretudo em perguntas em
+    # hebraico/aramaico, script que consome mais tokens de reasoning). Mesmo
+    # padrão de retry já usado em pipeline/propor_divisao.py.
+    ultimo_erro = None
+    for _tentativa in range(1, 3 + 1):
+        resp = post_com_retry(
+            "/chat/completions",
+            {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}],
+             "max_tokens": 800, "temperature": 0},
+            timeout=60,
+        )
+        escolha = resp.json()["choices"][0]
+        conteudo = (escolha["message"]["content"] or "").strip()
+        if not conteudo:
+            ultimo_erro = f"resposta vazia (finish_reason={escolha.get('finish_reason')})"
+            continue
+        if escolha.get("finish_reason") == "length":
+            ultimo_erro = "resposta truncada (finish_reason=length, provável estouro de reasoning tokens)"
+            continue
+        conteudo_limpo = conteudo.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+        try:
+            return json.loads(conteudo_limpo)
+        except json.JSONDecodeError:
+            return {"aplicaveis": [], "justificativa": f"resposta do LLM não era JSON válido: {conteudo_limpo[:200]}"}
+
+    raise ErroOpenRouter(
+        "Não consegui classificar sua pergunta agora — o modelo não respondeu de forma "
+        f"utilizável após {_tentativa} tentativas ({ultimo_erro}). Tente novamente."
     )
-    conteudo = resp.json()["choices"][0]["message"]["content"].strip()
-    conteudo = conteudo.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-    try:
-        return json.loads(conteudo)
-    except json.JSONDecodeError:
-        return {"aplicaveis": [], "justificativa": f"resposta do LLM não era JSON válido: {conteudo[:200]}"}
 
 
 def classificar(pergunta: str) -> dict:

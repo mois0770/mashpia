@@ -878,6 +878,119 @@ NÃO TESTADO: outros idiomas além dos 3 verificados (francês, árabe,
 etc.) — não há razão pra esperar que não funcionem (a instrução não é
 específica de idioma), mas não foi verificado empiricamente.
 
+4.21 Glossário de terminologia fixada por idioma — inglês/espanhol
+     (2026-07-29) — CHAT_NIVEL_2/00_Prompt_Sistema_Fixo.txt, GLOSSARIO_PROPOSTA.md
+Motivado por pergunta do usuário sobre traduzir corpus/termos por idioma alvo.
+Descartada a ideia de traduzir o corpus inteiro (baixo valor, alto custo);
+optado por curar um glossário fixo só dos termos técnicos centrais
+(TERMINOLOGIA FIXADA + CONCEITOS_ESTRUTURAIS), hoje retraduzidos do zero pelo
+LLM a cada resposta, arriscando inconsistência entre respostas.
+
+Processo "IA sugere, curador confirma": proposta escrita em
+GLOSSARIO_PROPOSTA.md cobrindo 6 termos (Dirá BeTachtonim, Moach Sholet Al
+HaLev, Daat, Adam Kadmon, Adon Olam, Ein Sof — este último incluído por
+aparecer dentro da glosa de dois outros). Cada entrada verificada contra o
+próprio corpus antes de propor tradução, não só traduzida às cegas:
+- Dirá BeTachtonim: ALTA confiança — o corpus em inglês (docs
+  01_o_decreto_rescindido... e 05_paralelo_alma-mundo...) já traduz "dira
+  b'tachtonim" literalmente como "a dwelling in the lower realms"/"dwelling
+  below" — não é tradução minha, é a formulação da própria fonte.
+- Moach Sholet Al HaLev: 0 ocorrências no corpus (vem de regra estrutural
+  sempre ativa, não de chunk específico) — tradução proposta sem base em
+  fonte, sinalizada como tal para o curador.
+- Daat: parcialmente apoiado — o corpus descreve o mecanismo ("unifying
+  principle that brings together Chochmah and Binah") mas não usa a frase
+  exata da glosa fixa em português.
+- Adam Kadmon, Adon Olam, Ein Sof: nomes/termos já consagrados, mantidos sem
+  tradução em qualquer idioma — só a glosa entre colchetes muda.
+
+Curador revisou e decidiu 3 pontos: (1) Moach Sholet Al HaLev em inglês =
+"the mind rules over the heart" (substituiu a proposta original "the Mind
+governs the Heart"); (2) glosa de Daat mantida como estava, sem ajuste pra
+frase do corpus; (3) grafia fixa "Daat" (sem apóstrofo) em todo idioma, mesmo
+o corpus em inglês usando "Da'at" em alguns trechos.
+
+Incorporado como nova seção "TERMINOLOGIA FIXADA — TRADUÇÃO POR IDIOMA" no
+prompt fixo, logo após a seção original em português — tabelas por inglês e
+espanhol, com nota de que qualquer outro idioma não listado (ex. hebraico)
+continua sendo traduzido livremente pelo próprio LLM, mesmo padrão de sempre.
+
+TESTADO: pergunta em inglês produziu "Ein Sof [the Infinite, without limit]"
+e fechamento "Dirá BeTachtonim: ... a dwelling place for God in the lower
+realms" — frase exata aprovada. Pergunta em espanhol produziu "Moach Sholet
+Al HaLev [la Mente gobierna el Corazón]" e "Dirá BeTachtonim [morada para la
+Presencia Divina en los mundos inferiores]" — igualmente exato. Sem
+regressão em português.
+
+4.22 Vazamento de idioma e hardening contra crash de reasoning tokens —
+     achados testando hebraico (2026-07-29) — backend/adam_kadmon.py,
+     backend/gerar_resposta.py, CHAT_NIVEL_2/00_Prompt_Sistema_Fixo.txt
+Ao testar pergunta em hebraico (fora do escopo original do glossário acima,
+mas motivado por ele), 3 problemas reais encontrados e corrigidos, cada um
+isolado e revalidado antes de seguir pro próximo.
+
+1. VAZAMENTO DE FRASE ENTRE ASPAS DO TRECHO-FONTE. Resposta em espanhol
+devolveu "vontade mais profunda" (português) sem tradução nem colchete,
+misturada ao texto em espanhol. Causa raiz: o chunk-fonte (01.odt, em
+português) tem essa frase citada entre aspas como ênfase retórica — o LLM
+generalizou indevidamente a regra "mantenha o termo original + glosa entre
+colchetes" (pensada só para termos técnicos em HEBRAICO/ARAMAICO) para uma
+citação comum em português. CORRIGIDO: instrução explícita na seção IDIOMA
+DA RESPOSTA do prompt fixo deixando claro que essa regra vale SOMENTE para
+hebraico/aramaico, nunca para aspas/trechos em português/inglês/etc., que
+devem sempre ser traduzidos por inteiro. TESTADO: mesma pergunta repetida 2x
+após o fix — "vontade mais profunda" -> "voluntad más profunda" corretamente,
+sem aspas nem colchete.
+
+2. CRASH REAL POR content=None (reasoning tokens). Reproduzido de verdade
+(AttributeError: 'NoneType' object has no attribute 'strip') em 3 pontos do
+pipeline AO VIVO, nenhum protegido até então — só as ferramentas de
+curadoria batch (propor_divisao.py) já tinham esse guard:
+   - adam_kadmon._traduzir_para_ingles (tradução da pergunta, toda consulta,
+     max_tokens=200)
+   - adam_kadmon.etapa_b (classificação, max_tokens=400)
+   - gerar_resposta.gerar_resposta (geração final da resposta)
+Causa: o modelo às vezes gasta todo o max_tokens em "reasoning tokens"
+ocultos antes de emitir conteúdo, devolvendo content=None — fenômeno já
+documentado no projeto (ver 4.16-4.18), até agora só mitigado em ferramentas
+batch, nunca no caminho de produção. Mais frequente em hebraico (script RTL,
+mais tokens de reasoning). CORRIGIDO: aplicado nos 3 pontos o mesmo padrão de
+retry já validado em pipeline/propor_divisao.py (até 3 tentativas, detecta
+content vazio ou finish_reason=="length"; max_tokens aumentado como margem
+extra: etapa_b 400->800, tradução 200->400) — diferença: em vez de `raise
+RuntimeError` (aceitável numa ferramenta batch rodada manualmente), levanta
+`ErroOpenRouter`, que a interface já sabe exibir como mensagem amigável em
+vez de travar. TESTADO: 5 tentativas seguidas da mesma pergunta em hebraico,
+todas OK, nenhum crash.
+
+3. VIÉS DE IDIOMA NO PROTOCOLO DE LACUNA (o achado mais importante desta
+rodada). Ao revalidar em inglês depois dos dois fixes acima, a resposta
+inteira saiu em PORTUGUÊS quando a pergunta caía em protocolo_lacuna (5 de 6
+amostras erradas). Causa raiz: em lacuna, chunks=[] — o contexto enviado ao
+modelo fica quase todo em português (só a linha "Pergunta: ..." está no
+idioma original), sem texto no idioma da pergunta pra ancorar a escolha; a
+regra IDIOMA DA RESPOSTA do system prompt (também em português, ~700
+palavras) não bastou sozinha nesse cenário. Uma primeira tentativa de
+correção (lembrete relativo "responda na mesma língua desta pergunta",
+posicionado junto à pergunta na mensagem do usuário) NÃO resolveu — ainda 5/6
+em português, porque o lembrete relativo não nomeia o idioma, só referencia.
+CORRIGIDO de fato: nova função `_detectar_idioma` (gerar_resposta.py) —
+chamada dedicada e barata (max_tokens=30) que nomeia o idioma da pergunta
+explicitamente, usada para montar um lembrete nomeado ("RESPONDA EM INGLÊS —
+esta pergunta foi escrita em inglês...") junto à pergunta; se a detecção
+falhar, cai de volta no lembrete relativo genérico. TESTADO: 6 de 6
+tentativas em inglês corretas depois do fix (eram 5/6 erradas antes) —
+revalidado também em português, espanhol e hebraico, sem regressão em
+nenhum.
+
+NÃO TESTADO: outros idiomas latinos além de inglês/espanhol no cenário
+específico de protocolo_lacuna (francês, italiano etc.) — não há razão para
+esperar que o fix não generalize (a detecção de idioma não é específica de
+idioma), mas não verificado empiricamente. Também não testado: custo/
+latência adicional de `_detectar_idioma` em escala (uma chamada extra de LLM
+por pergunta, tokens de saída pequenos, impacto esperado desprezível mas não
+medido).
+
 ================================================================================
 5. CALIBRAÇÃO REALIZADA — 6 correções reais, todas com causa raiz identificada
 ================================================================================

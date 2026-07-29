@@ -101,6 +101,29 @@ NIVEIS = {
 }
 
 
+def _detectar_idioma(pergunta: str) -> str:
+    """Nomeia o idioma da pergunta, para reforçar IDIOMA DA RESPOSTA de forma
+    explícita (não apenas relativa, "a mesma língua") — só dizer "responda na
+    mesma língua da pergunta" não bastou quando o contexto vem quase todo em
+    português (protocolo_lacuna: chunks=[]); 5 de 6 amostras em inglês
+    saíram em português mesmo com esse lembrete relativo. Chamada dedicada e
+    barata (poucos tokens de saída); se falhar, devolve "" e quem chamar cai
+    de volta no lembrete relativo genérico."""
+    try:
+        resp = post_com_retry(
+            "/chat/completions",
+            {"model": LLM_MODEL, "temperature": 0, "max_tokens": 30,
+             "messages": [{"role": "user", "content":
+                 "Em que idioma esta frase foi escrita? Responda só com o nome do idioma, em "
+                 f"português (ex: português, inglês, espanhol, hebraico, francês):\n\n{pergunta}"}]},
+            timeout=20,
+        )
+        conteudo = (resp.json()["choices"][0]["message"]["content"] or "").strip()
+        return conteudo.rstrip(".").lower()
+    except (ErroOpenRouter, KeyError, IndexError):
+        return ""
+
+
 def _prompt_fixo(nivel: int) -> str:
     base = PROMPT_FIXO_PATH.read_text(encoding="utf-8")
     instrucao = NIVEIS.get(nivel, NIVEIS[NIVEL_PADRAO])["instrucao"]
@@ -194,9 +217,22 @@ def _preparar_geracao(pergunta: str, nivel: int) -> tuple[dict, list[dict], dict
         chunks = _filtrar_chunks_para_geracao(vizinhos, alvos)
 
     contexto = _montar_contexto(classificacao, chunks, relacoes)
+    # Reforço próximo à pergunta (não só no system prompt) — nomeando o
+    # idioma explicitamente, não só "a mesma língua desta pergunta" (esse
+    # lembrete relativo sozinho não bastou: 5 de 6 amostras em inglês
+    # saíram em português quando a pergunta caía em protocolo_lacuna,
+    # contexto quase todo em português sem texto em inglês pra ancorar).
+    idioma = _detectar_idioma(pergunta)
+    if idioma:
+        lembrete_idioma = (
+            f"(RESPONDA EM {idioma.upper()} — esta pergunta foi escrita em {idioma}, mesmo que "
+            "o contexto abaixo esteja majoritariamente noutro idioma.)"
+        )
+    else:
+        lembrete_idioma = "(Responda na mesma língua em que esta pergunta foi escrita.)"
     mensagens = [
         {"role": "system", "content": _prompt_fixo(nivel)},
-        {"role": "user", "content": f"Pergunta: {pergunta}\n\n{contexto}"},
+        {"role": "user", "content": f"Pergunta: {pergunta}\n{lembrete_idioma}\n\n{contexto}"},
     ]
     chunks_usados = [{"documento": c["meta"]["documento"], "texto": c["texto"]} for c in chunks]
     return classificacao, chunks_usados, relacoes, mensagens
@@ -206,12 +242,28 @@ def gerar_resposta(pergunta: str, nivel: int = NIVEL_PADRAO) -> dict:
     classificacao, chunks_usados, relacoes, mensagens = _preparar_geracao(pergunta, nivel)
     max_tokens = NIVEIS.get(nivel, NIVEIS[NIVEL_PADRAO])["max_tokens"]
 
-    resp = post_com_retry(
-        "/chat/completions",
-        {"model": LLM_MODEL, "messages": mensagens, "max_tokens": max_tokens, "temperature": 0.4},
-        timeout=90,
-    )
-    resposta_texto = resp.json()["choices"][0]["message"]["content"].strip()
+    # Mesmo risco de "reasoning tokens" estourando o max_tokens antes de
+    # emitir conteúdo (content=None) — visto de forma reproduzível com
+    # perguntas em hebraico (ver adam_kadmon.etapa_b, mesmo padrão de retry).
+    ultimo_erro = None
+    resposta_texto = None
+    for _tentativa in range(1, 3 + 1):
+        resp = post_com_retry(
+            "/chat/completions",
+            {"model": LLM_MODEL, "messages": mensagens, "max_tokens": max_tokens, "temperature": 0.4},
+            timeout=90,
+        )
+        escolha = resp.json()["choices"][0]
+        conteudo = (escolha["message"]["content"] or "").strip()
+        if conteudo:
+            resposta_texto = conteudo
+            break
+        ultimo_erro = f"resposta vazia (finish_reason={escolha.get('finish_reason')})"
+    else:
+        raise ErroOpenRouter(
+            "Não consegui gerar uma resposta agora — o modelo não respondeu de forma "
+            f"utilizável após {_tentativa} tentativas ({ultimo_erro}). Tente novamente."
+        )
 
     return {
         "pergunta": pergunta,
