@@ -166,7 +166,7 @@ chamada automaticamente por `post_com_retry` (chamadas não-streaming) e
 manualmente dentro de `gerar_resposta_stream` (que precisa pedir
 `"usage": {"include": true}` no request pra ter o custo disponível no
 evento final do SSE). O rate limit por sessão em si vive em
-`interface/app.py`/`app_1.py` (contador em `st.session_state`), não aqui.
+`interface/app.py` (contador em `st.session_state`), não aqui.
 
 ### `adam_kadmon.py`
 Classificação de 3 eixos (Sefirah/Entidade/Tema) para uma pergunta:
@@ -220,7 +220,7 @@ contra o checklist do prompt fixo (ver docstring do arquivo).
 
 ## `interface/`
 
-### `app.py` (principal, deploy usa este)
+### `app.py` (único, é o que o deploy usa)
 Interface Streamlit com streaming (`gerar_resposta_stream` +
 `st.write_stream`). Sidebar: seletor de nível de resposta (sempre visível
 antes de perguntar) e formulário de feedback. `_garantir_indice()`
@@ -228,10 +228,6 @@ reconstrói o ChromaDB a partir de `corpus_confirmado.json` se ausente ou
 desatualizado (necessário no Streamlit Cloud, onde `data/chroma/` não é
 versionado e o container sobe do zero a cada deploy). `ErroOpenRouter` vira
 `st.error()` amigável em vez da tela de traceback do Streamlit.
-
-### `app_1.py` (variante sem streaming)
-Mesma estrutura, mas usa `gerar_resposta` (não-streaming) — mantida como
-alternativa mais simples, não é o arquivo principal do deploy.
 
 ---
 
