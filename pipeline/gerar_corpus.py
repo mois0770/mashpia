@@ -4,6 +4,12 @@ dos documentos (via ingestao.py) e grava o corpus estruturado final.
 Cada Chunk de saída carrega TODAS as tags do documento de origem (Sefirah,
 Tema, autoria, Entidade) — simplificação documentada em
 metadados_confirmados.py: não há, ainda, granularidade de tag por parágrafo.
+Exceção (2026-08-09, portado do projeto irmão Mentor): autoria aceita
+override por chunk via doc["autoria_por_posicao"] = {posicao: autoria} —
+usado quando um documento mistura, no mesmo arquivo, citação de fonte
+clássica com aplicação prática original (ver Novos/11/), onde uma autoria
+só por documento seria imprecisa o bastante pra ter risco real (citação
+teria a mesma liberdade de uso que texto próprio).
 """
 
 import json
@@ -62,6 +68,12 @@ def gerar() -> dict:
                 e for e in entidades_doc
                 if e.split("_")[0].lower() in c.texto.lower()
             ]
+            # autoria_por_posicao (opcional): override por chunk quando um
+            # documento mistura autorias diferentes no mesmo arquivo (ex.:
+            # citação de fonte clássica + aplicação prática original) — sem
+            # isso, cai no valor único doc["autoria"] (comportamento de
+            # sempre, documentos sem mistura não precisam desse campo).
+            autoria_chunk = doc.get("autoria_por_posicao", {}).get(c.posicao, doc["autoria"])
             saida["chunks"].append({
                 "id": c.id,
                 "texto": c.texto,
@@ -69,7 +81,7 @@ def gerar() -> dict:
                 "documento": caminho.name,
                 "pasta": doc["pasta"],
                 "caminho": str(caminho),
-                "autoria": doc["autoria"],
+                "autoria": autoria_chunk,
                 "temas": doc["temas"],
                 "sefirot_define": doc["sefirot_define"],
                 "sefirot_expressa": doc["sefirot_expressa"],

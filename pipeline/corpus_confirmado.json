@@ -55590,6 +55590,1440 @@
         }
       ],
       "observacoes_documento": "Carta administrativa pedindo ajuda para viabilizar a publicação de maamarim e sichos, atrasada por questões de custo de impressão."
+    },
+    {
+      "id": "01_Pausa_Antes_de_Agir_Tanya_Cap12.txt__0__a12589b815",
+      "texto": "1) Tanya, Likutei Amarim, cap. 12 Em Chabad, a fórmula é “o cérebro governa o coração” — moaḥ shalit al ha-lev (מוח שליט על הלב). Ela não significa negar emoções, fingir que não se sente nada, ou esperar que a mente elimine imediatamente uma emoção. Significa que a pessoa pode usar reflexão, atenção, fala e comportamento para não ser governada automaticamente pelos impulsos emocionais — e, com trabalho contínuo, também educar e transformar o sentimento.",
+      "posicao": 0,
+      "documento": "01_Pausa_Antes_de_Agir_Tanya_Cap12.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/01_Pausa_Antes_de_Agir_Tanya_Cap12.txt",
+      "autoria": "traducao_propria",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente o mecanismo de a mente reter, pausar e redirecionar impulsos emocionais (raiva, desejo, vontade de humilhar) antes de agir, aplicando na prática o princípio de que a mente governa o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "Aplicação prática do princípio 'moach shalit al ha-lev': usar a mente para conter impulsos emocionais (raiva, desejo, desânimo) e agir corretamente mesmo enquanto a emoção ainda está presente."
+    },
+    {
+      "id": "01_Pausa_Antes_de_Agir_Tanya_Cap12.txt__1__821264e19f",
+      "texto": "Aplicação prática: a) quando surge raiva, inveja, medo ou desejo inadequado, isso não obriga a pessoa a agir, falar ou alimentar o pensamento. Pode haver emoção no coração, mas a mente ainda pode decidir: “Não vou enviar esta mensagem agressiva”; “vou sair da situação”; “vou esperar antes de responder”. b)  talvez alguém ainda sinta vontade de humilhar um colega, comer algo proibido, assistir algo impróprio ou desistir de uma obrigação. O ideal não é esperar o desejo desaparecer para fazer o certo. A prática é: agir corretamente agora, mesmo enquanto a emoção ainda está presente.",
+      "posicao": 1,
+      "documento": "01_Pausa_Antes_de_Agir_Tanya_Cap12.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/01_Pausa_Antes_de_Agir_Tanya_Cap12.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente o mecanismo de a mente reter, pausar e redirecionar impulsos emocionais (raiva, desejo, vontade de humilhar) antes de agir, aplicando na prática o princípio de que a mente governa o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "Aplicação prática do princípio 'moach shalit al ha-lev': usar a mente para conter impulsos emocionais (raiva, desejo, desânimo) e agir corretamente mesmo enquanto a emoção ainda está presente."
+    },
+    {
+      "id": "02_Cumprir_Sem_Inspiracao_Tanya_Cap17.txt__0__d195262440",
+      "texto": "2) Likutei Amarim, cap. 17 O Tanya explica que é “muito próximo” porque a pessoa pode ao menos despertar um amor e uma aceitação intelectual suficientes para fazer o que é correto. Aplicação prática: “Não estou inspirado” não precisa se tornar “portanto não farei”. Uma pessoa pode dizer: “Ainda não sinto entusiasmo, mas reconheço racionalmente que esta é minha responsabilidade — e vou cumpri-la.”",
+      "posicao": 0,
+      "documento": "02_Cumprir_Sem_Inspiracao_Tanya_Cap17.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/02_Cumprir_Sem_Inspiracao_Tanya_Cap17.txt",
+      "autoria": "traducao_propria",
+      "temas": [],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente o mecanismo de agir com base em reconhecimento racional/intelectual da responsabilidade, mesmo sem sentimento ou entusiasmo emocional presente — a mente (aceitação intelectual) governando a ausência de 'Lev' inspirado."
+        },
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 1,
+          "justificativa": "Cumprir o correto por dever tem relação indireta com o objetivo geral de ação divina no mundo, mas não é o foco do trecho."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há menção a atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho explica que, mesmo sem entusiasmo emocional, a aceitação intelectual da responsabilidade é suficiente para agir corretamente, exemplificando a primazia da mente sobre o sentimento no serviço do Beinoni."
+    },
+    {
+      "id": "03_Amargura_Construtiva_vs_Tristeza_Tanya_Cap31.txt__0__3ffec305d8",
+      "texto": "3) Likutei Amarim, cap. 31 O Tanya diferencia amargura construtiva de tristeza paralisante. A amargura leva a teshuvá e renovação; a tristeza pesada tira forças e impede o serviço.",
+      "posicao": 0,
+      "documento": "03_Amargura_Construtiva_vs_Tristeza_Tanya_Cap31.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/03_Amargura_Construtiva_vs_Tristeza_Tanya_Cap31.txt",
+      "autoria": "traducao_propria",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente a mente pausando, avaliando e redirecionando a emoção de amargura/tristeza através da pergunta racional 'o que esta emoção está me levando a fazer', substituindo autodesprezo por ação corretiva consciente."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "O trecho oferece uma aplicação prática do capítulo 31 do Tanya, mostrando como a mente deve interceptar e redirecionar a amargura após uma falha, transformando-a em correção e alegria em vez de tristeza paralisante."
+    },
+    {
+      "id": "03_Amargura_Construtiva_vs_Tristeza_Tanya_Cap31.txt__1__680b59f092",
+      "texto": "Aplicação prática: após uma falha, em vez de passar o dia inteiro em autodesprezo, a pessoa pode reservar um momento para reconhecer o erro, pedir perdão se necessário, decidir uma correção e então seguir adiante com alegria. A pergunta útil é: “O que esta emoção está me levando a fazer?”",
+      "posicao": 1,
+      "documento": "03_Amargura_Construtiva_vs_Tristeza_Tanya_Cap31.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/03_Amargura_Construtiva_vs_Tristeza_Tanya_Cap31.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente a mente pausando, avaliando e redirecionando a emoção de amargura/tristeza através da pergunta racional 'o que esta emoção está me levando a fazer', substituindo autodesprezo por ação corretiva consciente."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "O trecho oferece uma aplicação prática do capítulo 31 do Tanya, mostrando como a mente deve interceptar e redirecionar a amargura após uma falha, transformando-a em correção e alegria em vez de tristeza paralisante."
+    },
+    {
+      "id": "04_Amor_ao_Proximo_Alem_do_Ego_Tanya_Cap32.txt__0__98e7824297",
+      "texto": "4) Likutei Amarim, cap. 32 “Fazer dos corpos algo secundário e das almas o principal...”. É o fundamento do amor ao próximo no Tanya: olhar além do ego, das diferenças sociais, intelectuais ou de personalidade, e reconhecer a raiz espiritual comum. Aplicação prática: em um conflito familiar ou comunitário, a mente pode interromper a reação imediata: “Estou vendo esta pessoa apenas através da minha irritação? O que há de humano e de sagrado nela? Como discordar sem desumanizar?” Isso não elimina limites necessários, mas muda a forma de impô-los.",
+      "posicao": 0,
+      "documento": "04_Amor_ao_Proximo_Alem_do_Ego_Tanya_Cap32.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/04_Amor_ao_Proximo_Alem_do_Ego_Tanya_Cap32.txt",
+      "autoria": "fonte_externa",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do propósito da criação ou da materialidade como morada divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente a mente interrompendo a reação emocional imediata (irritação) para reconhecer a raiz espiritual comum antes de agir, o mecanismo central do governo da mente sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho aplica o princípio do amor ao próximo do Tanya como base para a mente pausar e redirecionar a irritação em conflitos, priorizando o reconhecimento da raiz espiritual comum sobre a reação impulsiva, sem eliminar limites necessários."
+    },
+    {
+      "id": "05_Fe_em_Dificuldades_Igueret_HaKodesh_11.txt__0__b547fe0d7d",
+      "texto": "5) Tanya, Igueret haKodesh, epístola 11 “Também isto é para o bem, apenas que não é revelado e visível ao olho de carne.” Trata-se de receber dificuldades com fé e confiança de que há uma bondade divina que pode não ser visível no momento.",
+      "posicao": 0,
+      "documento": "05_Fe_em_Dificuldades_Igueret_HaKodesh_11.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/05_Fe_em_Dificuldades_Igueret_HaKodesh_11.txt",
+      "autoria": "fonte_externa",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 1,
+          "justificativa": "O texto fala de bondade divina oculta, mas não trata do objetivo de tornar o mundo morada divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Descreve a mente interrompendo a conclusão emocional precipitada da dor/frustração e redirecionando para uma pergunta racional sobre o que está sob controle — governança da mente sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação divina atemporal/eterna nem ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "Aplicação prática de fé diante da frustração: não negar a dor, mas evitar conclusões precipitadas, usando a mente para redirecionar o foco ao que está sob controle."
+    },
+    {
+      "id": "05_Fe_em_Dificuldades_Igueret_HaKodesh_11.txt__1__423b6620b8",
+      "texto": "Aplicação prática: diante de uma frustração — uma porta profissional fechada, uma demora, uma perda material — a pessoa não precisa fingir que não dói. Mas pode evitar concluir apressadamente: “Minha vida acabou” ou “não há sentido”. A mente abre espaço para perguntar: “Qual é a resposta correta agora? O que ainda está sob meu controle?”",
+      "posicao": 1,
+      "documento": "05_Fe_em_Dificuldades_Igueret_HaKodesh_11.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/05_Fe_em_Dificuldades_Igueret_HaKodesh_11.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 1,
+          "justificativa": "O texto fala de bondade divina oculta, mas não trata do objetivo de tornar o mundo morada divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Descreve a mente interrompendo a conclusão emocional precipitada da dor/frustração e redirecionando para uma pergunta racional sobre o que está sob controle — governança da mente sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação divina atemporal/eterna nem ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "Aplicação prática de fé diante da frustração: não negar a dor, mas evitar conclusões precipitadas, usando a mente para redirecionar o foco ao que está sob controle."
+    },
+    {
+      "id": "06_Raiva_e_Providencia_Divina_Igueret_HaKodesh_25.txt__0__c4d1476cea",
+      "texto": "6) Igueret haKodesh, epístola 25 Ensina que a ira surge quando a pessoa sente que alguém possui poder independente para prejudicá-la. A fé na Providência Divina reduz essa percepção de autonomia absoluta do outro.",
+      "posicao": 0,
+      "documento": "06_Raiva_e_Providencia_Divina_Igueret_HaKodesh_25.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/06_Raiva_e_Providencia_Divina_Igueret_HaKodesh_25.txt",
+      "autoria": "traducao_propria",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do propósito da Criação nem da morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto ensina explicitamente a usar o discernimento racional (fé na Providência) para separar a ação externa da reação emocional de ira, disciplinando o sentimento pela mente antes de agir."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 1,
+          "justificativa": "Há referência à Providência Divina, mas o foco não é a atuação atemporal de Ein Sof nem o molde retórico do hino, e sim a gestão prática da ira."
+        }
+      ],
+      "observacoes_documento": "O trecho usa a fé na Providência Divina como ferramenta racional para conter a ira, separando a ofensa concreta da crença ilusória de que o outro tem controle absoluto sobre o destino da pessoa."
+    },
+    {
+      "id": "06_Raiva_e_Providencia_Divina_Igueret_HaKodesh_25.txt__1__c6d728372c",
+      "texto": "Aplicação prática: quando alguém ofende ou prejudica você, Chabad não exige passividade: pode ser necessário estabelecer limites, procurar justiça ou afastar-se. Porém, antes de explodir, a pessoa pode separar duas coisas: a ação errada do outro, que pode exigir resposta, e a crença de que o outro controla totalmente sua vida e seu destino.",
+      "posicao": 1,
+      "documento": "06_Raiva_e_Providencia_Divina_Igueret_HaKodesh_25.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/06_Raiva_e_Providencia_Divina_Igueret_HaKodesh_25.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do propósito da Criação nem da morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto ensina explicitamente a usar o discernimento racional (fé na Providência) para separar a ação externa da reação emocional de ira, disciplinando o sentimento pela mente antes de agir."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 1,
+          "justificativa": "Há referência à Providência Divina, mas o foco não é a atuação atemporal de Ein Sof nem o molde retórico do hino, e sim a gestão prática da ira."
+        }
+      ],
+      "observacoes_documento": "O trecho usa a fé na Providência Divina como ferramenta racional para conter a ira, separando a ofensa concreta da crença ilusória de que o outro tem controle absoluto sobre o destino da pessoa."
+    },
+    {
+      "id": "07_Afastar_se_da_Ira_Rambam_Hilchot_Deot.txt__0__7aad8c3b53",
+      "texto": "7) Rambam, Mishnê Torá, Hilchot Deot 2:3 “A ira é uma qualidade extremamente má, e convém à pessoa afastar-se dela até o outro extremo.” Aplicação prática: criar regras antes da crise: não responder mensagens quando estiver furioso; não disciplinar filhos no auge da raiva; tomar distância física; respirar; voltar ao assunto apenas quando puder falar com firmeza sem humilhação.",
+      "posicao": 0,
+      "documento": "07_Afastar_se_da_Ira_Rambam_Hilchot_Deot.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/07_Afastar_se_da_Ira_Rambam_Hilchot_Deot.txt",
+      "autoria": "fonte_externa",
+      "temas": [
+        "Saude_Mental",
+        "Educacao"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto é essencialmente sobre a mente/razão governando e disciplinando o impulso emocional da ira, com regras práticas para adiar a reação até haver controle racional."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico fonte-corpo-fonte."
+        }
+      ],
+      "observacoes_documento": "Trecho aplica o ensinamento do Rambam sobre extirpar a ira, propondo regras práticas de autocontrole emocional (mente sobre sentimento) em contextos de disciplina e relacionamento."
+    },
+    {
+      "id": "08_Incitar_a_Inclinacao_Boa_Talmud_Berachot.txt__0__0f19de0f62",
+      "texto": "8) Talmud, Berachot 5a “A pessoa deve sempre incitar sua inclinação boa contra sua inclinação má.” Esta passagem sugere meios progressivos: exame de consciência, estudo de Torá, recitação do Shemá e lembrança da finitude humana. Aplicação prática: não basta dizer “não farei”. É preciso mobilizar forças concretas contra o impulso: estudar algo que reoriente a mente, telefonar para alguém que ajude, mudar de ambiente, remover uma tentação, lembrar valores e consequências.",
+      "posicao": 0,
+      "documento": "08_Incitar_a_Inclinacao_Boa_Talmud_Berachot.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/08_Incitar_a_Inclinacao_Boa_Talmud_Berachot.txt",
+      "autoria": "fonte_externa",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do propósito da criação ou morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve exatamente o mecanismo de mobilizar a mente/inclinação boa (racional) para governar e reorientar o impulso/inclinação má (emocional-instintiva), com meios concretos e progressivos de disciplina mental sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho usa a máxima talmúdica sobre incitar a inclinação boa contra a má para propor uma aplicação prática de autocontrole através de estratégias mentais concretas frente ao impulso."
+    },
+    {
+      "id": "09_Forca_Interior_Pirkei_Avot_4_1.txt__0__8c2f427849",
+      "texto": "9) Pirkei Avot 4:1 “Quem é forte? Aquele que conquista sua inclinação.” A força, na visão judaica, não é fazer tudo o que se deseja, mas ter liberdade interior para não obedecer cegamente a cada desejo. Aplicação prática: autocontrole pode aparecer em coisas pequenas: não interromper alguém; não comprar por impulso; não verificar o celular durante uma conversa; não responder sarcasmo com sarcasmo; manter uma rotina de oração, estudo, sono ou trabalho mesmo sem motivação.",
+      "posicao": 0,
+      "documento": "09_Forca_Interior_Pirkei_Avot_4_1.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/09_Forca_Interior_Pirkei_Avot_4_1.txt",
+      "autoria": "fonte_externa",
+      "temas": [],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do objetivo da criação ou da presença Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Trata exatamente da ideia de conquistar/dominar a inclinação e o impulso emocional através da liberdade interior e disciplina, mesmo sem citar o termo hebraico."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "O trecho usa Pirkei Avot 4:1 para definir força como autocontrole/domínio da inclinação, com exemplos práticos de disciplina no cotidiano."
+    },
+    {
+      "id": "10_Sequencia_Pratica_Moach_Shalit_Al_HaLev.txt__0__8a9bd276b9",
+      "texto": "10) Em linguagem simples, moaḥ shalit al ha-lev propõe esta sequência: Reconhecer a emoção sem negar sua existência. Não identificar emoção com decisão: “Sinto raiva” não é “devo agir com raiva”. Pausar antes de falar ou agir. Refletir sobre valores, consequências, fé e responsabilidade. Escolher uma ação compatível com a Torá e com a pessoa que se deseja ser. Repetir: a prática constante influencia gradualmente o próprio coração.",
+      "posicao": 0,
+      "documento": "10_Sequencia_Pratica_Moach_Shalit_Al_HaLev.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/10_Sequencia_Pratica_Moach_Shalit_Al_HaLev.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O trecho é a formalização prática do princípio: reconhecer a emoção, pausar, refletir com base em valores e fé, e só então escolher a ação — a mente (Daat) governando o sentimento (Lev), com uma força de contenção (Gevurah) atuando na pausa antes de agir."
+        },
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não há referência ao objetivo de tornar o mundo material morada Divina."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não trata da atuação Divina atemporal nem do molde retórico do projeto."
+        }
+      ],
+      "observacoes_documento": "O trecho detalha uma sequência prática de autogoverno emocional (pausa, reflexão, ação alinhada a valores) como aplicação de moaḥ shalit al ha-lev, ressalvando que em quadros graves de saúde mental essa prática espiritual complementa, mas não substitui, apoio profissional."
+    },
+    {
+      "id": "10_Sequencia_Pratica_Moach_Shalit_Al_HaLev.txt__1__75e328cda9",
+      "texto": "Em casos de depressão intensa, ansiedade incapacitante, trauma, compulsões ou risco de autoagressão, este trabalho espiritual pode acompanhar — mas não substituir — apoio profissional adequado",
+      "posicao": 1,
+      "documento": "10_Sequencia_Pratica_Moach_Shalit_Al_HaLev.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/10_Sequencia_Pratica_Moach_Shalit_Al_HaLev.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O trecho é a formalização prática do princípio: reconhecer a emoção, pausar, refletir com base em valores e fé, e só então escolher a ação — a mente (Daat) governando o sentimento (Lev), com uma força de contenção (Gevurah) atuando na pausa antes de agir."
+        },
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não há referência ao objetivo de tornar o mundo material morada Divina."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não trata da atuação Divina atemporal nem do molde retórico do projeto."
+        }
+      ],
+      "observacoes_documento": "O trecho detalha uma sequência prática de autogoverno emocional (pausa, reflexão, ação alinhada a valores) como aplicação de moaḥ shalit al ha-lev, ressalvando que em quadros graves de saúde mental essa prática espiritual complementa, mas não substitui, apoio profissional."
+    },
+    {
+      "id": "11_Pausa_de_5_Segundos_Reacao_Transito.txt__0__0b43b703ab",
+      "texto": "11) O Princípio: A raiva é um \"fogo\" instantâneo no coração. O Tanya explica que o cérebro tem o poder de erguer um \"muro\" mental antes que a emoção chegue aos instrumentos de ação (fala e comportamento). Aplicação Prática: Ao receber uma mensagem provocativa ou enfrentar um motorista imprudente no trânsito, o sentimento de fúria surge no peito. A mente aplica a regra: \"Sinto raiva, mas não preciso ser a raiva\". Você estabelece uma pausa de 5 segundos, respira e decide conscientemente não gritar nem responder no impulso.",
+      "posicao": 0,
+      "documento": "11_Pausa_de_5_Segundos_Reacao_Transito.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/11_Pausa_de_5_Segundos_Reacao_Transito.txt",
+      "autoria": "traducao_propria",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não aborda o propósito da criação ou a morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto é a aplicação direta do princípio: a mente ('cérebro') deve erguer um 'muro' e governar o sentimento de raiva ('Lev') antes que ele se traduza em ação, evitando reagir por impulso."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho aplica a disciplina da mente sobre a emoção (raiva) a situações cotidianas de provocação, usando uma pausa consciente antes de reagir."
+    },
+    {
+      "id": "12_Acao_Antes_da_Motivacao_Masseh_Hu_HaIkar.txt__0__1e76d237cd",
+      "texto": "12) O Princípio: Esperar \"sentir vontade\" (empolgação emocional) para realizar um dever é uma armadilha. A mente deve instruir o corpo a agir, e o envolvimento emocional frequentemente vem depois da ação (Masseh hu ha-ikar — \"A ação é o principal\"). Aplicação Prática: Segunda-feira de manhã, você precisa elaborar um relatório complexo ou estudar para uma prova, mas sente preguiça e desânimo. Em vez de esperar pelo \"humor certo\", a mente assume o comando: \"Abra o documento e escreva a primeira linha\". A ação executada pela mente força o coração a entrar no ritmo.",
+      "posicao": 0,
+      "documento": "12_Acao_Antes_da_Motivacao_Masseh_Hu_HaIkar.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/12_Acao_Antes_da_Motivacao_Masseh_Hu_HaIkar.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do objetivo da Criação ou de tornar o material morada divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "É o mecanismo central: a mente (Moach) deve comandar a ação independentemente do estado emocional (Lev), e o sentimento/engajamento vem depois, seguindo a decisão racional — exatamente a disciplina mente-sobre-sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico da Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho ensina que a mente deve comandar a ação sem esperar motivação emocional, ilustrando com a rotina de produtividade em que 'agir primeiro' desencadeia o engajamento do coração."
+    },
+    {
+      "id": "13_Ansiedade_e_Discernimento_Racional_Bitachon.txt__0__f4299d80c4",
+      "texto": "13) O Princípio: A ansiedade surge quando o coração se preenche de incerteza e medo do futuro. O discernimento racional (Da'at) reavalia o cenário com base no pensamento objetivo e na fé ativa (Bitachon). Aplicação Prática: Diante de uma incerteza no trabalho, o coração dispara cenários de demissão e ruína. O cérebro intervém ativamente questionando: \"Quais são os fatos reais hoje? O que está sob meu controle imediato e o que é imaginação?\". A análise racional reduz a resposta fisiológica de estresse.",
+      "posicao": 0,
+      "documento": "13_Ansiedade_e_Discernimento_Racional_Bitachon.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/13_Ansiedade_e_Discernimento_Racional_Bitachon.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [
+        "Daat"
+      ],
+      "sefirot_expressa": [
+        "Daat"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não há referência ao objetivo da criação ou morada Divina no material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O trecho descreve exatamente a disciplina racional (Da'at) governando ativamente o coração tomado por ansiedade e medo, questionando os fatos para reduzir a resposta emocional/fisiológica."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não trata da atuação Divina atemporal nem do molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "O trecho aplica Da'at como discernimento racional que intervém sobre o coração ansioso, exemplificado numa situação de incerteza profissional, ilustrando o princípio da mente governando o sentimento."
+    },
+    {
+      "id": "14_Gratificacao_Instantanea_vs_Proposito_Longo_Prazo.txt__0__42b6bb6862",
+      "texto": "14) O Princípio: A natureza animal da pessoa (Nefesh HaBahamait) busca gratificação instantânea. A mente enxerga o propósito de longo prazo e as consequências de cada ato. Aplicação Prática: Durante uma dieta ou plano de economia financeira, surge o desejo compulsivo por um doce ou uma compra por impulso. A mente calcula o impacto real: \"Este prazer dura 3 minutos; o impacto no meu objetivo dura meses\". O intelecto veto o impulso do coração.",
+      "posicao": 0,
+      "documento": "14_Gratificacao_Instantanea_vs_Proposito_Longo_Prazo.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/14_Gratificacao_Instantanea_vs_Proposito_Longo_Prazo.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Financas"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [
+        "Nefesh_nivel"
+      ],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do objetivo da Criação ou da materialidade como morada divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Descreve exatamente o mecanismo: a mente (intelecto) calcula consequências de longo prazo e veta o impulso instantâneo do Nefesh HaBahamait/coração, a essência da governança da mente sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho aplica o princípio da mente vetando o impulso instintivo imediato (Nefesh HaBahamait) em favor de metas de longo prazo, usando exemplos de dieta e economia financeira como ilustração de autocontrole racional."
+    },
+    {
+      "id": "15_Tristeza_Paralisante_vs_Alegria_Expansiva.txt__0__ed539f50e9",
+      "texto": "15) O Princípio: O Tanya estabelece que a tristeza paralisa, enquanto a alegria expande a mente. Quando a melancolia bate à porta, o intelecto deve deliberadamente injetar pensamentos de propósito e gratidão. Aplicação Prática: Em um dia em que tudo parece dar errado e a vontade é ficar na cama, a mente recapitula racionalmente os bens que você possui e a missão do dia. Ela força uma mudança postural e o engajamento em uma boa ação (ajudar alguém), o que altera a química emocional do coração.",
+      "posicao": 0,
+      "documento": "15_Tristeza_Paralisante_vs_Alegria_Expansiva.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/15_Tristeza_Paralisante_vs_Alegria_Expansiva.txt",
+      "autoria": "traducao_propria",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não há menção ao objetivo da criação ou morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto é a expressão paradigmática do princípio: o intelecto deliberadamente injeta pensamentos racionais (propósito, gratidão) para governar e reverter o sentimento de tristeza/melancolia, forçando inclusive mudança postural e ação."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico fonte-corpo-fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho aplica o princípio do Tanya de que a mente deve ativamente contrapor a tristeza com pensamentos racionais de propósito e gratidão, ilustrando o governo do intelecto sobre a emoção em um contexto de saúde mental."
+    },
+    {
+      "id": "16_Palavras_no_Calor_da_Emocao_Chochmah.txt__0__64c498a537",
+      "texto": "16) O Princípio: Palavras ditas no calor da emoção causam danos duradouros. A sabedoria (Chochmah) avalia a utilidade da palavra antes de ela ser pronunciada. Aplicação Prática: Durante um desentendimento conjugal, surge a vontade de jogar no ar um erro antigo do parceiro para \"ganhar\" o argumento. A mente intervém: \"Ganhar este argumento vai construir ou destruir nosso casamento?\". A razão cala a frase mágoa antes que ela saia da boca.",
+      "posicao": 0,
+      "documento": "16_Palavras_no_Calor_da_Emocao_Chochmah.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/16_Palavras_no_Calor_da_Emocao_Chochmah.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Casamento"
+      ],
+      "sefirot_define": [
+        "Chochmah"
+      ],
+      "sefirot_expressa": [
+        "Chochmah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não há referência ao objetivo da criação ou morada divina no material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Exemplo direto de a razão (mente) intervindo e silenciando o impulso emocional de magoar o parceiro no calor de uma discussão."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não trata da atuação Divina atemporal nem do molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "Usa Chochmah como filtro racional que impede palavras impulsivas e destrutivas durante conflitos conjugais, ilustrando o princípio da mente governando o sentimento."
+    },
+    {
+      "id": "17_Escutar_o_Outro_com_Binah.txt__0__4510b7c3d9",
+      "texto": "17) O Princípio: Compreender o outro exige silenciar temporariamente os próprios julgamentos e inseguranças emocionais para absorver a realidade do próximo com a inteligência (Binah). Aplicação Prática: Quando um colega de trabalho ou filho expressa uma crítica ou frustração, em vez de se defender imediatamente tomados pelo orgulho ferido, a mente assume a postura de investigação: \"Por que ele se sente assim? O que há de verdadeiro no que ele está dizendo?\".",
+      "posicao": 0,
+      "documento": "17_Escutar_o_Outro_com_Binah.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/17_Escutar_o_Outro_com_Binah.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Humildade"
+      ],
+      "sefirot_define": [
+        "Binah"
+      ],
+      "sefirot_expressa": [
+        "Binah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do objetivo da criação ou da morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto descreve explicitamente a mente silenciando o orgulho ferido e as reações emocionais defensivas para investigar racionalmente a perspectiva do outro, exemplo direto da mente governando o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho define Binah como a capacidade de suspender julgamentos e inseguranças emocionais para compreender genuinamente a perspectiva do outro, aplicando isso a críticas recebidas de colegas ou filhos."
+    },
+    {
+      "id": "18_Ressentimento_como_Veneno_Perdao.txt__0__985d3ce713",
+      "texto": "18) O Princípio: Guardar ressentimento é como tomar veneno esperando que o outro morra. A mente compreende que todos os seres humanos possuem falhas e que manter a mágoa prejudica a própria alma. Aplicação Prática: Alguém o prejudicou no passado. O coração sente amargura. A mente raciocina: \"Ruminar essa dor só mantém essa pessoa no controle da minha paz mental. Escolho perdoar e liberar essa energia para focar no meu crescimento\".",
+      "posicao": 0,
+      "documento": "18_Ressentimento_como_Veneno_Perdao.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/18_Ressentimento_como_Veneno_Perdao.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada divina no material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "A mente racionaliza explicitamente sobre o coração amargurado, decidindo perdoar e liberar a mágoa em vez de ser dominada pelo ressentimento — exemplo direto do intelecto governando o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho mostra a mente racional refreando e transformando o ressentimento do coração através da decisão consciente de perdoar, liberando a energia emocional para o crescimento pessoal."
+    },
+    {
+      "id": "19_Autorregulacao_dos_Pais_Educacao_pelo_Exemplo.txt__0__3f7037eb63",
+      "texto": "19) O Princípio: Crianças aprendem mais observando a autorregulagem dos pais do que ouvindo sermões. O adulto deve operar a partir da razão para educar com amor disciplinado (Gevurah temperada com Chesed). Aplicação Prática: Seu filho faz uma birra em um local público. O coração do pai/mãe sente vergonha e irritação. A mente intervém: \"Ele é uma criança aprendendo a lidar com emoções; eu sou o adulto. Preciso ser a âncora, não a tempestade\". O pai responde com firmeza serena em vez de gritos.",
+      "posicao": 0,
+      "documento": "19_Autorregulacao_dos_Pais_Educacao_pelo_Exemplo.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/19_Autorregulacao_dos_Pais_Educacao_pelo_Exemplo.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Educacao"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Chesed",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do propósito da Criação ou da morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto exemplifica diretamente a mente ('a razão') intervindo e governando o coração ('vergonha e irritação'), disciplinando a resposta emocional do pai."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico da Fonte."
+        }
+      ],
+      "observacoes_documento": "Aplicação de Gevurah temperada com Chesed na educação dos filhos, mostrando a mente disciplinando a reação emocional dos pais diante de birras."
+    },
+    {
+      "id": "20_Integridade_Independente_do_Ambiente_Externo.txt__0__6cbf5e480b",
+      "texto": "20) O Princípio: O ambiente externo não deve ditar o estado moral interno. A mente mantém a integridade e os valores, independentemente da discórdia ao redor. Aplicação Prática: Um cliente rude esgota sua paciência. A emoção pede uma resposta ríspida. A mente lembra do seu papel profissional e moral: \"A falta de educação dele reflete quem ele é; minha resposta educada reflete quem eu sou\".",
+      "posicao": 0,
+      "documento": "20_Integridade_Independente_do_Ambiente_Externo.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/20_Integridade_Independente_do_Ambiente_Externo.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Tiferet"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do propósito da criação ou da morada divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O trecho descreve exatamente a mente ('Moach') exercendo domínio racional sobre o impulso emocional ('Lev') diante de provocação externa, mantendo resposta educada apesar do desejo de reagir com aspereza."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação divina atemporal ou ao molde retórico de abertura/fechamento na Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho ilustra a disciplina da mente sobre a emoção, preservando integridade moral e profissional diante de provocações externas (como a rudeza de um cliente)."
+    },
+    {
+      "id": "21_Foco_e_Daat_Contra_Distracoes.txt__0__36cdfa1b7b",
+      "texto": "21) O Princípio: O cérebro precisa direcionar a atenção (Da'at) de forma voluntária, sem se deixar sequestrar pelas notificações e distrações da vida moderna. Aplicação Prática: Trabalhando em um projeto importante, vem o impulso emocional de checar as redes sociais ou notícias a cada 10 minutos. A mente impõe a regra: \"Trabalharei em bloco de 50 minutos focado antes de qualquer checagem\", dominando a busca por recompensa imediata.",
+      "posicao": 0,
+      "documento": "21_Foco_e_Daat_Contra_Distracoes.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/21_Foco_e_Daat_Contra_Distracoes.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [
+        "Daat"
+      ],
+      "sefirot_expressa": [
+        "Daat"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do objetivo da Criação ou da materialidade como morada Divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O texto é a expressão direta desse princípio: a mente (Da'at) impõe uma regra racional (bloco de 50 minutos) para dominar o impulso emocional de checar notificações."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "O trecho usa Da'at como foco voluntário e disciplinado da mente para ilustrar como a razão deve dominar impulsos emocionais imediatos, exemplificado pela resistência a distrações digitais durante o trabalho."
+    },
+    {
+      "id": "22_Decisoes_Sob_Panico_ou_Euforia.txt__0__df39940ea7",
+      "texto": "22) O Princípio: Decisões tomadas sob euforia ou pânico emocional são quase sempre desastrosas. O intelecto deve isolar o ruído e analisar os dados. Aplicação Prática: Diante de uma queda no mercado financeiro ou crise no negócio, o pânico manda vender tudo no prejuízo. A mente suspende a ação emocional, analisa os fundamentos de longo prazo e toma uma decisão calculada e fria.",
+      "posicao": 0,
+      "documento": "22_Decisoes_Sob_Panico_ou_Euforia.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/22_Decisoes_Sob_Panico_ou_Euforia.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Financas"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou da morada divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Descreve exatamente o mecanismo: a mente/intelecto deve suspender e isolar a reação emocional (pânico ou euforia) e analisar dados friamente antes de decidir, o núcleo do governo da mente sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação divina atemporal ou ao molde retórico fonte-corpo-fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho aplica o princípio de que a mente deve suspender reações emocionais (pânico ou euforia) para analisar racionalmente decisões financeiras, ilustrando o governo do intelecto sobre o impulso."
+    },
+    {
+      "id": "23_Corpo_como_Ferramenta_da_Alma_Habitos.txt__0__42452fdca6",
+      "texto": "23) O Princípio: O corpo é a ferramenta da alma. A mente deve zelar pelo templo corporal, sobrepondo-se ao cansaço superficial ou aos maus hábitos. Aplicação Prática: À noite, a vontade emocional é continuar assistindo a séries até de madrugada. A mente faz o cálculo da saúde e do dia seguinte: \"Se eu não desligar agora, amanhã minha energia e lucidez estarão comprometidas\". A mente desliga o aparelho e vai dormir.",
+      "posicao": 0,
+      "documento": "23_Corpo_como_Ferramenta_da_Alma_Habitos.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/23_Corpo_como_Ferramenta_da_Alma_Habitos.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da Criação nem da morada divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "A mente calcula racionalmente as consequências (saúde, energia, lucidez) e se sobrepõe conscientemente ao impulso emocional de continuar assistindo séries, exemplo clássico da mente governando o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico Fonte-corpo-Fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho ilustra a mente exercendo julgamento e contenção racional sobre o impulso de procrastinar o sono, priorizando a saúde física como base para a energia e lucidez do dia seguinte."
+    },
+    {
+      "id": "24_Ego_Entre_Vaidade_e_Humilhacao.txt__0__d88d94b83b",
+      "texto": "24) O Princípio: O ego é uma construção emocional frágil que flutua entre a vaidade excessiva (com elogios) e a humilhação (com críticas). A mente busca a verdade objetiva. Aplicação Prática: Ao receber uma crítica severa, o ego quer se fechar ou atacar. A mente filtra: extrai o aprendizado real contido na crítica e descarta o veneno emocional, mantendo a estabilidade interior.",
+      "posicao": 0,
+      "documento": "24_Ego_Entre_Vaidade_e_Humilhacao.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/24_Ego_Entre_Vaidade_e_Humilhacao.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Autoestima"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat",
+        "Gevurah"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "Não trata do objetivo da criação ou morada Divina no mundo material."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "Descreve exatamente o mecanismo de a mente filtrar e governar a reação emocional do ego (vaidade/humilhação), extraindo a verdade e descartando o impulso emocional."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Nenhuma referência à atuação Divina atemporal ou ao molde retórico do hino."
+        }
+      ],
+      "observacoes_documento": "O trecho mostra a mente racional filtrando e neutralizando as reações emocionais frágeis do ego (vaidade ou humilhação) diante de elogios ou críticas, extraindo a verdade objetiva e descartando a carga emocional."
+    },
+    {
+      "id": "25_Manha_a_Mente_Programa_o_Coracao.txt__0__1b70b526a4",
+      "texto": "25) O Princípio: O dia deve começar com a mente programando o coração, e não com o coração reagindo aos estímulos do dia. Aplicação Prática: Nos primeiros minutos da manhã, antes de pegar o celular, a pessoa dedica 5 a 10 minutos para contemplar os valores fundamentais, a gratidão pela vida e as intenções do dia (Contemplação/Hitbonenut). Esse alinhamento racional matinal estabelece a soberania da mente sobre as emoções que surgirão ao longo da jornada.",
+      "posicao": 0,
+      "documento": "25_Manha_a_Mente_Programa_o_Coracao.txt",
+      "pasta": "Novos/11",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/11/25_Manha_a_Mente_Programa_o_Coracao.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Saude_Mental"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Daat"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 0,
+          "justificativa": "O trecho não trata do objetivo da criação ou da materialidade como morada divina."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 5,
+          "justificativa": "O princípio central é literalmente a mente programando o coração antes que as emoções reajam aos estímulos do dia — a soberania racional matinal sobre o sentimento."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há referência à atuação Divina atemporal ou ao molde retórico fonte-corpo-fonte."
+        }
+      ],
+      "observacoes_documento": "O trecho prescreve uma prática matinal de contemplação (Hitbonenut) para que a mente estabeleça governança racional sobre as emoções antes que o dia as ative."
+    },
+    {
+      "id": "Corpo_Alma.txt__0__40fab7dd79",
+      "texto": "Deus de a cada um a alma com capacidade de vencer. Entendendo a relação entre corpo (cérebro) e alma (Mente) traz as respostas e os caminhos para superar os obstáculos.",
+      "posicao": 0,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__1__6cba6e11b6",
+      "texto": "A relação entre corpo e alma não é uma disputa entre matéria e espírito. O corpo não é visto como obstáculo à vida religiosa, nem a alma como uma realidade abstrata desconectada da experiência cotidiana. Ambos formam uma unidade: a alma dá sentido, direção e profundidade ao corpo; o corpo oferece à alma os meios concretos para agir no mundo.",
+      "posicao": 1,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__2__2eccdc917a",
+      "texto": "A Natureza dos Dois Elementos: O Veículo e o Piloto Para entender o ser humano, é preciso compreender a natureza de seus dois componentes fundamentais: • O Corpo (Guf): É a dimensão física, material e finita. Ele é impulsionado por instintos de sobrevivência, conforto, preservação e gratificação imediata. Por si só, o corpo opera sob a lógica da matéria: busca o que é tangível e mensurável. • A Alma (Neshama): É descrita na tradição judaica como uma \"centelha do próprio Divino\" (Chelek Elokim Mima'al). Ela é transcendente, infinita e busca naturalmente a verdade, o significado, a conexão, a doação e a espiritualidade. • A Metáfora do Carro e do Motorista: O corpo é o veículo (a máquina física); a alma é o motorista (a consciência e a direção). Um carro sem motorista é inútil e sem destino; um motorista sem carro não consegue se deslocar nem atuar no mundo físico.",
+      "posicao": 2,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__3__0d25376c5a",
+      "texto": "A alma: identidade e propósito A alma representa o núcleo mais profundo da pessoa. Ela é aquilo que transcende desejos passageiros, conveniências sociais, êxito material e emoções momentâneas. Nesse sentido, a alma não é apenas “uma parte” do ser humano: ela expressa sua identidade essencial e seu vínculo com algo maior que si mesmo. A vida ganha significado quando a pessoa reconhece que não existe somente para sobreviver, consumir, competir ou obter reconhecimento. Há uma vocação interior: aperfeiçoar o caráter, construir relações verdadeiras, praticar justiça e transformar a realidade ao redor. Há uma ideia fundamental da Filosofia Chabad: cada pessoa possui uma missão singular. A alma não chega ao mundo por acaso; ela traz um potencial específico que deve ser revelado por meio das escolhas diárias.",
+      "posicao": 3,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__4__5f901957ab",
+      "texto": "O corpo: instrumento de realização espiritual Em certas concepções religiosas, o corpo pode ser tratado como inferior à alma, associado exclusivamente ao prazer, à fragilidade ou ao pecado. A perspectiva da Filosofia Chabad diferente: o corpo possui dignidade porque é o lugar onde a missão da alma se realiza. Sem corpo, não há ação no mundo. É por meio da fala que alguém consola; pelas mãos que alguém ajuda; pela mente que alguém estuda e cria; pelos recursos materiais que alguém sustenta uma causa justa. Comer, trabalhar, descansar, casar, educar filhos e participar da comunidade podem adquirir valor espiritual quando são orientados por uma finalidade ética e elevada. Portanto, o objetivo não é negar as necessidades físicas, mas integrá-las a uma vida consciente. Cuidar da saúde, por exemplo, não é uma preocupação superficial: um corpo saudável permite que a pessoa cumpra melhor suas responsabilidades e sirva a propósitos maiores.",
+      "posicao": 4,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__5__e85a137009",
+      "texto": "A integração, e não a repressão A tensão entre corpo e alma aparece quando os impulsos imediatos dominam a consciência. Busca de status, prazer sem limite, ganância, vaidade ou medo podem fazer com que a pessoa viva de modo reativo, guiada apenas por circunstâncias externas. Nessa condição, ela não deixa de ter alma; apenas perde contato com sua voz mais profunda. A resposta não é destruir ou reprimir todos os desejos. Desejos são parte da condição humana e podem ser direcionados construtivamente. A ambição pode tornar-se dedicação ao trabalho e à excelência; o desejo de reconhecimento pode transformar-se em vontade de contribuir; o prazer material pode tornar-se gratidão e celebração da vida. O critério central é perguntar: este ato expressa somente um impulso momentâneo ou contribui para o propósito mais profundo da minha vida? Espiritualidade no cotidiano A visão de corpo e alma conduz a uma espiritualidade prática. Não depende exclusivamente de experiências extraordinárias, isolamento ou contemplação. Ela se manifesta em pequenas decisões: • comer com moderação e gratidão; • usar a fala para encorajar em vez de humilhar; • tratar o próprio corpo e o corpo alheio com respeito; • trabalhar com honestidade; • separar tempo para estudo, reflexão, oração e família; • transformar recursos materiais em ajuda concreta a outras pessoas; • exercer disciplina sobre hábitos que enfraquecem a liberdade interior. Assim, a espiritualidade deixa de ser uma área separada da vida. Ela se torna uma maneira de viver o trabalho, os relacionamentos, a saúde e as responsabilidades diárias.",
+      "posicao": 5,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__6__4db1633794",
+      "texto": "A transformação do mundo material Um dos aspectos mais marcantes dessa abordagem é que o mundo físico não precisa ser abandonado para que a vida tenha santidade. Ao contrário: a matéria deve ser elevada por ações conscientes. Um objeto, um ambiente ou uma atividade comum pode ganhar significado quando empregado para o bem. Por exemplo, dinheiro em si não é necessariamente bom ou mau. Seu significado depende de seu uso. Pode alimentar egoísmo e exploração, mas também pode financiar educação, aliviar sofrimento e fortalecer uma comunidade. O mesmo vale para tecnologia, poder, conhecimento e prazer: são realidades que exigem orientação moral.",
+      "posicao": 6,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__7__c0689795a2",
+      "texto": "Nesse sentido, corpo e alma não correspondem simplesmente a dois mundos incompatíveis. A alma é chamada a iluminar o corpo, e o corpo é chamado a levar os valores da alma ao mundo real. Cada objeto, refeição, trabalho ou interação física contém \"faíscas divinas\" ocultas. Quando o corpo realiza uma ação motivada pela intenção correta (por exemplo, comer para ter energia para fazer o bem), a alma refina e eleva a energia daquele ato material. Assim como o corpo manifesta fome física através da dor e do cansaço, a alma manifesta \"fome espiritual\" através do tédio, da depressão existencial e da inquietação. A sociedade moderna frequentemente tenta curar a angústia da alma dando-lhe mais estímulos materiais (compras, entretenimento, status). No entanto, o material jamais satisfará uma necessidade espiritual.",
+      "posicao": 7,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__8__6f4e305c08",
+      "texto": "Conclusão O tema “Body and Soul” propõe uma visão integrada do ser humano. A alma fornece propósito; o corpo transforma propósito em ação. Uma vida significativa não é aquela que rejeita a dimensão material, mas aquela em que as necessidades, talentos, emoções e recursos físicos são colocados a serviço de valores mais altos.",
+      "posicao": 8,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
+    },
+    {
+      "id": "Corpo_Alma.txt__9__1f64355b15",
+      "texto": "Orientações práticas ara alinhar corpo e alma na vida diária: 1. Tratar o Corpo como um Vaso Sagrado: Cuidar da saúde física, da alimentação e do sono não deve ser visto como uma vaidade fútil, mas como uma obrigação espiritual para manter o \"instrumento\" de trabalho da alma em perfeitas condições. 2. Infundir Intenção (Kavanah) no Cotidiano: Ações rotineiras podem ser elevadas. Comer deixa de ser apenas uma satisfação biológica e passa a ser a nutrição necessária para cumprir um propósito generoso. 3. Nutrição Espiritual Diária: Assim como o corpo precisa de refeições diárias, a alma precisa de \"alimento\" diário: momentos de reflexão, oração/meditação, estudo de sabedoria profunda e atos de caridade",
+      "posicao": 9,
+      "documento": "Corpo_Alma.txt",
+      "pasta": "Novos/12",
+      "caminho": "/home/m/GraphRAG/CHAT_NIVEL_2/Novos/12/Corpo_Alma.txt",
+      "autoria": "autor_projeto",
+      "temas": [
+        "Proposito",
+        "Fundamentos"
+      ],
+      "sefirot_define": [],
+      "sefirot_expressa": [
+        "Malchut"
+      ],
+      "entidades": [],
+      "conceitos_estruturais": [
+        {
+          "conceito": "Dirá BeTachtonim",
+          "peso": 5,
+          "justificativa": "O texto trata explicitamente da elevação da matéria (dinheiro, comida, objetos) através de ações conscientes, revelando 'faíscas divinas ocultas' e tornando o mundo físico morada para o significado espiritual/divino."
+        },
+        {
+          "conceito": "Moach Sholet Al HaLev",
+          "peso": 3,
+          "justificativa": "A metáfora do motorista (alma/consciência) governando o veículo (corpo/impulsos) e o critério de discernir impulso momentâneo versus propósito profundo ecoam a disciplina da consciência superior sobre o instinto, embora sem falar estritamente de mente sobre coração."
+        },
+        {
+          "conceito": "Adon Olam",
+          "peso": 0,
+          "justificativa": "Não há discussão da atuação Divina atemporal antes-durante-depois da Criação nem referência a Ein Sof nesse sentido."
+        }
+      ],
+      "observacoes_documento": "O trecho apresenta a visão chassídica integrada de corpo e alma como veículo e motorista, mostrando que a matéria deve ser elevada e orientada por propósito espiritual em vez de reprimida."
     }
   ]
 }
