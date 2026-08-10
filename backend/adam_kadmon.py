@@ -18,21 +18,14 @@ import json
 import sys
 from pathlib import Path
 
-import chromadb
-
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import CHROMA_DIR, LLM_MODEL
+from config import LLM_MODEL
 from backend.openrouter_client import ErroOpenRouter, post_com_retry
-from pipeline.vetorizar import NOME_COLECAO, embed_lote
+from pipeline.vetorizar import buscar_por_embeddings, embed_lote, todas_metadatas
 
 N_CANDIDATOS_AMPLO = 30
 N_CANDIDATOS_ESTREITO = 15
 MAX_CANDIDATOS_ETAPA_B = 8
-
-
-def _colecao():
-    cliente = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    return cliente.get_collection(NOME_COLECAO)
 
 
 _taxa_base_tema_cache: dict[str, float] | None = None
@@ -46,10 +39,10 @@ def _taxa_base_tema() -> dict[str, float]:
     sobre dinheiro, que deveria ser Financas)."""
     global _taxa_base_tema_cache
     if _taxa_base_tema_cache is None:
-        todos = _colecao().get(include=["metadatas"])
+        metadatas = todas_metadatas()
         contagem: dict[str, int] = {}
-        total = len(todos["metadatas"])
-        for m in todos["metadatas"]:
+        total = len(metadatas)
+        for m in metadatas:
             for t in _dividir(m["temas"]):
                 contagem[t] = contagem.get(t, 0) + 1
         _taxa_base_tema_cache = {t: n / total for t, n in contagem.items()}
@@ -95,19 +88,14 @@ def _traduzir_para_ingles(pergunta: str) -> str:
 def _buscar_vizinhos(pergunta: str, n: int) -> list[dict]:
     pergunta_en = _traduzir_para_ingles(pergunta)
     embs = embed_lote([pergunta, pergunta_en])
-    resultado = _colecao().query(query_embeddings=embs, n_results=n)
+    resultados_por_busca = buscar_por_embeddings(embs, n)
 
     melhor_por_id: dict[str, dict] = {}
-    for busca in range(len(resultado["ids"])):
-        for i in range(len(resultado["ids"][busca])):
-            chunk_id = resultado["ids"][busca][i]
-            dist = resultado["distances"][busca][i]
-            if chunk_id not in melhor_por_id or dist < melhor_por_id[chunk_id]["distancia"]:
-                melhor_por_id[chunk_id] = {
-                    "texto": resultado["documents"][busca][i],
-                    "distancia": dist,
-                    "meta": resultado["metadatas"][busca][i],
-                }
+    for resultados in resultados_por_busca:
+        for r in resultados:
+            chunk_id = r["id"]
+            if chunk_id not in melhor_por_id or r["distancia"] < melhor_por_id[chunk_id]["distancia"]:
+                melhor_por_id[chunk_id] = r
 
     return sorted(melhor_por_id.values(), key=lambda v: v["distancia"])[:n]
 

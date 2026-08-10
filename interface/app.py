@@ -25,28 +25,22 @@ NIVEL_NOMES_PARA_NUMERO = {v["nome"]: k for k, v in sorted(NIVEIS.items())}
 
 @st.cache_resource
 def _garantir_indice() -> None:
-    """No Streamlit Community Cloud o container sobe do zero a cada deploy —
-    data/chroma/ (gitignored, nunca commitado) não existe lá. Reconstrói o
-    índice a partir do corpus_confirmado.json (esse sim commitado) se ele
-    estiver ausente ou desatualizado. Local, com o índice já pronto, isso é
-    só uma checagem rápida (contagem bate, não refaz nada). `st.cache_resource`
-    garante que isso roda uma vez por processo, não a cada pergunta."""
+    """Sem Qdrant configurado, o índice é o ChromaDB local, e no Streamlit
+    Community Cloud o container sobe do zero a cada deploy — data/chroma/
+    (gitignored, nunca commitado) não existe lá, por isso reconstrói a
+    partir do corpus_confirmado.json (esse sim commitado) se estiver ausente
+    ou desatualizado. Com Qdrant configurado (ver config.get_qdrant_config)
+    ou com o índice local já pronto, isso é só uma checagem rápida de
+    contagem, não refaz nada. `st.cache_resource` garante que isso roda uma
+    vez por processo, não a cada pergunta."""
     import json
 
-    import chromadb
-
-    from config import CHROMA_DIR
-    from pipeline.vetorizar import CORPUS_JSON, NOME_COLECAO, popular_chromadb
+    from pipeline.vetorizar import CORPUS_JSON, contagem_atual, popular_indice
 
     esperado = len(json.loads(CORPUS_JSON.read_text(encoding="utf-8"))["chunks"])
-    cliente = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    try:
-        colecao = cliente.get_collection(NOME_COLECAO)
-        if colecao.count() == esperado:
-            return
-    except Exception:
-        pass
-    popular_chromadb()
+    if contagem_atual() == esperado:
+        return
+    popular_indice()
 
 
 with st.spinner("Preparando a base de conhecimento…"):

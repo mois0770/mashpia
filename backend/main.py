@@ -38,24 +38,20 @@ class PerguntaRequest(BaseModel):
 
 @app.get("/estatisticas")
 def estatisticas():
-    import chromadb
-    from config import CHROMA_DIR
-    from pipeline.vetorizar import NOME_COLECAO
+    from pipeline.vetorizar import contagem_atual, todas_metadatas
 
-    cliente = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    colecao = cliente.get_collection(NOME_COLECAO)
-    todos = colecao.get(include=["metadatas"])
+    metadatas = todas_metadatas()
 
     por_pasta: dict[str, int] = {}
     por_tema: dict[str, int] = {}
-    for m in todos["metadatas"]:
+    for m in metadatas:
         por_pasta[m["pasta"]] = por_pasta.get(m["pasta"], 0) + 1
         for t in m["temas"].split(","):
             if t:
                 por_tema[t] = por_tema.get(t, 0) + 1
 
     return {
-        "total_chunks": colecao.count(),
+        "total_chunks": contagem_atual(),
         "chunks_por_pasta": por_pasta,
         "chunks_por_tema": por_tema,
     }

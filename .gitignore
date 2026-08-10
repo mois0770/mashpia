@@ -1,5 +1,6 @@
 Openrouter_Ket.txt
 Supabase_Key.txt
+Qdrant_Key.txt
 *.key
 .env
 .streamlit/secrets.toml
