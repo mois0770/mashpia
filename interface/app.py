@@ -14,10 +14,55 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
 from backend.gerar_resposta import NIVEIS, gerar_resposta_stream
-from backend.limites import MAX_PERGUNTAS_POR_SESSAO, TetoDeCustoAtingido
+from backend.limites import (
+    MAX_PERGUNTAS_POR_USUARIO_DIA,
+    LimiteDiarioAtingido,
+    TetoDeCustoAtingido,
+    perguntas_hoje,
+    registrar_pergunta,
+    verificar_limite_diario,
+)
 from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
+
+
+def _verificar_senha() -> bool:
+    """Gate de acesso por senha — uma senha POR ASSINANTE, pra cada usuário
+    ter uma identidade própria e o teto de MAX_PERGUNTAS_POR_USUARIO_DIA
+    valer de verdade por pessoa, não só por sessão de navegador (que dava
+    pra contornar recarregando a página — era o que MAX_PERGUNTAS_POR_SESSAO
+    fazia antes, removido nesta migração).
+
+    Configurar em `.streamlit/secrets.toml` localmente (gitignored) e nas
+    Secrets do app no painel do Streamlit Cloud, uma tabela [usuarios] com
+    um id -> senha por assinante:
+
+        [usuarios]
+        fulano = "senha-do-fulano"
+        beltrana = "senha-da-beltrana"
+    """
+    if st.session_state.get("usuario_id"):
+        return True
+
+    st.title("Mashpia")
+    st.caption("Acesso restrito — informe a senha para continuar.")
+    senha = st.text_input("Senha de acesso", type="password", key="senha_input")
+    if senha:
+        usuarios = st.secrets.get("usuarios", {})
+        usuario_id = next((uid for uid, s in usuarios.items() if s == senha), None)
+        if usuario_id:
+            st.session_state["usuario_id"] = usuario_id
+            st.rerun()
+        else:
+            st.error("Senha incorreta.")
+    return False
+
+
+if not _verificar_senha():
+    st.stop()
+
+usuario_id = st.session_state["usuario_id"]
 
 # Ordenado por número de nível (1, 2, 3) para o radio aparecer nessa ordem.
 NIVEL_NOMES_PARA_NUMERO = {v["nome"]: k for k, v in sorted(NIVEIS.items())}
@@ -103,6 +148,9 @@ div.st-key-caixa_limpar {
 
 with st.sidebar:
     st.markdown(ESPACAMENTO_CSS, unsafe_allow_html=True)
+    st.caption(
+        f"Perguntas hoje: {perguntas_hoje(usuario_id)}/{MAX_PERGUNTAS_POR_USUARIO_DIA}"
+    )
     st.markdown(
         f"<div style='font-size:0.8rem; line-height:1.35;'>{AVISO_HTML}</div>",
         unsafe_allow_html=True,
@@ -199,17 +247,11 @@ if pergunta:
     with st.chat_message("user"):
         st.markdown(pergunta)
     with st.chat_message("assistant"):
-        # Rate limit por sessão (protege contra uma sessão só martelando
-        # perguntas) — camada mais fraca que o teto de custo global em
-        # limites.py (reseta se o usuário recarregar a página / abrir nova
-        # aba), mas simples e sem depender de identificar IP.
-        if st.session_state.get("perguntas_nesta_sessao", 0) >= MAX_PERGUNTAS_POR_SESSAO:
-            st.error(
-                f"Você atingiu o limite de {MAX_PERGUNTAS_POR_SESSAO} perguntas nesta "
-                "sessão. Recarregue a página para começar uma nova sessão."
-            )
+        try:
+            verificar_limite_diario(usuario_id)
+        except LimiteDiarioAtingido as e:
+            st.error(str(e))
             st.stop()
-        st.session_state["perguntas_nesta_sessao"] = st.session_state.get("perguntas_nesta_sessao", 0) + 1
         try:
             with st.spinner("Consultando as Sefirot..."):
                 classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta, nivel=nivel)
@@ -234,6 +276,9 @@ if pergunta:
         except ErroOpenRouter as e:
             st.error(f"Não consegui gerar uma resposta agora: {e}")
             st.stop()
+        # Só registra a pergunta pro teto diário DEPOIS de gerar com sucesso
+        # — uma falha da OpenRouter não deveria consumir a cota do usuário.
+        registrar_pergunta(usuario_id)
     st.session_state.historico.append({
         "pergunta": pergunta,
         "resposta": resposta_texto,
@@ -242,3 +287,8 @@ if pergunta:
         "relacoes_estruturais": relacoes_estruturais,
         "nivel_nome": nivel_nome,
     })
+    # Sem isso, a sidebar (renderizada ANTES deste bloco no script) mostra o
+    # contador de "perguntas hoje" de uma rodada atrás (achado real no Mentor,
+    # 2026-08-09): o registro já tem o número certo, só a tela ficava
+    # defasada até a próxima interação.
+    st.rerun()

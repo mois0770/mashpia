@@ -134,3 +134,128 @@ def registrar_custo(usd: float) -> None:
     estado["custo_acumulado_usd"] = estado.get("custo_acumulado_usd", 0.0) + usd
     estado["ultima_atualizacao"] = datetime.now(timezone.utc).isoformat()
     _salvar_estado(estado)
+
+
+# --- Teto de perguntas por usuário/dia (2026-08-10) -------------------------
+# Diferente de MAX_PERGUNTAS_POR_SESSAO (session_state do Streamlit, reseta a
+# cada recarregar de página — não serve como teto comercial de verdade) —
+# este teto é por IDENTIDADE do usuário (uma senha por assinante, ver
+# interface/app.py::_verificar_senha) e persiste entre sessões, resetando por
+# data corrida, não por sessão. Portado do Mentor, mas já nascendo com o
+# mesmo backend Supabase de custo_hoje()/registrar_custo() — a versão
+# original do Mentor usava só arquivo local, que teria o mesmo problema de
+# persistência já corrigido aqui (reboot no Streamlit Cloud reseta o disco).
+
+MAX_PERGUNTAS_POR_USUARIO_DIA = 5
+
+_ARQUIVO_PERGUNTAS = DATA_DIR / "perguntas_por_usuario.json"
+_TABELA_SUPABASE_PERGUNTAS = "perguntas_por_usuario"
+
+
+class LimiteDiarioAtingido(Exception):
+    """Levantada quando um usuário já usou suas MAX_PERGUNTAS_POR_USUARIO_DIA
+    perguntas de hoje (ou quando não foi possível verificar — mesma política
+    de falha fechada de verificar_teto())."""
+
+
+def _carregar_perguntas_arquivo() -> dict:
+    if _ARQUIVO_PERGUNTAS.exists():
+        try:
+            return json.loads(_ARQUIVO_PERGUNTAS.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, ValueError):
+            return {}
+    return {}
+
+
+def _salvar_perguntas_arquivo(dados: dict) -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    _ARQUIVO_PERGUNTAS.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def perguntas_hoje(usuario_id: str) -> int:
+    hoje = date.today().isoformat()
+    config_supabase = get_supabase_config()
+
+    if config_supabase:
+        url, chave = config_supabase
+        resp = requests.get(
+            f"{url}/rest/v1/{_TABELA_SUPABASE_PERGUNTAS}",
+            headers=_supabase_headers(chave),
+            params={"usuario_id": f"eq.{usuario_id}", "data": f"eq.{hoje}", "select": "perguntas"},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        linhas = resp.json()
+        return int(linhas[0]["perguntas"]) if linhas else 0
+
+    registro = _carregar_perguntas_arquivo().get(usuario_id, {})
+    if registro.get("data") != hoje:
+        return 0
+    try:
+        return int(registro.get("perguntas", 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def limite_diario_atingido(usuario_id: str) -> bool:
+    return perguntas_hoje(usuario_id) >= MAX_PERGUNTAS_POR_USUARIO_DIA
+
+
+def verificar_limite_diario(usuario_id: str) -> None:
+    """Chamar ANTES de processar uma pergunta nova — mesma política de falha
+    fechada de verificar_teto(): se não der pra consultar o Supabase, bloqueia
+    em vez de deixar passar sem controle nenhum."""
+    try:
+        atingido = limite_diario_atingido(usuario_id)
+    except requests.RequestException as e:
+        raise LimiteDiarioAtingido(
+            "Não foi possível verificar seu limite de perguntas agora (instabilidade "
+            "temporária). Tente novamente em alguns instantes."
+        ) from e
+
+    if atingido:
+        raise LimiteDiarioAtingido(
+            f"Você atingiu o limite de {MAX_PERGUNTAS_POR_USUARIO_DIA} perguntas de hoje. "
+            "Volte amanhã para continuar."
+        )
+
+
+def registrar_pergunta(usuario_id: str) -> None:
+    """Chamar depois de uma pergunta processada com sucesso — soma 1 ao
+    contador de hoje do usuário. Best-effort (mesma política de
+    registrar_custo(): não pode derrubar uma resposta que já chegou certinha
+    por causa de uma falha aqui)."""
+    hoje = date.today().isoformat()
+    config_supabase = get_supabase_config()
+
+    if config_supabase:
+        url, chave = config_supabase
+        try:
+            atual = perguntas_hoje(usuario_id)
+            headers = _supabase_headers(chave)
+            headers["Prefer"] = "resolution=merge-duplicates"
+            resp = requests.post(
+                f"{url}/rest/v1/{_TABELA_SUPABASE_PERGUNTAS}",
+                headers=headers,
+                params={"on_conflict": "usuario_id,data"},
+                json={
+                    "usuario_id": usuario_id,
+                    "data": hoje,
+                    "perguntas": atual + 1,
+                    "ultima_pergunta": datetime.now(timezone.utc).isoformat(),
+                },
+                timeout=10,
+            )
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"[aviso] falha ao registrar pergunta (resposta segue normalmente): {e}")
+        return
+
+    dados = _carregar_perguntas_arquivo()
+    registro = dados.get(usuario_id, {})
+    if registro.get("data") != hoje:
+        registro = {"data": hoje, "perguntas": 0}
+    registro["perguntas"] = int(registro.get("perguntas", 0)) + 1
+    registro["ultima_pergunta"] = datetime.now(timezone.utc).isoformat()
+    dados[usuario_id] = registro
+    _salvar_perguntas_arquivo(dados)
