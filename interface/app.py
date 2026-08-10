@@ -14,7 +14,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from backend.feedback import salvar_feedback
 from backend.gerar_resposta import NIVEIS, gerar_resposta_stream
-from backend.limites import MAX_PERGUNTAS_POR_SESSAO, TetoDeCustoAtingido, custo_hoje
+from backend.limites import MAX_PERGUNTAS_POR_SESSAO, TetoDeCustoAtingido
 from backend.openrouter_client import ErroOpenRouter
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
@@ -114,11 +114,6 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.divider()
-
-    # Temporário (teste de persistência do container, 2026-08-10) — remover
-    # depois de confirmar se data/uso_diario.json sobrevive a reboot/redeploy
-    # no Streamlit Community Cloud.
-    st.caption(f"[debug] custo hoje: US$ {custo_hoje():.4f}")
 
     st.markdown(CAIXAS_CSS, unsafe_allow_html=True)
 
