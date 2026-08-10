@@ -34,6 +34,32 @@ def get_openrouter_key() -> str:
     )
 
 
+def get_supabase_config() -> tuple[str, str] | None:
+    """Mesma cadeia de fallback de get_openrouter_key(). Retorna (url, chave
+    service_role) ou None se não configurado — quem chama decide o que fazer
+    (backend/limites.py cai de volta pro arquivo local nesse caso, pra não
+    quebrar uso local/scripts sem exigir conta no Supabase)."""
+    url = os.environ.get("SUPABASE_URL")
+    chave = os.environ.get("SUPABASE_SERVICE_KEY")
+    if url and chave:
+        return url, chave
+
+    try:
+        import streamlit as st
+        if "SUPABASE_URL" in st.secrets and "SUPABASE_SERVICE_KEY" in st.secrets:
+            return st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_SERVICE_KEY"]
+    except Exception:
+        pass
+
+    _arquivo = BASE_DIR / "Supabase_Key.txt"
+    if _arquivo.exists():
+        linhas = _arquivo.read_text().strip().splitlines()
+        if len(linhas) >= 2:
+            return linhas[0].strip(), linhas[1].strip()
+
+    return None
+
+
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 # Modelo de embedding multilíngue — ver seção 11.3 do documento de arquitetura.

@@ -15,12 +15,15 @@ import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-from config import DATA_DIR
+import requests
+
+from config import DATA_DIR, get_supabase_config
 
 TETO_CUSTO_DIARIO_USD = 5.0
 MAX_PERGUNTAS_POR_SESSAO = 10
 
 _ARQUIVO_USO = DATA_DIR / "uso_diario.json"
+_TABELA_SUPABASE = "uso_diario"
 
 
 class TetoDeCustoAtingido(Exception):
@@ -28,17 +31,61 @@ class TetoDeCustoAtingido(Exception):
     interrompe ANTES de gastar mais, não depois."""
 
 
+def _supabase_headers(chave: str) -> dict:
+    return {"apikey": chave, "Authorization": f"Bearer {chave}", "Content-Type": "application/json"}
+
+
 def _carregar_estado() -> dict:
+    """Lê do Supabase quando configurado (achado real 2026-08-10: o disco
+    local NÃO sobrevive a reboot/redeploy no Streamlit Community Cloud —
+    testado e confirmado). Sem Supabase configurado (dev local, scripts como
+    medir_tokens.py), cai no arquivo local — mesmo comportamento de antes,
+    pra não exigir conta no Supabase só pra rodar testes."""
     hoje = date.today().isoformat()
+    config_supabase = get_supabase_config()
+
+    if config_supabase:
+        url, chave = config_supabase
+        resp = requests.get(
+            f"{url}/rest/v1/{_TABELA_SUPABASE}",
+            headers=_supabase_headers(chave),
+            params={"data": f"eq.{hoje}", "select": "custo_acumulado_usd"},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        linhas = resp.json()
+        if linhas:
+            return {"data": hoje, "custo_acumulado_usd": float(linhas[0]["custo_acumulado_usd"])}
+        return {"data": hoje, "custo_acumulado_usd": 0.0}
+
     if _ARQUIVO_USO.exists():
         estado = json.loads(_ARQUIVO_USO.read_text(encoding="utf-8"))
         if estado.get("data") == hoje:
             return estado
-    # dia novo (ou arquivo ainda não existe) — reseta o acumulado
     return {"data": hoje, "custo_acumulado_usd": 0.0}
 
 
 def _salvar_estado(estado: dict) -> None:
+    config_supabase = get_supabase_config()
+
+    if config_supabase:
+        url, chave = config_supabase
+        headers = _supabase_headers(chave)
+        headers["Prefer"] = "resolution=merge-duplicates"
+        resp = requests.post(
+            f"{url}/rest/v1/{_TABELA_SUPABASE}",
+            headers=headers,
+            params={"on_conflict": "data"},
+            json={
+                "data": estado["data"],
+                "custo_acumulado_usd": estado["custo_acumulado_usd"],
+                "ultima_atualizacao": datetime.now(timezone.utc).isoformat(),
+            },
+            timeout=10,
+        )
+        resp.raise_for_status()
+        return
+
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     _ARQUIVO_USO.write_text(json.dumps(estado, ensure_ascii=False, indent=2), encoding="utf-8")
 
