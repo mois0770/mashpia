@@ -321,7 +321,13 @@ def gerar_resposta_stream(pergunta: str, nivel: int = NIVEL_PADRAO):
                         continue
                     custo = obj.get("usage", {}).get("cost")
                     if custo:
-                        registrar_custo(custo)
+                        try:
+                            registrar_custo(custo)
+                        except requests.RequestException as e:
+                            # Mesmo motivo do openrouter_client.py: registro de custo é
+                            # best-effort, não pode quebrar o streaming da resposta que
+                            # o usuário já está lendo.
+                            print(f"[aviso] falha ao registrar custo (streaming segue normalmente): {e}")
                     delta = obj.get("choices", [{}])[0].get("delta", {})
                     pedaco = delta.get("content")
                     if pedaco:

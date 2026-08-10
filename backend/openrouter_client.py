@@ -73,7 +73,13 @@ def post_com_retry(caminho: str, corpo: dict, timeout: int,
             except (ValueError, KeyError):
                 custo = 0
             if custo:
-                registrar_custo(custo)
+                try:
+                    registrar_custo(custo)
+                except requests.RequestException as e:
+                    # Registro de custo é best-effort — uma falha aqui (ex.: chave do
+                    # Supabase inválida/rotacionada) não pode derrubar uma resposta que
+                    # já chegou certinha da OpenRouter.
+                    print(f"[aviso] falha ao registrar custo (resposta segue normalmente): {e}")
 
         return resp
 

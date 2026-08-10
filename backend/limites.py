@@ -101,8 +101,22 @@ def teto_atingido() -> bool:
 def verificar_teto() -> None:
     """Chamar ANTES de iniciar uma pergunta nova (antes de qualquer chamada
     à OpenRouter) — levanta TetoDeCustoAtingido se já bateu o teto, evitando
-    gastar mais enquanto o pedido já era pra ser recusado."""
-    if teto_atingido():
+    gastar mais enquanto o pedido já era pra ser recusado.
+
+    Diferente de registrar_custo() (best-effort, nunca derruba uma resposta
+    já paga): aqui, se não der pra consultar o Supabase (ex.: chave rotacionada,
+    instabilidade), a checagem falha FECHADA — bloqueia a pergunta em vez de
+    deixar passar sem nenhum controle de custo, que é exatamente o risco que
+    este módulo existe pra evitar (ver docstring do arquivo)."""
+    try:
+        atingido = teto_atingido()
+    except requests.RequestException as e:
+        raise TetoDeCustoAtingido(
+            "Não foi possível verificar o limite de uso agora (instabilidade temporária). "
+            "Tente novamente em alguns instantes."
+        ) from e
+
+    if atingido:
         raise TetoDeCustoAtingido(
             f"O limite diário de uso deste app (US$ {TETO_CUSTO_DIARIO_USD:.2f}) já foi "
             "atingido. Volte amanhã ou entre em contato com o responsável pelo projeto."
