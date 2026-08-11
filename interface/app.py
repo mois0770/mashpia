@@ -12,6 +12,7 @@ from pathlib import Path
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from backend.cadastro import CadastroIndisponivel, UsuarioJaExiste, criar_conta, verificar_login
 from backend.feedback import salvar_feedback
 from backend.gerar_resposta import NIVEIS, gerar_resposta_stream
 from backend.limites import (
@@ -28,34 +29,57 @@ st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
 
 
 def _verificar_senha() -> bool:
-    """Gate de acesso por senha — uma senha POR ASSINANTE, pra cada usuário
-    ter uma identidade própria e o teto de MAX_PERGUNTAS_POR_USUARIO_DIA
-    valer de verdade por pessoa, não só por sessão de navegador (que dava
-    pra contornar recarregando a página — era o que MAX_PERGUNTAS_POR_SESSAO
-    fazia antes, removido nesta migração).
+    """Gate de acesso — duas origens de conta:
+    1. Manual, via [usuarios] nos Secrets (eu edito por assinante, senha em
+       texto puro — aceitável só pra um punhado de contas).
+    2. Self-service (2026-08-11, fase de teste), via backend/cadastro.py —
+       conta no Supabase com senha com hash (bcrypt), qualquer um cria
+       sozinho pela aba "Criar conta". Ainda sem cobrança associada: toda
+       conta nova já entra ativa, só pra validar o mecanismo.
 
-    Configurar em `.streamlit/secrets.toml` localmente (gitignored) e nas
-    Secrets do app no painel do Streamlit Cloud, uma tabela [usuarios] com
-    um id -> senha por assinante:
-
-        [usuarios]
-        fulano = "senha-do-fulano"
-        beltrana = "senha-da-beltrana"
+    Nos dois casos, MAX_PERGUNTAS_POR_USUARIO_DIA passa a valer por
+    usuario_id de verdade, não só por sessão de navegador (bypassável
+    recarregando a página).
     """
     if st.session_state.get("usuario_id"):
         return True
 
     st.title("Mashpia")
-    st.caption("Acesso restrito — informe a senha para continuar.")
-    senha = st.text_input("Senha de acesso", type="password", key="senha_input")
-    if senha:
-        usuarios = st.secrets.get("usuarios", {})
-        usuario_id = next((uid for uid, s in usuarios.items() if s == senha), None)
-        if usuario_id:
-            st.session_state["usuario_id"] = usuario_id
-            st.rerun()
-        else:
-            st.error("Senha incorreta.")
+
+    aba_entrar, aba_criar = st.tabs(["Entrar", "Criar conta (teste)"])
+
+    with aba_entrar:
+        st.caption("Acesso restrito — informe suas credenciais para continuar.")
+        usuario_id_input = st.text_input("Usuário", key="login_usuario_input")
+        senha = st.text_input("Senha", type="password", key="login_senha_input")
+        if st.button("Entrar"):
+            usuarios_manuais = st.secrets.get("usuarios", {})
+            if usuarios_manuais.get(usuario_id_input) == senha or verificar_login(usuario_id_input, senha):
+                st.session_state["usuario_id"] = usuario_id_input
+                st.rerun()
+            else:
+                st.error("Usuário ou senha incorretos.")
+
+    with aba_criar:
+        st.caption(
+            "Cadastro de teste — cria uma conta nova, sem cobrança associada ainda "
+            "(fase de validação do mecanismo)."
+        )
+        novo_id = st.text_input("Escolha um nome de usuário", key="cadastro_usuario_input")
+        nova_senha = st.text_input("Escolha uma senha", type="password", key="cadastro_senha_input")
+        confirmar = st.text_input("Confirme a senha", type="password", key="cadastro_confirmar_input")
+        if st.button("Criar conta"):
+            if not novo_id or not nova_senha:
+                st.error("Preencha usuário e senha.")
+            elif nova_senha != confirmar:
+                st.error("As senhas não coincidem.")
+            else:
+                try:
+                    criar_conta(novo_id, nova_senha)
+                    st.success('Conta criada! Use a aba "Entrar" com as credenciais que você escolheu.')
+                except (UsuarioJaExiste, CadastroIndisponivel) as e:
+                    st.error(str(e))
+
     return False
 
 
