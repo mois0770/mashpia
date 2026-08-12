@@ -80,14 +80,21 @@ def _verificar_senha() -> bool:
             "Cadastro de teste — cria uma conta nova, sem cobrança associada ainda "
             "(fase de validação do mecanismo)."
         )
-        with st.expander("Termos de Uso"):
-            st.text(TERMOS_PATH.read_text(encoding="utf-8"))
-        with st.expander("Política de Privacidade"):
-            st.text(POLITICA_PATH.read_text(encoding="utf-8"))
-        concorda = st.checkbox(
-            "Li e concordo com os Termos de Uso e a Política de Privacidade",
-            key="concorda_termos_input",
-        )
+        # Termos_de_Uso.txt/Politica_de_Privacidade.txt ainda não foram publicados
+        # (em revisão) — só exige o checkbox quando os arquivos existirem de
+        # verdade no deploy, pra não quebrar o cadastro enquanto isso não sobe.
+        documentos_disponiveis = TERMOS_PATH.exists() and POLITICA_PATH.exists()
+        if documentos_disponiveis:
+            with st.expander("Termos de Uso"):
+                st.text(TERMOS_PATH.read_text(encoding="utf-8"))
+            with st.expander("Política de Privacidade"):
+                st.text(POLITICA_PATH.read_text(encoding="utf-8"))
+            concorda = st.checkbox(
+                "Li e concordo com os Termos de Uso e a Política de Privacidade",
+                key="concorda_termos_input",
+            )
+        else:
+            concorda = True
         novo_id = st.text_input("Escolha um nome de usuário", key="cadastro_usuario_input")
         nova_senha = st.text_input("Escolha uma senha", type="password", key="cadastro_senha_input")
         confirmar = st.text_input("Confirme a senha", type="password", key="cadastro_confirmar_input")
