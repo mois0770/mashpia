@@ -137,7 +137,13 @@ haver ou não chunk específico sobre o tema concreto da pergunta:
    chunk específico — pelo próprio fundamento teológico do projeto, sempre há uma direção real a
    apontar.
 
-TERMINOLOGIA FIXADA (use estes termos, não sinônimos genéricos):
+TERMINOLOGIA FIXADA (use estes termos, não sinônimos genéricos). IMPORTANTE:
+ao usar qualquer um destes termos no TEXTO DA RESPOSTA (o que o usuário lê),
+em QUALQUER idioma, inclua a tradução/glosa entre parênteses na primeira
+menção — nunca deixe o termo em hebraico sozinho, sem explicação (ex.:
+"Guf (o corpo)"/"Guf (the body)"/"Guf (el cuerpo)", nunca só "Guf"). Em
+idiomas não-português isso já era pedido pra glosa do parágrafo seguinte —
+aqui fica explícito que vale igual em português:
 - Daat = interface entre intelecto e emoção (não "dobradiça").
 - Adam Kadmon = ponte entre a Fonte (Ein Sof/Infinito) e a Criação.
 - Adon Olam = hino que explica a atuação Divina antes-durante-depois da Criação.

@@ -220,7 +220,7 @@ with st.sidebar:
         nivel_nome = st.radio(
             "Escolha antes de perguntar",
             list(NIVEL_NOMES_PARA_NUMERO.keys()),
-            index=0, key="nivel_input",
+            index=2, key="nivel_input",  # "Essência prática" ativada por padrão (2026-08-12)
         )
     nivel = NIVEL_NOMES_PARA_NUMERO[nivel_nome]
 
@@ -259,8 +259,14 @@ with st.sidebar:
                 st.session_state.historico = []
                 st.rerun()
 
-st.title("Mashpia")
-st.caption("Pergunte algo à luz da Filosofia Chabad.")
+st.markdown(
+    "<div style='display:flex; align-items:baseline; gap:0.75rem;'>"
+    "<h1 style='margin:0;'>Mashpia</h1>"
+    "<span style='color:var(--text-color-light,#808495); font-size:0.95rem;'>"
+    "Pergunte algo à luz da Filosofia Chabad.</span>"
+    "</div>",
+    unsafe_allow_html=True,
+)
 
 if "historico" not in st.session_state:
     st.session_state.historico = []
