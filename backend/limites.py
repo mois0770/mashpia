@@ -16,6 +16,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 import requests
+import sentry_sdk
 
 from config import DATA_DIR, get_supabase_config
 
@@ -111,6 +112,7 @@ def verificar_teto() -> None:
     try:
         atingido = teto_atingido()
     except requests.RequestException as e:
+        sentry_sdk.capture_exception(e)
         raise TetoDeCustoAtingido(
             "Não foi possível verificar o limite de uso agora (instabilidade temporária). "
             "Tente novamente em alguns instantes."
@@ -208,6 +210,7 @@ def verificar_limite_diario(usuario_id: str) -> None:
     try:
         atingido = limite_diario_atingido(usuario_id)
     except requests.RequestException as e:
+        sentry_sdk.capture_exception(e)
         raise LimiteDiarioAtingido(
             "Não foi possível verificar seu limite de perguntas agora (instabilidade "
             "temporária). Tente novamente em alguns instantes."
@@ -248,6 +251,7 @@ def registrar_pergunta(usuario_id: str) -> None:
             )
             resp.raise_for_status()
         except requests.RequestException as e:
+            sentry_sdk.capture_exception(e)
             print(f"[aviso] falha ao registrar pergunta (resposta segue normalmente): {e}")
         return
 

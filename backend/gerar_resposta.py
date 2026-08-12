@@ -31,6 +31,7 @@ import sys
 from pathlib import Path
 
 import requests
+import sentry_sdk
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import LLM_MODEL
@@ -326,7 +327,8 @@ def gerar_resposta_stream(pergunta: str, nivel: int = NIVEL_PADRAO):
                         except requests.RequestException as e:
                             # Mesmo motivo do openrouter_client.py: registro de custo é
                             # best-effort, não pode quebrar o streaming da resposta que
-                            # o usuário já está lendo.
+                            # o usuário já está lendo. Reporta pro Sentry mesmo assim.
+                            sentry_sdk.capture_exception(e)
                             print(f"[aviso] falha ao registrar custo (streaming segue normalmente): {e}")
                     delta = obj.get("choices", [{}])[0].get("delta", {})
                     pedaco = delta.get("content")

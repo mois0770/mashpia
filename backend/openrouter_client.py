@@ -14,6 +14,7 @@ final do SSE (ver gerar_resposta.gerar_resposta_stream)."""
 import time
 
 import requests
+import sentry_sdk
 
 from config import OPENROUTER_BASE_URL, get_openrouter_key
 from backend.limites import registrar_custo
@@ -78,7 +79,11 @@ def post_com_retry(caminho: str, corpo: dict, timeout: int,
                 except requests.RequestException as e:
                     # Registro de custo é best-effort — uma falha aqui (ex.: chave do
                     # Supabase inválida/rotacionada) não pode derrubar uma resposta que
-                    # já chegou certinha da OpenRouter.
+                    # já chegou certinha da OpenRouter. Ainda assim reporta pro Sentry —
+                    # é exatamente o tipo de falha silenciosa que passaria despercebida
+                    # sem monitoramento (achado real: já aconteceu durante rotação de
+                    # chave do Supabase, 2026-08-10).
+                    sentry_sdk.capture_exception(e)
                     print(f"[aviso] falha ao registrar custo (resposta segue normalmente): {e}")
 
         return resp

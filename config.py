@@ -86,6 +86,30 @@ def get_qdrant_config() -> tuple[str, str] | None:
     return None
 
 
+def get_sentry_dsn() -> str | None:
+    """Mesmo padrão de get_supabase_config()/get_qdrant_config(), mas devolve
+    um valor só (a DSN do Sentry não é secreta como as outras chaves — é
+    write-only por natureza, mas mantém o mesmo formato de arquivo local por
+    consistência). None se não configurado — quem chama decide não inicializar
+    o Sentry nesse caso, sem quebrar uso local sem conta lá."""
+    dsn = os.environ.get("SENTRY_DSN")
+    if dsn:
+        return dsn
+
+    try:
+        import streamlit as st
+        if "SENTRY_DSN" in st.secrets:
+            return st.secrets["SENTRY_DSN"]
+    except Exception:
+        pass
+
+    _arquivo = BASE_DIR / "Sentry_Dsn.txt"
+    if _arquivo.exists():
+        return _arquivo.read_text().strip()
+
+    return None
+
+
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 # Modelo de embedding multilíngue — ver seção 11.3 do documento de arquitetura.

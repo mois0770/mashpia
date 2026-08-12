@@ -9,6 +9,7 @@ via HTTP, dá pra trocar por chamadas requests ao servidor uvicorn depois.
 import sys
 from pathlib import Path
 
+import sentry_sdk
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -24,8 +25,22 @@ from backend.limites import (
     verificar_limite_diario,
 )
 from backend.openrouter_client import ErroOpenRouter
+from config import get_sentry_dsn
+
+# Monitoramento de erro (2026-08-11) — sem isso, uma falha em produção só
+# aparece se alguém reclamar. Sem SENTRY_DSN configurado, não inicializa
+# (não trava uso local sem conta no Sentry). traces_sample_rate=0 porque só
+# queremos captura de erro, não rastreamento de performance (economiza cota
+# do tier grátis, 5.000 eventos/mês).
+_sentry_dsn = get_sentry_dsn()
+if _sentry_dsn:
+    sentry_sdk.init(dsn=_sentry_dsn, traces_sample_rate=0.0, send_default_pii=False)
 
 st.set_page_config(page_title="Mashpia", page_icon="✡", layout="wide")
+
+_BASE_DIR = Path(__file__).resolve().parent.parent
+TERMOS_PATH = _BASE_DIR / "Termos_de_Uso.txt"
+POLITICA_PATH = _BASE_DIR / "Politica_de_Privacidade.txt"
 
 
 def _verificar_senha() -> bool:
@@ -65,11 +80,21 @@ def _verificar_senha() -> bool:
             "Cadastro de teste — cria uma conta nova, sem cobrança associada ainda "
             "(fase de validação do mecanismo)."
         )
+        with st.expander("Termos de Uso"):
+            st.text(TERMOS_PATH.read_text(encoding="utf-8"))
+        with st.expander("Política de Privacidade"):
+            st.text(POLITICA_PATH.read_text(encoding="utf-8"))
+        concorda = st.checkbox(
+            "Li e concordo com os Termos de Uso e a Política de Privacidade",
+            key="concorda_termos_input",
+        )
         novo_id = st.text_input("Escolha um nome de usuário", key="cadastro_usuario_input")
         nova_senha = st.text_input("Escolha uma senha", type="password", key="cadastro_senha_input")
         confirmar = st.text_input("Confirme a senha", type="password", key="cadastro_confirmar_input")
         if st.button("Criar conta"):
-            if not novo_id or not nova_senha:
+            if not concorda:
+                st.error("É necessário concordar com os Termos de Uso e a Política de Privacidade.")
+            elif not novo_id or not nova_senha:
                 st.error("Preencha usuário e senha.")
             elif nova_senha != confirmar:
                 st.error("As senhas não coincidem.")
@@ -298,6 +323,7 @@ if pergunta:
             st.error(str(e))
             st.stop()
         except ErroOpenRouter as e:
+            sentry_sdk.capture_exception(e)
             st.error(f"Não consegui gerar uma resposta agora: {e}")
             st.stop()
         # Só registra a pergunta pro teto diário DEPOIS de gerar com sucesso
