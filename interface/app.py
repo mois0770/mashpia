@@ -151,6 +151,9 @@ AVISO_PARAGRAFOS = [
     "Chat baseado na Filosofia Chabad. Respostas segundo o conceito de Sefirot.",
     "A Filosofia Chassídica Chabad é parte integrante da Torá, em cujo paradigma o Espiritual "
     "domina, e dá Forma, ao Material.",
+   " A Torá provem da inacessivel Sabedoria Divina e contem todo o conhecimento humano.",
+    "As Sefirot representam a manifestação de D'us nos mundos espirituais e material.",
+    "São os blocos fundamentais de toda a Criação e , tambẽm, expressam a natureza de cada individuo.",
     "A Mente, que é regida pelo Espiritual, é a origem do Pensamento. Pensamento é o início da "
     "ação. A Mente dirige os Sentimentos.",
     "Quanto mais se entende a essência, melhor se resolve o problema.",
