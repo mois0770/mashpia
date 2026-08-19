@@ -263,8 +263,12 @@ with st.sidebar:
                 st.rerun()
 
 st.markdown(
-    "<div style='display:flex; align-items:baseline; gap:0.75rem;'>"
+    "<div style='display:flex; align-items:baseline; gap:0.75rem; flex-wrap:wrap;'>"
     "<h1 style='margin:0;'>Mashpia</h1>"
+    "<span style='border:1px solid var(--text-color-light,#808495); "
+    "color:var(--text-color-light,#808495); border-radius:999px; "
+    "padding:0.1rem 0.55rem; font-size:0.7rem; font-weight:600; "
+    "letter-spacing:0.02em; white-space:nowrap;'>Assistente Virtual de IA</span>"
     "<span style='color:var(--text-color-light,#808495); font-size:0.95rem;'>"
     "Pergunte algo à luz da Filosofia Chabad.</span>"
     "</div>",
