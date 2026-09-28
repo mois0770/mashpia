@@ -6,6 +6,7 @@ simples de rodar localmente, um processo só. Se quiser testar o caminho real
 via HTTP, dá pra trocar por chamadas requests ao servidor uvicorn depois.
 """
 
+import random
 import sys
 from pathlib import Path
 
@@ -25,7 +26,9 @@ from backend.limites import (
     verificar_limite_diario,
 )
 from backend.openrouter_client import ErroOpenRouter
-from config import get_sentry_dsn
+from config import get_modo_teste_sem_login, get_sentry_dsn
+
+MODO_TESTE = get_modo_teste_sem_login()
 
 # Monitoramento de erro (2026-08-11) — sem isso, uma falha em produção só
 # aparece se alguém reclamar. Sem SENTRY_DSN configurado, não inicializa
@@ -115,7 +118,10 @@ def _verificar_senha() -> bool:
     return False
 
 
-if not _verificar_senha():
+if MODO_TESTE:
+    # Visitante anônimo: id aleatório por sessão só pra marcar os feedbacks.
+    st.session_state.setdefault("usuario_id", f"visitante-teste-{random.randrange(10**6):06d}")
+elif not _verificar_senha():
     st.stop()
 
 usuario_id = st.session_state["usuario_id"]
@@ -207,9 +213,12 @@ div.st-key-caixa_limpar {
 
 with st.sidebar:
     st.markdown(ESPACAMENTO_CSS, unsafe_allow_html=True)
-    st.caption(
-        f"Perguntas hoje: {perguntas_hoje(usuario_id)}/{MAX_PERGUNTAS_POR_USUARIO_DIA}"
-    )
+    if MODO_TESTE:
+        st.caption("Versão de teste — acesso livre, sem login.")
+    else:
+        st.caption(
+            f"Perguntas hoje: {perguntas_hoje(usuario_id)}/{MAX_PERGUNTAS_POR_USUARIO_DIA}"
+        )
     st.markdown(
         f"<div style='font-size:0.8rem; line-height:1.35;'>{AVISO_HTML}</div>",
         unsafe_allow_html=True,
@@ -316,11 +325,12 @@ if pergunta:
     with st.chat_message("user"):
         st.markdown(pergunta)
     with st.chat_message("assistant"):
-        try:
-            verificar_limite_diario(usuario_id)
-        except LimiteDiarioAtingido as e:
-            st.error(str(e))
-            st.stop()
+        if not MODO_TESTE:
+            try:
+                verificar_limite_diario(usuario_id)
+            except LimiteDiarioAtingido as e:
+                st.error(str(e))
+                st.stop()
         try:
             with st.spinner("Consultando as Sefirot..."):
                 classificacao, chunks_usados, relacoes_estruturais, gerador = gerar_resposta_stream(pergunta, nivel=nivel)
@@ -348,7 +358,8 @@ if pergunta:
             st.stop()
         # Só registra a pergunta pro teto diário DEPOIS de gerar com sucesso
         # — uma falha da OpenRouter não deveria consumir a cota do usuário.
-        registrar_pergunta(usuario_id)
+        if not MODO_TESTE:
+            registrar_pergunta(usuario_id)
     st.session_state.historico.append({
         "pergunta": pergunta,
         "resposta": resposta_texto,

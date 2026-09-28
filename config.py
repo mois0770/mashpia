@@ -117,3 +117,18 @@ EMBEDDING_MODEL = "openai/text-embedding-3-large"
 
 # Modelo de classificação/geração — "boa qualidade", a refinar conforme uso real.
 LLM_MODEL = "anthropic/claude-sonnet-5"
+
+
+def get_modo_teste_sem_login() -> bool:
+    """App público de teste (branch teste-sem-login): com MODO_TESTE_SEM_LOGIN
+    = true (env ou Secrets), pula o login e o limite de perguntas por
+    usuário — só o teto de custo diário continua valendo. Desligado por
+    padrão, então a produção não muda mesmo se este código chegar ao main."""
+    valor = os.environ.get("MODO_TESTE_SEM_LOGIN")
+    if valor is None:
+        try:
+            import streamlit as st
+            valor = st.secrets.get("MODO_TESTE_SEM_LOGIN")
+        except Exception:
+            valor = None
+    return str(valor).strip().lower() in ("1", "true", "sim", "yes")
