@@ -19,7 +19,7 @@ from backend.openrouter_client import post_com_retry
 from grafo.schema import CONCEITOS_ESTRUTURAIS, ENTIDADES, SEFIROT_E_NOS_PONTE, TEMAS
 from pipeline.metadados_confirmados import DOCUMENTOS
 
-PASTA_DIVIDIDOS = Path("/home/m/GraphRAG/CHAT_NIVEL_2/Divididos")
+PASTA_DIVIDIDOS = Path("/home/m/GraphRAG/Mashpia_Mentor_Comum/CHAT_NIVEL_2/Divididos")
 RELATORIO_JSON = Path(__file__).resolve().parent / "sugestao_tags.json"
 
 _SEFIROT_LISTA = ", ".join(SEFIROT_E_NOS_PONTE)

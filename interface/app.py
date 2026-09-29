@@ -62,12 +62,32 @@ def _verificar_senha() -> bool:
     if st.session_state.get("usuario_id"):
         return True
 
-    st.title("Mashpia")
+    st.markdown(
+        "<div style='display:flex; align-items:baseline; gap:0.6rem; flex-wrap:wrap;'>"
+        "<h1 style='margin:0;'>Mashpia</h1>"
+        "<span style='color:var(--text-color-light,#808495); font-size:0.95rem;'>"
+        "Respostas segundo as Sefirot, que revelam a essência.</span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
-    aba_entrar, aba_criar = st.tabs(["Entrar", "Criar conta (teste)"])
+    st.markdown(
+        "Há perguntas que a internet não responde: sobre conduta, propósito e dúvidas "
+        "existenciais. O Mashpia responde segundo as Sefirot — as manifestações de D'us "
+        "que são a matéria-prima de tudo o que existe, inclusive de você. Fundamentado "
+        "na Filosofia Chabad, parte integrante da Torá, ele vai à raiz do problema, "
+        "não apenas ao sintoma. E cada resposta desenvolve, ao mesmo tempo, o seu "
+        "raciocínio e o seu lado espiritual."
+    )
+    st.markdown(
+        "✓ Respostas segundo as Sefirot sobre conduta, comportamento e dúvidas existenciais\n\n"
+        "✓ Bem-estar físico, mental e espiritual: a harmonia das suas Sefirot\n\n"
+        "✓ Escolha a profundidade da resposta — e experimente grátis"
+    )
+
+    aba_criar, aba_entrar = st.tabs(["Criar conta grátis", "Entrar"])
 
     with aba_entrar:
-        st.caption("Acesso restrito — informe suas credenciais para continuar.")
         usuario_id_input = st.text_input("Usuário", key="login_usuario_input")
         senha = st.text_input("Senha", type="password", key="login_senha_input")
         if st.button("Entrar"):
@@ -79,10 +99,7 @@ def _verificar_senha() -> bool:
                 st.error("Usuário ou senha incorretos.")
 
     with aba_criar:
-        st.caption(
-            "Cadastro de teste — cria uma conta nova, sem cobrança associada ainda "
-            "(fase de validação do mecanismo)."
-        )
+        st.caption("Crie sua conta gratuita — sem cobrança associada por enquanto.")
         # Termos_de_Uso.txt/Politica_de_Privacidade.txt ainda não foram publicados
         # (em revisão) — só exige o checkbox quando os arquivos existirem de
         # verdade no deploy, pra não quebrar o cadastro enquanto isso não sobe.
@@ -114,6 +131,11 @@ def _verificar_senha() -> bool:
                     st.success('Conta criada! Use a aba "Entrar" com as credenciais que você escolheu.')
                 except (UsuarioJaExiste, CadastroIndisponivel) as e:
                     st.error(str(e))
+
+    st.caption(
+        "_Experimente perguntar: \"O que são as Sefirot — e o que a harmonia delas "
+        "tem a ver com o meu bem-estar?\"_"
+    )
 
     return False
 
@@ -182,8 +204,6 @@ section[data-testid="stSidebar"] hr { margin: 0.5rem 0; }
 # aproximar as caixas.
 CAIXAS_CSS = """
 <style>
-div.st-key-grupo_feedback [data-testid="stVerticalBlock"] { gap: 0.4rem; }
-
 div.st-key-caixa_titulo {
     border: 2px solid #B08D57 !important; border-radius: 8px;
     background-color: rgba(176, 141, 87, 0.10); padding: 0.3rem 0.6rem;
@@ -192,17 +212,13 @@ div.st-key-caixa_nivel {
     border: 2px solid #4A7A8C !important; border-radius: 8px;
     background-color: rgba(74, 122, 140, 0.10); padding: 0.3rem 0.6rem;
 }
-div.st-key-caixa_avaliacao {
+div.st-key-caixa_fundamentos {
     border: 2px solid #6B8E9E !important; border-radius: 8px;
     background-color: rgba(107, 142, 158, 0.10); padding: 0.3rem 0.6rem;
 }
-div.st-key-caixa_sugestao {
+div.st-key-caixa_criador {
     border: 2px solid #8E6B9E !important; border-radius: 8px;
     background-color: rgba(142, 107, 158, 0.10); padding: 0.3rem 0.6rem;
-}
-div.st-key-caixa_enviar {
-    border: 2px solid #6B9E7A !important; border-radius: 8px;
-    background-color: rgba(107, 158, 122, 0.10); padding: 0.3rem 0.6rem;
 }
 div.st-key-caixa_limpar {
     border: 2px solid #9E6B6B !important; border-radius: 8px;
@@ -213,63 +229,75 @@ div.st-key-caixa_limpar {
 
 with st.sidebar:
     st.markdown(ESPACAMENTO_CSS, unsafe_allow_html=True)
+    st.markdown(CAIXAS_CSS, unsafe_allow_html=True)
+
     if MODO_TESTE:
         st.caption("Versão de teste — acesso livre, sem login.")
     else:
         st.caption(
             f"Perguntas hoje: {perguntas_hoje(usuario_id)}/{MAX_PERGUNTAS_POR_USUARIO_DIA}"
         )
-    st.markdown(
-        f"<div style='font-size:0.8rem; line-height:1.35;'>{AVISO_HTML}</div>",
-        unsafe_allow_html=True,
-    )
-    st.divider()
 
-    st.markdown(CAIXAS_CSS, unsafe_allow_html=True)
+    with st.container(border=True, key="caixa_titulo"):
+        st.subheader("📌 Como o Mashpia funciona")
+        st.markdown(
+            "As respostas seguem as Sefirot — manifestações de D'us, matéria-prima de "
+            "tudo o que existe. Cada resposta busca a essência do problema e a harmonia "
+            "das suas Sefirot: assim se desenvolvem, juntos, o raciocínio e o lado "
+            "espiritual. Quanto mais se entende a essência, melhor se resolve o problema."
+        )
 
     with st.container(border=True, key="caixa_nivel"):
-        st.subheader("Nível de resposta")
+        st.subheader("🎚️ Nível de resposta")
         nivel_nome = st.radio(
             "Escolha antes de perguntar",
             list(NIVEL_NOMES_PARA_NUMERO.keys()),
-            index=2, key="nivel_input",  # "Essência prática" ativada por padrão (2026-08-12)
+            index=3, key="nivel_input",  # "Essência prática" ativada por padrão (2026-08-12);
+            # índice ajustado de 2 pra 3 em 2026-08-21 com a inserção do nível "Direto"
         )
+        st.caption("Em breve: níveis exclusivos para assinantes.")
     nivel = NIVEL_NOMES_PARA_NUMERO[nivel_nome]
 
-    st.divider()
-
-    with st.container(key="grupo_feedback"):
-        with st.container(border=True, key="caixa_titulo"):
-            st.subheader("Sua opinião importa")
-
-        with st.container(border=True, key="caixa_avaliacao"):
-            avaliacao = st.radio(
-                "Avaliação geral", ["Muito boa", "Boa", "Regular", "Ruim"],
-                index=None, key="avaliacao_input",
+    with st.container(border=True, key="caixa_fundamentos"):
+        with st.expander("✡️ Fundamentos"):
+            st.markdown(
+                f"<div style='font-size:0.8rem; line-height:1.35;'>{AVISO_HTML}</div>",
+                unsafe_allow_html=True,
             )
 
-        with st.container(border=True, key="caixa_sugestao"):
-            sugestao = st.text_area("Sugestões ou comentários", key="sugestao_input")
+    _sugestao_enviada = st.session_state.pop("_sugestao_enviada", False)
+    if _sugestao_enviada:
+        st.session_state["sugestao_input"] = ""
 
-        with st.container(border=True, key="caixa_enviar"):
-            if st.button("Enviar feedback"):
-                if avaliacao or sugestao:
+    with st.container(border=True, key="caixa_criador"):
+        with st.expander("💬 Fale com o criador"):
+            st.markdown(
+                "O Mashpia está em construção junto com os primeiros usuários. "
+                "Sua sugestão molda o produto."
+            )
+            sugestao = st.text_area("Escreva sua sugestão ou comentário", key="sugestao_input")
+            if st.button("Enviar", key="enviar_sugestao_criador"):
+                if sugestao:
                     ultimo = st.session_state.get("historico", [])
                     ultimo = ultimo[-1] if ultimo else None
                     salvar_feedback(
-                        avaliacao=avaliacao or "(não informada)",
+                        avaliacao="(não informada)",
                         sugestao=sugestao,
                         pergunta=ultimo["pergunta"] if ultimo else None,
                         resposta=ultimo["resposta"] if ultimo else None,
+                        usuario=usuario_id,
                     )
-                    st.success("Obrigado! Seu feedback foi registrado.")
+                    st.session_state["_sugestao_enviada"] = True
+                    st.rerun()
                 else:
-                    st.warning("Preencha ao menos a avaliação ou a sugestão antes de enviar.")
+                    st.warning("Escreva algo antes de enviar.")
+            if _sugestao_enviada:
+                st.success("Recebido — obrigado! Cada sugestão é lida pessoalmente.")
 
-        with st.container(border=True, key="caixa_limpar"):
-            if st.button("Limpar conversa"):
-                st.session_state.historico = []
-                st.rerun()
+    with st.container(border=True, key="caixa_limpar"):
+        if st.button("Limpar conversa"):
+            st.session_state.historico = []
+            st.rerun()
 
 st.markdown(
     "<div style='display:flex; align-items:baseline; gap:0.75rem; flex-wrap:wrap;'>"
@@ -301,7 +329,37 @@ def _exibir_relacoes(relacoes: dict) -> None:
         st.markdown("\n".join(linhas))
 
 
-for turno in st.session_state.historico:
+def _exibir_feedback(indice: int, pergunta: str, resposta: str) -> None:
+    """Thumbs por resposta (substitui a antiga 'Avaliação geral' da
+    sidebar). Grava via backend.feedback.salvar_feedback — mesmo mecanismo
+    (arquivo local + Sheets) já usado antes, só reaproveitado por resposta
+    em vez de uma vez só pra conversa inteira. Guarda em session_state pra
+    não regravar a cada rerun quando o valor não mudou."""
+    valor = st.feedback("thumbs", key=f"feedback_{indice}")
+    chave_registrado = f"feedback_registrado_{indice}"
+    if valor is not None and st.session_state.get(chave_registrado) != valor:
+        salvar_feedback(
+            avaliacao="Muito boa" if valor == 1 else "Ruim",
+            sugestao="",
+            pergunta=pergunta,
+            resposta=resposta,
+            usuario=usuario_id,
+        )
+        st.session_state[chave_registrado] = valor
+
+    if valor == 0:
+        chave_comentario = f"feedback_comentario_{indice}"
+        chave_comentario_enviado = f"feedback_comentario_enviado_{indice}"
+        comentario = st.text_input("O que faltou nesta resposta?", key=chave_comentario)
+        if comentario and st.session_state.get(chave_comentario_enviado) != comentario:
+            salvar_feedback(
+                avaliacao="Ruim", sugestao=comentario,
+                pergunta=pergunta, resposta=resposta, usuario=usuario_id,
+            )
+            st.session_state[chave_comentario_enviado] = comentario
+
+
+for _indice_turno, turno in enumerate(st.session_state.historico):
     with st.chat_message("user"):
         st.markdown(turno["pergunta"])
     with st.chat_message("assistant"):
@@ -319,8 +377,44 @@ for turno in st.session_state.historico:
                 st.write("**Trechos consultados:**")
                 for chunk in turno["chunks_usados"]:
                     st.markdown(f"- {chunk['texto'][:150]}…")
+        _exibir_feedback(_indice_turno, turno["pergunta"], turno["resposta"])
 
-pergunta = st.chat_input("Sua pergunta...")
+if not st.session_state.historico:
+    st.markdown(
+        "**Bem-vindo ao Mashpia.** 👋\n\n"
+        "Faça qualquer pergunta sobre conduta, propósito ou dúvidas existenciais. "
+        "A resposta seguirá as Sefirot — as manifestações de D'us que formam tudo "
+        "o que existe, inclusive você — e buscará a essência do problema. Porque "
+        "quanto mais se entende a essência, melhor se resolve. E porque o bem-estar "
+        "físico, mental e espiritual depende da harmonia das suas Sefirot."
+    )
+    st.caption("Não sabe por onde começar? Toque em uma destas:")
+    PERGUNTAS_SUGERIDAS = [
+        "O que são as Sefirot e como a harmonia delas melhora meu bem-estar?",
+        "Por que procrastino, mesmo sabendo o que devo fazer?",
+        "Como lidar com a ansiedade sobre o futuro?",
+        "Qual é o sentido do meu trabalho?",
+    ]
+    _colunas_sugestao = st.columns(4)
+    for _coluna, _pergunta_sugerida in zip(_colunas_sugestao, PERGUNTAS_SUGERIDAS):
+        with _coluna:
+            if st.button(_pergunta_sugerida, key=f"sugestao_{_pergunta_sugerida}"):
+                st.session_state["pergunta_pendente"] = _pergunta_sugerida
+                st.rerun()
+
+PLACEHOLDERS_PERGUNTA = [
+    "O que é Sefirot? Como Sefirot podem ajudar a melhorar meu desempenho nos estudos?",
+    "Como harmonizar minhas Sefirot para ter mais bem-estar?",
+    "Por que procrastino, mesmo sabendo o que devo fazer?",
+    "Como lidar com uma mágoa antiga?",
+]
+if "placeholder_pergunta" not in st.session_state:
+    st.session_state["placeholder_pergunta"] = random.choice(PLACEHOLDERS_PERGUNTA)
+
+pergunta = st.chat_input(st.session_state["placeholder_pergunta"])
+pergunta_pendente = st.session_state.pop("pergunta_pendente", None)
+if pergunta_pendente:
+    pergunta = pergunta_pendente
 if pergunta:
     with st.chat_message("user"):
         st.markdown(pergunta)

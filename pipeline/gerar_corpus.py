@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from pipeline.ingestao import processar_documento
 from pipeline.metadados_confirmados import DOCUMENTOS
 
-RAIZ_CORPUS = Path("/home/m/GraphRAG/CHAT_NIVEL_2")
+RAIZ_CORPUS = Path("/home/m/GraphRAG/Mashpia_Mentor_Comum/CHAT_NIVEL_2")
 
 
 def resolver_arquivo(pasta: str, chave: str) -> Path:

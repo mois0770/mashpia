@@ -82,21 +82,42 @@ NIVEIS = {
         ),
     },
     3: {
+        "nome": "Direto",
+        "max_tokens": 900,
+        "instrucao": (
+            "NÍVEL DE RESPOSTA SOLICITADO PARA ESTA CONSULTA: Direto.\n"
+            "Isto sobrepõe SÓ a extensão/estrutura das instruções acima — as regras de "
+            "conteúdo (fonte exclusiva nos trechos fornecidos, vocabulário, terminologia "
+            "fixada, protocolo de lacuna) continuam valendo integralmente.\n"
+            "Um único parágrafo compacto, de 5-8 frases corridas — mais desenvolvido que a "
+            "Essência prática, mas sem percorrer cada etapa da travessia estrutural completa "
+            "(abertura pela Fonte, cadeia Alma->Pensamento->Mente->Sentimento->Ação) nem usar "
+            "subtítulos. SEMPRE nomeando Dirá BeTachtonim explicitamente ao final (fechamento- "
+            "assinatura, não opcional em nenhum nível). Ao comprimir, prefira manter "
+            "frases-chave exatas do corpus (citações diretas, nomes de conceitos) em vez de "
+            "parafraseá-las totalmente. Se a pergunta cair em protocolo de lacuna, reconheça "
+            "isso em 1-2 frases."
+        ),
+    },
+    4: {
         "nome": "Essência prática",
-        "max_tokens": 600,
+        "max_tokens": 750,
         "instrucao": (
             "NÍVEL DE RESPOSTA SOLICITADO PARA ESTA CONSULTA: Essência prática.\n"
             "Isto sobrepõe SÓ a extensão/estrutura das instruções acima — as regras de "
             "conteúdo (fonte exclusiva nos trechos fornecidos, vocabulário, terminologia "
             "fixada, protocolo de lacuna) continuam valendo integralmente.\n"
-            "Vá direto à resposta prática em 2-4 frases corridas: sem abrir necessariamente "
-            "pela Fonte, sem percorrer cada etapa da cadeia estrutural, sem subtítulos — mas "
-            "SEMPRE nomeando Dirá BeTachtonim explicitamente ao final, mesmo comprimido (é o "
-            "fechamento-assinatura, não opcional em nenhum nível). Ainda assim a resposta "
-            "precisa refletir fielmente o que os trechos fornecidos ensinam — comprimida ao "
-            "essencial, nunca genérica ou vaga. Ao comprimir, prefira manter frases-chave "
-            "exatas do corpus (citações diretas, nomes de conceitos) em vez de parafraseá-las "
-            "totalmente. Se a pergunta cair em protocolo de lacuna, reconheça isso numa frase só."
+            "Vá direto à resposta prática em 2-4 frases corridas, com um teto rígido de "
+            "~80-100 palavras no total — sem abrir necessariamente pela Fonte, sem percorrer "
+            "cada etapa da cadeia estrutural, sem subtítulos — mas SEMPRE nomeando Dirá "
+            "BeTachtonim explicitamente ao final, mesmo comprimido (é o fechamento-assinatura, "
+            "não opcional em nenhum nível). Ainda assim a resposta precisa refletir fielmente o "
+            "que os trechos fornecidos ensinam — comprimida ao essencial, nunca genérica ou "
+            "vaga. Ao comprimir, prefira manter frases-chave exatas do corpus (citações "
+            "diretas, nomes de conceitos) em vez de parafraseá-las totalmente. Se a pergunta "
+            "cair em protocolo de lacuna, reconheça isso numa frase só. IMPORTANTE: respeite o "
+            "teto de palavras — encerre a ideia dentro dele, nunca deixe a resposta inacabada "
+            "no meio de uma frase."
         ),
     },
 }

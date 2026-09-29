@@ -23,14 +23,18 @@ def salvar_feedback(
     sugestao: str,
     pergunta: str | None = None,
     resposta: str | None = None,
+    usuario: str | None = None,
 ) -> None:
     """Grava em dois lugares, independentemente: arquivo local (garantia,
     nunca falha por causa de rede) e Google Sheets via Form (acesso remoto,
     só ativo depois que backend/feedback_sheets.py for configurado com o
-    FORM_ID e os ENTRY_* reais)."""
+    FORM_ID e os ENTRY_* reais). `usuario` só vai pro arquivo local — o Form
+    do Sheets não tem campo pra isso, não vale mudar o schema dele por
+    causa disso."""
     FEEDBACK_PATH.parent.mkdir(parents=True, exist_ok=True)
     registro = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
+        "usuario": usuario,
         "avaliacao": avaliacao,
         "sugestao": sugestao,
         "pergunta_relacionada": pergunta,
